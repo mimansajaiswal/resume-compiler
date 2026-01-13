@@ -1,0 +1,394 @@
+# ==============================================================================
+# RESUME DATA - YAML Format
+# ==============================================================================
+# This file contains all your resume data in YAML format.
+# Simply edit the values below to customize your resume.
+# All fields marked with "# optional" can be omitted if not needed.
+#
+# LONG/SHORT RESUME VARIANTS:
+# Add "include_short: false" to any entry to exclude it from short resume.
+# By default, all items are included in both long and short versions.
+# Examples:
+#   - organization: Company
+#     include_short: false    # This whole work entry excluded from short resume
+#     positions: [...]
+#
+#   - organization: Company
+#     positions:
+#       - position: Role 1
+#         include_short: true  # Include in short
+#       - position: Role 2
+#         include_short: false # Exclude from short
+# ==============================================================================
+
+# ==============================================================================
+# PERSONAL INFORMATION
+# ==============================================================================
+personal:
+  name: Mimansa Jaiswal
+  email: mimansa.jaiswal@gmail.com
+  phone: (734) 747-0283  # optional - will be shown if show_phone is true in config
+  url: https://mimansajaiswal.github.io/
+
+  titles:  # optional - job titles or taglines
+    - Research Scientist
+
+  location:  # optional - will be shown if show_location is true
+    city: null
+    region: null
+    country: null
+
+  profiles:  # optional - social media / professional profiles
+    - network: Twitter
+      username: MimansaJ
+      url: https://twitter.com/MimansaJ
+    - network: LinkedIn
+      username: mimansajaiswal
+      url: https://www.linkedin.com/in/mimansajaiswal/
+    - network: Email (alternate)
+      username: mimansa@umich.edu
+      url: mailto:mimansa@umich.edu
+
+# ==============================================================================
+# INTERESTS / RESEARCH SUMMARY
+# ==============================================================================
+# A brief paragraph summarizing your research interests or professional summary
+interests_summary: |
+  I am primarily interested in *LLM post-training and evaluation*, focusing on understanding why models fail or behave unexpectedly _(Failure Analysis)_, improving them through techniques such as RLHF/RLVR/RLAIF, DPO/GRPO, and reward modeling _(Post-Training)_, developing automated and synthetic evaluation systems to measure fine-grained capabilities and robustness _(Evaluation & Data Augmentation)_, integrating human knowledge and preferences into model development _(Human-in-the-Loop ML)_, and enhancing interpretability and deployment readiness _(Model Explainability & Deployment)_.
+
+# ==============================================================================
+# WORK EXPERIENCE
+# ==============================================================================
+work:
+  - organization: Meta (MSL Org)
+    url: https://ai.meta.com/
+    location: null
+    positions:
+      - position: Research Scientist
+        startDate: 2025-02-01
+        endDate: present
+        highlights:
+          - "Part of Meta AI's Capabilities team, developed and fine-tuned large language models (LLMs) using advanced post-training techniques including RLHF/RLVR/RLAIF (with and without checklists), and used DPO/GRPO with reward models for improving production models."
+          - "Built end-to-end synthetic data generation pipelines and automated evaluation systems, including rubric-based judges, preference data collection workflows, and quality assessment frameworks for model improvement and hill-climbing optimization."
+
+  - organization: Norm AI
+    url: https://norm.ai/
+    location: null
+    positions:
+      - position: Research Engineer
+        startDate: 2023-10-01
+        endDate: 2024-10-01
+        highlights:
+          - "Developed domain-specific retrieval-augmented generation (RAG) systems for legal applications, implementing synthetic data augmentation techniques to expand training datasets, create evaluation datasets and improve model coverage."
+          - "Built agentic LLM simulation frameworks to model human group perception and consensus-building for subjective law interpretation and policy evaluation."
+
+  - organization: Allen NLP, Allen Institute for AI
+    url: https://allennlp.org/
+    location: null
+    positions:
+      - position: Research Intern
+        startDate: 2021-09-01
+        endDate: 2021-12-01
+        highlights:
+          - "Developed interpretable and decompositional evaluation frameworks for GPT-3 and other language models, creating benchmarks for multi-aspect quality assessment."
+          - "Used the designed evaluation methodologies to measure fine-grained model capabilities and failure modes in natural language understanding tasks."
+
+  - organization: NLP Team, Facebook AI Research (FAIR)
+    url: https://ai.facebook.com/research/NLP
+    location: null
+    positions:
+      - position: Research Intern
+        startDate: 2021-05-01
+        endDate: 2021-08-01
+        highlights:
+          - "Identified and analyzed systematic failure patterns in Natural Language Inference (NLI) through adversarial testing and error analysis."
+          - "Developed correction strategies and data augmentation techniques to improve model robustness on challenging NLI examples performing experimentation on CTRL model."
+
+  - organization: Conversation AI, Facebook Research
+    url: https://ai.facebook.com/research/conversational-ai/
+    location: null
+    positions:
+      - position: Research Intern
+        startDate: 2020-05-01
+        endDate: 2020-08-01
+        highlights:
+          - "Developed interpretable user satisfaction metrics for conversational AI systems by integrating human knowledge and behavioral signals, and trained weakly supervised hierarchal label models."
+          - "Created generalizable evaluation frameworks combining quantitative metrics with qualitative human feedback for dialogue quality assessment."
+
+# ==============================================================================
+# EDUCATION
+# ==============================================================================
+education:
+  - institution: University of Michigan
+    url: http://www.umich.edu
+    location: Ann Arbor, MI
+    studyType: Ph.D.
+    area: Computer Science and Engineering
+    startDate: 2017-09-01
+    endDate: 2023-08-01
+    honors:
+      - Awarded Barbour Fellowship Amongst Over 1k+ Applicants
+    highlights:
+      - "Computational Human Analysis and Integration (CHAI) Lab"
+      - "*Advisor*: Prof. Emily Provost"
+
+  - institution: University of Michigan
+    url: http://www.umich.edu
+    location: Ann Arbor, MI
+    studyType: M.S.
+    area: Computer Science and Engineering
+    startDate: 2017-09-01
+    endDate: 2019-05-01
+    honors:
+      - "GPA: 3.87/4.00"
+    courses:
+      - Natural Language Processing
+      - Advanced Artificial Intelligence
+      - Bayesian Inference
+
+  - institution: Institute of Engineering and Technology
+    url: http://www.ietdavv.edu.in/
+    location: Indore, India
+    studyType: B.E.
+    area: Computer Science Engineering
+    startDate: 2013-07-01
+    endDate: 2017-05-01
+    honors:
+      - "GPA: 3.7/4.00"
+    courses:
+      - Information Retrieval
+      - Machine Learning
+      - Algorithm Design and Analysis
+
+# ==============================================================================
+# PUBLICATIONS
+# ==============================================================================
+publications:
+  # Works in Progress
+  - name: "CAPSTONE: Capability Assessment Protocol for Systematic Testing Of Natural language models' Expertise"
+    authors: Mimansa Jaiswal
+    publisher: null
+    releaseDate: null
+    url: https://mimansajaiswal.github.io/posts/capstone/
+    status: "Research Notes"
+
+  - name: "Designing Interfaces for Delivering and Obtaining Generation Explanation Annotations"
+    authors: Mimansa Jaiswal
+    publisher: null
+    releaseDate: null
+    url: https://human-in-loop-explanation-annotation.vercel.app/
+    status: "Demo and Repository"
+
+  # Submitted Publications
+  - name: "The Future of Open Human Feedback"
+    authors: "Shachar Don-Yehiya, Ben Burtenshaw, Ramon Fernandez Astudillo, Cailean Osborne, Mimansa Jaiswal, Tzu-Sheng Kuo, Wenting Zhao, Idan Shenfeld, Andi Peng, Mikhail Yurochkin, Atoosa Kasirzadeh, Yangsibo Huang, Tatsunori Hashimoto, Yacine Jernite, Daniel Vila-Suero, Omri Abend, Jennifer Ding, Sara Hooker, Hannah Rose Kirk, Leshem Choshen"
+    publisher: null
+    releaseDate: null
+    url: https://arxiv.org/abs/2408.16961
+    status: "Submitted"
+
+  - name: "Temperature Zero Isn't the Best Choice For Accuracy in Legal Reasoning"
+    authors: "Mimansa Jaiswal, Scott Worland, John Nay"
+    publisher: null
+    releaseDate: null
+    url: null
+    status: "Submitted"
+
+  - name: "Lessons from the Trenches on Reproducible Evaluation of Language Models"
+    authors: "Stella Biderman, Hailey Schoelkopf, Lintang Sutawika, …(and 12 others) Mimansa Jaiswal …(and 10 others)"
+    publisher: null
+    releaseDate: null
+    url: https://arxiv.org/abs/2405.14782
+    status: "Submitted"
+
+  - name: "Sally-Anne False Belief Test for LLMs"
+    authors: Mimansa Jaiswal
+    publisher: null
+    releaseDate: null
+    url: https://mimansajaiswal.github.io/papers-pdf/sally_anne_workshop.pdf
+    status: "Workshop Paper"
+
+  - name: "Qualitatively Studying Gender Biases in LLMs"
+    authors: Mimansa Jaiswal
+    publisher: null
+    releaseDate: null
+    url: https://mimansajaiswal.github.io/papers-pdf/qualitative-gender-workshop.pdf
+    status: "Workshop Paper"
+
+  - name: "Assessing Large Language Models: A Comprehensive Survey and Critical Analysis of Evaluation Metrics and Methodologies"
+    authors: Mimansa Jaiswal
+    publisher: null
+    releaseDate: null
+    url: https://mimansajaiswal.github.io/notes/case-of-llm-evals.html
+    status: "Survey Paper"
+
+  # Accepted Publications
+  - name: "From Text to Emotion: Unveiling the Emotion Annotation Capabilities of LLMs"
+    authors: "Minxue Niu, Mimansa Jaiswal, Emily Mower Provost"
+    publisher: Interspeech 2024
+    releaseDate: 2024-09-01
+    url: https://arxiv.org/pdf/2408.17026
+
+  - name: "Capturing Mismatch between Textual and Acoustic Emotion Expressions for Mood Identification in Bipolar Disorder"
+    authors: "Minxue Niu, Amrit Romana, Mimansa Jaiswal, Melvin McInnis, Emily Mower Provost"
+    publisher: Interspeech 2023
+    releaseDate: 2023-08-01
+    url: https://www.isca-archive.org/interspeech_2023/niu23b_interspeech.pdf
+
+  - name: "Mind the gap: On the value of silence representations to lexical-based speech emotion recognition"
+    authors: "Matthew Perez, Mimansa Jaiswal, Minxue Niu, Cristina Gorrostieta, Matthew Roddy, Kye Taylor, Reza Lotfian, John Kane, Emily Mower Provost"
+    publisher: Interspeech 2022
+    releaseDate: 2022-09-01
+    url: https://www.isca-speech.org/archive/pdfs/interspeech_2022/perez22_interspeech.pdf
+
+  - name: "Human-Centered Metric Design to Promote Generalizable and Debiased Emotion Recognition"
+    authors: "Mimansa Jaiswal, Emily Mower Provost"
+    publisher: Text as Data (TADA) Conference 2021
+    releaseDate: 2021-10-01
+    url: https://arxiv.org/pdf/2104.08792.pdf
+
+  - name: "Noise Based Augmentation of Emotion Datasets: What's ideal and What Isn't?"
+    authors: "Mimansa Jaiswal, Emily Mower Provost"
+    publisher: ACL-SRW 2020
+    releaseDate: 2020-07-01
+    url: https://arxiv.org/pdf/2104.08806.pdf
+
+  - name: "MuSE: Multimodal Stressed Emotion Dataset"
+    authors: "Mimansa Jaiswal*, CP Bara, Yuanhang Luo, Rada Mihalcea, Mihai Burzo, Emily Mower Provost"
+    publisher: Conference on Language Resources and Evaluation (LREC) 2020
+    releaseDate: 2020-05-01
+    url: https://aclanthology.org/2020.lrec-1.187.pdf
+
+  - name: "Privacy Enhanced Multimodal Neural Representations for Emotion Recognition"
+    authors: "Mimansa Jaiswal, Emily Mower Provost"
+    publisher: AAAI Conference on Artificial Intelligence (AAAI) 2020
+    releaseDate: 2020-02-01
+    url: https://arxiv.org/pdf/1910.13212.pdf
+
+  - name: "Controlling for Confounders in Multimodal Emotion Classification via Adversarial Learning"
+    authors: "Mimansa Jaiswal, Zakaria Aldeneh, Emily Mower Provost"
+    publisher: International Conference on Multimodal Interaction (ICMI) 2019
+    releaseDate: 2019-10-01
+    url: https://arxiv.org/pdf/1908.08979.pdf
+
+  - name: "Identifying Mood Episodes Using Dialogue Features from Clinical Interviews"
+    authors: "Zakaria Aldeneh, Mimansa Jaiswal, Michael Picheny, Melvin McInnis, Emily Mower Provost"
+    publisher: Interspeech 2019
+    releaseDate: 2019-09-01
+    url: https://www.isca-speech.org/archive/Interspeech_2019/pdfs/1878.pdf
+
+  - name: "MuSE-ing on the Impact of Utterance Ordering On Crowdsourced Emotion Annotations"
+    authors: "Mimansa Jaiswal, Zakaria Aldeneh, Cristian-Paul Bara, Yuanhang Luo, Mihai Burzo, Rada Mihalcea, Emily Mower Provost"
+    publisher: IEEE International Conference on Acoustics, Speech, and Signal Processing (ICASSP) 2019
+    releaseDate: 2019-05-01
+    url: https://arxiv.org/pdf/1903.11672.pdf
+
+  - name: "The PRIORI Emotion Dataset: Linking Mood to Emotion Detected In-the-Wild"
+    authors: "Soheil Khorram, Mimansa Jaiswal, John Gideon, Melvin McInnis, Emily Mower Provost"
+    publisher: Interspeech 2018
+    releaseDate: 2018-09-01
+    url: https://arxiv.org/pdf/1806.10658.pdf
+
+# ==============================================================================
+# AWARDS AND HONORS
+# ==============================================================================
+awards:
+  - title: Barbour Fellowship
+    date: 2022-09-01
+    issuer: University of Michigan Rackham Graduate School
+    location: Ann Arbor, MI
+    url: https://rackham.umich.edu/discover-rackham/announcing-the-2022-2023-barbour-scholars/
+    highlights:
+      - "Awarded amongst over 1,000+ applicants"
+
+  - title: Graduate Student Instructor for Affective Computing Course
+    date: 2020-01-01
+    issuer: University of Michigan
+    location: Ann Arbor, MI
+    url: null
+
+  - title: Student Representative in CSE Faculty Hiring Committee
+    date: 2020-09-01
+    issuer: University of Michigan CSE Department
+    location: Ann Arbor, MI
+    url: null
+
+  - title: Invited Speaker at PyCon 2016
+    date: 2016-06-01
+    issuer: PyCon Singapore
+    location: Singapore
+    url: https://www.youtube.com/watch?v=rhVhR22t2IE&t=0s&list=PLMrPHnpQRHYZcOoyqcTMpFR1t-WLJAxb9&index=7
+
+  - title: Invited Speaker at PyCon 2016
+    date: 2016-10-01
+    issuer: PyCon India
+    location: India
+    url: https://www.youtube.com/watch?v=A1IKw67vYkE
+
+  - title: National Talent Search Examination Scholarship
+    date: null
+    issuer: National Council of Educational Research and Training (NCERT)
+    location: India
+    url: null
+    highlights:
+      - "Top 0.01% in India"
+
+# ==============================================================================
+# SKILLS
+# ==============================================================================
+skills:
+  - category: Research Areas
+    skills:
+      - LLM Post-Training (RLHF/RLVR/RLAIF, DPO/GRPO)
+      - Model Evaluation & Benchmarking
+      - Failure Analysis
+      - Synthetic Data Generation
+      - Human-in-the-Loop ML
+      - Retrieval-Augmented Generation (RAG)
+      - Natural Language Processing
+      - Multimodal Learning
+
+  - category: Technical Skills
+    skills:
+      - Python
+      - PyTorch
+      - Transformers
+      - Machine Learning
+      - Deep Learning
+      - Statistical Analysis
+      - Experimental Design
+
+  - category: Professional Activities
+    skills:
+      - "Reviewing: ICDMW, ICMI, ACII, CHI, CSCW, *ACL, AAAI, NeurIPS (2019-present)"
+      - Public Speaking
+      - Technical Writing
+      - Mentoring
+
+# ==============================================================================
+# LANGUAGES
+# ==============================================================================
+languages:
+  - language: English
+    fluency: Fluent
+  - language: Hindi
+    fluency: Native
+
+# ==============================================================================
+# INTERESTS (as keywords)
+# ==============================================================================
+interests:
+  - Machine Learning Research
+  - LLM Alignment
+  - AI Safety
+  - Computational Social Science
+  - Reading
+
+# ==============================================================================
+# REFERENCES
+# ==============================================================================
+# Uncomment and fill in if you want to include references
+# references:
+#   - name: Prof. Emily Mower Provost
+#     reference: "Reference text here"
+#     url: http://web.eecs.umich.edu/~emilykmp/

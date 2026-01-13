@@ -1,0 +1,80 @@
+# ==============================================================================
+# RESUME CONFIGURATION
+# ==============================================================================
+# This file contains all configuration options for your resume.
+# Settings here override defaults in resume.typ
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# RESUME VARIANT
+# ------------------------------------------------------------------------------
+variant: long  # Options: "long" or "short"
+
+# ------------------------------------------------------------------------------
+# FONTS AND SIZES
+# ------------------------------------------------------------------------------
+fonts:
+  heading_font: "New Computer Modern"
+  body_font: "New Computer Modern"
+  font_size: 11pt
+  name_font_size: 2.25em
+  section_font_size: 1em
+
+# ------------------------------------------------------------------------------
+# SPACING AND LAYOUT
+# ------------------------------------------------------------------------------
+layout:
+  margin: 0.5in
+  line_spacing: 0.65em
+  list_spacing: 0.65em
+  section_spacing: 0.8em
+
+# ------------------------------------------------------------------------------
+# STYLING
+# ------------------------------------------------------------------------------
+styling:
+  section_smallcaps: true  # Use small caps for section headings
+
+# ------------------------------------------------------------------------------
+# VISIBILITY TOGGLES
+# ------------------------------------------------------------------------------
+# Control what information to show/hide
+visibility:
+  show_location: false          # Show location in header
+  show_phone: true              # Show phone number
+  show_interests_summary: true  # Show interests paragraph at top
+  show_languages: true          # Show languages section
+  show_interests: false         # Show interests list at bottom
+  show_references: false        # Show references section
+
+# ------------------------------------------------------------------------------
+# SECTION TITLES
+# ------------------------------------------------------------------------------
+# Customize section headings
+section_titles:
+  work: "Experience"
+  education: "Education"
+  publications: "Publications"
+  projects: "Projects"
+  awards: "Honors and Awards"
+  skills: "Skills"
+  languages: "Languages"
+  interests: "Interests"
+  references: "References"
+
+# ------------------------------------------------------------------------------
+# SECTION ORDER
+# ------------------------------------------------------------------------------
+# Define which sections to show and in what order
+# Comment out or remove any section you don't want to display
+section_order:
+  - interests_summary
+  - work
+  - education
+  - publications
+  - awards
+  - skills
+  - languages
+  # - projects       # Commented out = won't show
+  # - interests      # Commented out = won't show
+  # - references     # Commented out = won't show

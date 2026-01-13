@@ -1,0 +1,87 @@
+# ==============================================================================
+# RESUME DATA - WITH BIBTEX PUBLICATIONS
+# ==============================================================================
+# This example demonstrates using BibTeX for publications
+# ==============================================================================
+
+personal:
+  name: Mimansa Jaiswal
+  email: mimansa.jaiswal@gmail.com
+  phone: (734) 747-0283
+  url: https://mimansajaiswal.github.io/
+  titles:
+    - Research Scientist
+
+# ... other sections same as resume.yml ...
+# For demonstration, I'm including just a minimal example
+
+work:
+  - organization: Meta (MSL Org)
+    url: https://ai.meta.com/
+    location: null
+    positions:
+      - position: Research Scientist
+        startDate: 2025-02-01
+        endDate: present
+        highlights:
+          - "Developed and fine-tuned large language models using advanced post-training techniques."
+
+education:
+  - institution: University of Michigan
+    url: http://www.umich.edu
+    location: Ann Arbor, MI
+    studyType: Ph.D.
+    area: Computer Science and Engineering
+    startDate: 2017-09-01
+    endDate: 2023-08-01
+
+# ==============================================================================
+# PUBLICATIONS - BIBTEX FORMAT
+# ==============================================================================
+# Use bib_key to reference BibTeX entries
+# Add "links" array to include code/data/demo links
+publications:
+  # Example: BibTeX entry with extra links
+  - bib_key: jaiswal2024textemotion
+    links:
+      - label: "Paper"
+        url: "https://arxiv.org/pdf/2408.17026"
+      - label: "Code"
+        url: "https://github.com/example/code"
+
+  # Example: BibTeX entry with no extra links
+  - bib_key: jaiswal2020privacy
+    links:
+      - label: "Paper"
+        url: "https://arxiv.org/pdf/1910.13212.pdf"
+
+  # Example: BibTeX entry with data link
+  - bib_key: jaiswal2020muse
+    links:
+      - label: "Paper"
+        url: "https://aclanthology.org/2020.lrec-1.187.pdf"
+      - label: "Dataset"
+        url: "https://github.com/example/muse-dataset"
+
+  # Example: Simpler entry
+  - bib_key: jaiswal2019controlling
+
+  # You can also mix YAML and BibTeX formats
+  # YAML format (no bib_key) works as before
+  - name: "Work in Progress: CAPSTONE"
+    authors: Mimansa Jaiswal
+    publisher: null
+    releaseDate: null
+    url: https://mimansajaiswal.github.io/posts/capstone/
+    status: "Research Notes"
+
+skills:
+  - category: Research Areas
+    skills:
+      - LLM Post-Training
+      - Model Evaluation
+      - NLP
+
+languages:
+  - language: English
+    fluency: Fluent
