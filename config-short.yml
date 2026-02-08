@@ -1,39 +1,45 @@
 # ==============================================================================
 # SHORT RESUME CONFIGURATION
 # ==============================================================================
-# Configuration for short resume variant
-# ==============================================================================
 
-variant: short  # KEY DIFFERENCE: Set to "short"
+variant: short
 
 fonts:
   heading_font: "New Computer Modern"
   body_font: "New Computer Modern"
-  font_size: 11pt
-  name_font_size: 2.25em
+  font_size: 10pt
+  name_font_size: 1.8em
   section_font_size: 1em
 
 layout:
   margin: 0.5in
-  line_spacing: 0.65em
-  list_spacing: 0.65em
-  section_spacing: 0.8em
+  line_spacing: 0.5em
+  list_spacing: 0.4em
+  section_spacing: 0.6em
+  post_section_spacing: 0.15em
+  entry_spacing: 0.4em
+  entry_inner_spacing: 0.15em
+  pub_spacing: 0.5em
+  skill_spacing: 0.15em
+  header_bottom_spacing: 0.2em
 
 styling:
   section_smallcaps: true
+  contact_font_size: 0.85em
+  summary_font_size: 0.92em
 
 visibility:
   show_location: false
   show_phone: true
-  show_interests_summary: false  # Hide in short version
-  show_languages: false           # Hide in short version
+  show_interests_summary: false
+  show_languages: false
   show_interests: false
   show_references: false
 
 section_titles:
   work: "Experience"
   education: "Education"
-  publications: "Selected Publications"  # Note: "Selected"
+  publications: "Selected Publications"
   projects: "Projects"
   awards: "Honors and Awards"
   skills: "Skills"
@@ -47,4 +53,3 @@ section_order:
   - publications
   - awards
   - skills
-  # Projects, languages, interests omitted

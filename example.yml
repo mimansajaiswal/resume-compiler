@@ -12,18 +12,18 @@
 personal:
   name: Mimansa Jaiswal
   email: mimansa.jaiswal@gmail.com
-  phone: (734) 747-0283  # optional - will be shown if show_phone is true in config
+  phone: (734) 747-0283 # optional - will be shown if show_phone is true in config
   url: https://mimansajaiswal.github.io/
 
-  titles:  # optional - job titles or taglines
+  titles: # optional - job titles or taglines
     - Research Scientist
 
-  location:  # optional - will be shown if show_location is true
+  location: # optional - will be shown if show_location is true
     city: null
     region: null
     country: null
 
-  profiles:  # optional - social media / professional profiles
+  profiles: # optional - social media / professional profiles
     - network: Twitter
       username: MimansaJ
       url: https://twitter.com/MimansaJ
@@ -368,7 +368,6 @@ interests:
   - AI Safety
   - Computational Social Science
   - Reading
-
 # ==============================================================================
 # REFERENCES
 # ==============================================================================

@@ -5,12 +5,12 @@ name: Upload Resume to Cloud Storage
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [main, master]
     paths:
-      - '**.yml'
-      - '**.yaml'
-      - '**.typ'
-      - '**.bib'
+      - "**.yml"
+      - "**.yaml"
+      - "**.typ"
+      - "**.bib"
   workflow_dispatch:
 
 jobs:

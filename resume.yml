@@ -171,6 +171,7 @@ publications:
     releaseDate: null
     url: https://mimansajaiswal.github.io/posts/capstone/
     status: "Research Notes"
+    include_short: false
 
   - name: "Designing Interfaces for Delivering and Obtaining Generation Explanation Annotations"
     authors: Mimansa Jaiswal
@@ -178,6 +179,7 @@ publications:
     releaseDate: null
     url: https://human-in-loop-explanation-annotation.vercel.app/
     status: "Demo and Repository"
+    include_short: false
 
   # Submitted Publications
   - name: "The Future of Open Human Feedback"
@@ -186,6 +188,7 @@ publications:
     releaseDate: null
     url: https://arxiv.org/abs/2408.16961
     status: "Submitted"
+    include_short: false
 
   - name: "Temperature Zero Isn't the Best Choice For Accuracy in Legal Reasoning"
     authors: "Mimansa Jaiswal, Scott Worland, John Nay"
@@ -193,6 +196,7 @@ publications:
     releaseDate: null
     url: null
     status: "Submitted"
+    include_short: false
 
   - name: "Lessons from the Trenches on Reproducible Evaluation of Language Models"
     authors: "Stella Biderman, Hailey Schoelkopf, Lintang Sutawika, …(and 12 others) Mimansa Jaiswal …(and 10 others)"
@@ -200,6 +204,7 @@ publications:
     releaseDate: null
     url: https://arxiv.org/abs/2405.14782
     status: "Submitted"
+    include_short: false
 
   - name: "Sally-Anne False Belief Test for LLMs"
     authors: Mimansa Jaiswal
@@ -207,6 +212,7 @@ publications:
     releaseDate: null
     url: https://mimansajaiswal.github.io/papers-pdf/sally_anne_workshop.pdf
     status: "Workshop Paper"
+    include_short: false
 
   - name: "Qualitatively Studying Gender Biases in LLMs"
     authors: Mimansa Jaiswal
@@ -214,6 +220,7 @@ publications:
     releaseDate: null
     url: https://mimansajaiswal.github.io/papers-pdf/qualitative-gender-workshop.pdf
     status: "Workshop Paper"
+    include_short: false
 
   - name: "Assessing Large Language Models: A Comprehensive Survey and Critical Analysis of Evaluation Metrics and Methodologies"
     authors: Mimansa Jaiswal
@@ -221,6 +228,7 @@ publications:
     releaseDate: null
     url: https://mimansajaiswal.github.io/notes/case-of-llm-evals.html
     status: "Survey Paper"
+    include_short: false
 
   # Accepted Publications
   - name: "From Text to Emotion: Unveiling the Emotion Annotation Capabilities of LLMs"
@@ -228,36 +236,42 @@ publications:
     publisher: Interspeech 2024
     releaseDate: 2024-09-01
     url: https://arxiv.org/pdf/2408.17026
+    include_short: false
 
   - name: "Capturing Mismatch between Textual and Acoustic Emotion Expressions for Mood Identification in Bipolar Disorder"
     authors: "Minxue Niu, Amrit Romana, Mimansa Jaiswal, Melvin McInnis, Emily Mower Provost"
     publisher: Interspeech 2023
     releaseDate: 2023-08-01
     url: https://www.isca-archive.org/interspeech_2023/niu23b_interspeech.pdf
+    include_short: false
 
   - name: "Mind the gap: On the value of silence representations to lexical-based speech emotion recognition"
     authors: "Matthew Perez, Mimansa Jaiswal, Minxue Niu, Cristina Gorrostieta, Matthew Roddy, Kye Taylor, Reza Lotfian, John Kane, Emily Mower Provost"
     publisher: Interspeech 2022
     releaseDate: 2022-09-01
     url: https://www.isca-speech.org/archive/pdfs/interspeech_2022/perez22_interspeech.pdf
+    include_short: false
 
   - name: "Human-Centered Metric Design to Promote Generalizable and Debiased Emotion Recognition"
     authors: "Mimansa Jaiswal, Emily Mower Provost"
     publisher: Text as Data (TADA) Conference 2021
     releaseDate: 2021-10-01
     url: https://arxiv.org/pdf/2104.08792.pdf
+    include_short: false
 
   - name: "Noise Based Augmentation of Emotion Datasets: What's ideal and What Isn't?"
     authors: "Mimansa Jaiswal, Emily Mower Provost"
     publisher: ACL-SRW 2020
     releaseDate: 2020-07-01
     url: https://arxiv.org/pdf/2104.08806.pdf
+    include_short: false
 
   - name: "MuSE: Multimodal Stressed Emotion Dataset"
     authors: "Mimansa Jaiswal*, CP Bara, Yuanhang Luo, Rada Mihalcea, Mihai Burzo, Emily Mower Provost"
     publisher: Conference on Language Resources and Evaluation (LREC) 2020
     releaseDate: 2020-05-01
     url: https://aclanthology.org/2020.lrec-1.187.pdf
+    include_short: false
 
   - name: "Privacy Enhanced Multimodal Neural Representations for Emotion Recognition"
     authors: "Mimansa Jaiswal, Emily Mower Provost"
@@ -276,18 +290,21 @@ publications:
     publisher: Interspeech 2019
     releaseDate: 2019-09-01
     url: https://www.isca-speech.org/archive/Interspeech_2019/pdfs/1878.pdf
+    include_short: false
 
   - name: "MuSE-ing on the Impact of Utterance Ordering On Crowdsourced Emotion Annotations"
     authors: "Mimansa Jaiswal, Zakaria Aldeneh, Cristian-Paul Bara, Yuanhang Luo, Mihai Burzo, Rada Mihalcea, Emily Mower Provost"
     publisher: IEEE International Conference on Acoustics, Speech, and Signal Processing (ICASSP) 2019
     releaseDate: 2019-05-01
     url: https://arxiv.org/pdf/1903.11672.pdf
+    include_short: false
 
   - name: "The PRIORI Emotion Dataset: Linking Mood to Emotion Detected In-the-Wild"
     authors: "Soheil Khorram, Mimansa Jaiswal, John Gideon, Melvin McInnis, Emily Mower Provost"
     publisher: Interspeech 2018
     releaseDate: 2018-09-01
     url: https://arxiv.org/pdf/1806.10658.pdf
+    include_short: false
 
 # ==============================================================================
 # AWARDS AND HONORS

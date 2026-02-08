@@ -1,0 +1,1607 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resume Compiler</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/codemirror.min.css">
+  <style>
+    :root {
+      --oatmeal: #d5cec0;
+      --earth: #b8ad9a;
+      --charcoal: #2c2c2c;
+      --linen: #f4f1ec;
+      --linen-dark: #e8e4dc;
+      --purple: #7d6b8a;
+      --pink: #c4909a;
+      --mono: "SF Mono", "Fira Code", "Cascadia Code", "JetBrains Mono", "Consolas", "Courier New", monospace;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--mono);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: var(--oatmeal);
+      color: var(--charcoal);
+    }
+
+    header {
+      background: var(--charcoal);
+      color: var(--linen);
+      padding: 0.55rem 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+      z-index: 10;
+    }
+
+    header h1 {
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    header .subtitle {
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      color: var(--earth);
+      text-transform: uppercase;
+      margin-top: 0.1rem;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .header-actions button {
+      padding: 0.3rem 0.85rem;
+      border: 1px solid var(--earth);
+      border-radius: 0;
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      font-weight: 600;
+      cursor: pointer;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      transition: all 0.15s;
+    }
+
+    #btn-download {
+      background: var(--pink);
+      color: var(--charcoal);
+      border-color: var(--pink);
+    }
+
+    #btn-download:hover {
+      background: #b37e87;
+    }
+
+    #btn-download:disabled {
+      background: #666;
+      color: #999;
+      border-color: #666;
+      cursor: not-allowed;
+    }
+
+    #btn-reset {
+      background: transparent;
+      color: var(--earth);
+    }
+
+    #btn-reset:hover {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--linen);
+    }
+
+    .main-container {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .editor-panel {
+      width: 45%;
+      min-width: 300px;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--earth);
+      background: var(--linen);
+    }
+
+    .tabs {
+      display: flex;
+      flex-shrink: 0;
+      align-items: center;
+      padding: 0.5rem 0.6rem 0;
+      gap: 0.35rem;
+      background: var(--linen-dark);
+      border-bottom: 1px solid var(--earth);
+    }
+
+    .tab {
+      padding: 0.35rem 0.75rem;
+      cursor: pointer;
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--earth);
+      background: transparent;
+      border: 1px solid transparent;
+      transition: all 0.15s;
+      user-select: none;
+      white-space: nowrap;
+      margin-bottom: -1px;
+    }
+
+    .tab:hover {
+      color: var(--charcoal);
+    }
+
+    .tab.active {
+      color: var(--linen);
+      background: var(--charcoal);
+      border-color: var(--charcoal);
+    }
+
+    .tab-actions {
+      margin-left: auto;
+      padding-right: 0.2rem;
+      padding-bottom: 0.5rem;
+      display: flex;
+      gap: 0.4rem;
+    }
+
+    .tab-actions button {
+      padding: 0.25rem 0.55rem;
+      border: 1px solid var(--earth);
+      border-radius: 0;
+      background: var(--linen);
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--charcoal);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .tab-actions button:hover {
+      background: var(--oatmeal);
+    }
+
+    .editor-wrapper {
+      flex: 1;
+      position: relative;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .editor-wrapper .cm-container {
+      position: absolute;
+      inset: 0;
+    }
+
+    .editor-wrapper .cm-container.hidden {
+      display: none;
+    }
+
+    .CodeMirror {
+      height: 100% !important;
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      line-height: 1.55;
+      background: var(--linen) !important;
+      color: var(--charcoal) !important;
+    }
+
+    .CodeMirror-gutters {
+      background: var(--linen-dark) !important;
+      border-right: 1px solid var(--earth) !important;
+    }
+
+    .CodeMirror-linenumber {
+      color: var(--earth) !important;
+    }
+
+    .CodeMirror-cursor {
+      border-left-color: var(--purple) !important;
+      border-left-width: 2px !important;
+    }
+
+    .CodeMirror-selected,
+    .CodeMirror-focused .CodeMirror-selected {
+      background: rgba(125, 107, 138, 0.15) !important;
+    }
+
+    .CodeMirror-activeline-background {
+      background: rgba(125, 107, 138, 0.06) !important;
+    }
+
+    .cm-s-default .cm-atom {
+      color: var(--purple);
+    }
+
+    .cm-s-default .cm-number {
+      color: var(--pink);
+    }
+
+    .cm-s-default .cm-string {
+      color: #6a7d5a;
+    }
+
+    .cm-s-default .cm-keyword {
+      color: var(--purple);
+    }
+
+    .cm-s-default .cm-meta {
+      color: var(--pink);
+    }
+
+    .cm-s-default .cm-comment {
+      color: var(--earth);
+    }
+
+    .preview-panel {
+      flex: 1;
+      overflow: auto;
+      background: var(--oatmeal);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1.5rem;
+      gap: 1rem;
+    }
+
+    .preview-panel .page {
+      background: #fff;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+      border: 1px solid var(--earth);
+      max-width: 100%;
+    }
+
+    .preview-panel .page svg {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+
+    .status-bar {
+      background: var(--charcoal);
+      color: var(--earth);
+      padding: 0.25rem 1.2rem;
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .status-bar.error {
+      color: var(--pink);
+    }
+
+    .status-bar.compiling {
+      color: var(--earth);
+    }
+
+    .status-bar.ready {
+      color: #8a9a7d;
+    }
+
+    .loading-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(44, 44, 44, 0.94);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--linen);
+      z-index: 100;
+      gap: 1rem;
+    }
+
+    .loading-overlay .spinner {
+      width: 32px;
+      height: 32px;
+      border: 2px solid rgba(255, 255, 255, 0.15);
+      border-top-color: var(--pink);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .loading-overlay p {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--earth);
+    }
+
+    @media (max-width: 768px) {
+      .main-container {
+        flex-direction: column;
+      }
+
+      .editor-panel {
+        width: 100%;
+        min-width: 0;
+        height: 45%;
+        border-right: none;
+        border-bottom: 1px solid var(--earth);
+      }
+
+      .preview-panel {
+        padding: 1rem;
+      }
+
+      .tabs {
+        flex-wrap: wrap;
+      }
+
+      .tab {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.62rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="loading-overlay" id="loading-overlay">
+    <div class="spinner"></div>
+    <p>initializing typst compiler...</p>
+  </div>
+
+  <header>
+    <div>
+      <h1>Resume Compiler</h1>
+      <div class="subtitle">yaml + typst // pdf generator</div>
+    </div>
+    <div class="header-actions">
+      <button id="btn-download" disabled>Download PDF</button>
+      <button id="btn-reset">Reset to Defaults</button>
+    </div>
+  </header>
+
+  <div class="main-container">
+    <div class="editor-panel">
+      <div class="tabs">
+        <div class="tab active" data-tab="resume">Resume (YAML)</div>
+        <div class="tab" data-tab="config">Config (YAML)</div>
+        <div class="tab" data-tab="bib">Publications (BibTeX)</div>
+        <div class="tab-actions">
+          <button id="btn-upload" title="Upload file">Upload</button>
+          <input type="file" id="file-input" accept=".yml,.yaml,.bib,.txt" style="display:none">
+        </div>
+      </div>
+      <div class="editor-wrapper">
+        <div class="cm-container" id="cm-resume"></div>
+        <div class="cm-container hidden" id="cm-config"></div>
+        <div class="cm-container hidden" id="cm-bib"></div>
+      </div>
+    </div>
+    <div class="preview-panel" id="preview"></div>
+  </div>
+
+  <div class="status-bar" id="status-bar">Loading...</div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/mode/yaml/yaml.min.js"></script>
+
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@myriaddreamin/typst-all-in-one.ts@0.6.0/dist/esm/index.js"
+    id="typst">
+    </script>
+
+  <script type="module">
+
+    const DEFAULT_RESUME_YAML = `personal:
+  name: Your Name
+  email: your.email@example.com
+  url: https://yourwebsite.com
+  titles:
+    - Your Title
+
+work:
+  - organization: Company Name
+    url: https://company.com
+    positions:
+      - position: Your Role
+        startDate: 2024-01-01
+        endDate: present
+        highlights:
+          - "Describe your accomplishment here"
+
+education:
+  - institution: University Name
+    location: City, State
+    studyType: B.S.
+    area: Your Major
+    startDate: 2020-09-01
+    endDate: 2024-05-01
+
+skills:
+  - category: Technical Skills
+    skills:
+      - Skill 1
+      - Skill 2
+      - Skill 3
+`;
+
+    const DEFAULT_CONFIG_YAML = `variant: long
+fonts:
+  heading_font: "New Computer Modern"
+  body_font: "New Computer Modern"
+  font_size: 11pt
+  name_font_size: 2.25em
+  section_font_size: 1em
+layout:
+  margin: 0.5in
+  line_spacing: 0.65em
+  list_spacing: 0.65em
+  section_spacing: 0.8em
+styling:
+  section_smallcaps: true
+visibility:
+  show_location: false
+  show_phone: true
+  show_interests_summary: false
+  show_languages: true
+  show_interests: false
+  show_references: false
+section_titles:
+  work: "Experience"
+  education: "Education"
+  publications: "Publications"
+  projects: "Projects"
+  awards: "Honors and Awards"
+  skills: "Skills"
+section_order:
+  - work
+  - education
+  - skills
+`;
+
+    const DEFAULT_BIB = `@article{example2024,
+  title={Your Paper Title},
+  author={Last, First and Other, Author},
+  journal={Conference or Journal Name},
+  year={2024},
+  url={https://example.com/paper.pdf}
+}
+`;
+
+    const FALLBACK_TEMPLATE = `// ============================================================================
+// TYPST RESUME TEMPLATE - Highly Configurable YAML-Based Resume System
+// ============================================================================
+// This template provides modular, reusable functions for rendering resumes
+// from YAML data. It's designed to be flexible and easy to customize.
+//
+// Based on concepts from NNJR and imprecv templates, adapted for maximum
+// configurability and ATS-friendliness.
+// ============================================================================
+
+// ============================================================================
+// HELPER FUNCTIONS
+// ============================================================================
+
+// Filter items based on resume variant (long/short)
+#let filter_by_variant(items, variant) = {
+  if variant == "long" {
+    return items
+  }
+
+  // For short variant, filter items
+  items.filter(item => {
+    // Include item if:
+    // 1. No include_short field (default to include)
+    // 2. include_short is explicitly true
+    let should_include = item.at("include_short", default: true)
+    should_include == true
+  })
+}
+
+// Format month number to month name
+#let month_name(n, display: "short") = {
+  n = int(n)
+  let months = (
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  )
+
+  if n >= 1 and n <= 12 {
+    let month = months.at(n - 1)
+    if display == "short" {
+      month.slice(0, 3)
+    } else {
+      month
+    }
+  } else {
+    none
+  }
+}
+
+// Parse ISO date string (YYYY-MM-DD) to formatted date
+#let parse_date(date_str) = {
+  if date_str == none or date_str == "" {
+    return none
+  }
+
+  let date_lower = lower(str(date_str))
+  if date_lower == "present" {
+    return "Present"
+  }
+
+  // Parse YYYY-MM-DD format
+  let year = int(date_str.slice(0, 4))
+  let month = int(date_str.slice(5, 7))
+  let month_str = month_name(month, display: "short")
+
+  return month_str + " " + str(year)
+}
+
+// Format date range
+#let date_range(start_date, end_date) = {
+  let start = parse_date(start_date)
+  let end = parse_date(end_date)
+
+  if start != none and end != none {
+    [#start #sym.dash.en #end]
+  } else if start != none {
+    [#start]
+  } else if end != none {
+    [#end]
+  } else {
+    []
+  }
+}
+
+// ============================================================================
+// DOCUMENT SETUP FUNCTIONS
+// ============================================================================
+
+// Apply document-wide settings
+#let apply_settings(config, doc) = {
+  set page(
+    paper: "us-letter",
+    margin: config.at("margin", default: 0.5in),
+  )
+
+  set text(
+    font: config.at("body_font", default: "New Computer Modern"),
+    size: config.at("font_size", default: 11pt),
+    hyphenate: false,
+  )
+
+  set par(
+    leading: config.at("line_spacing", default: 0.65em),
+    justify: true,
+  )
+
+  set list(
+    indent: 1em,
+    spacing: config.at("list_spacing", default: 0.65em),
+    marker: [•],
+  )
+
+  // Show rules for links
+  show link: it => {
+    text(fill: rgb("#0b61a4"), it)
+  }
+
+  doc
+}
+
+// Apply heading styles
+#let apply_heading_styles(config, doc) = {
+  // Main name heading (level 1)
+  show heading.where(level: 1): it => block(width: 100%)[
+    #set text(
+      font: config.at("heading_font", default: "New Computer Modern"),
+      size: config.at("name_font_size", default: 2.25em),
+      weight: "bold"
+    )
+    #it.body
+  ]
+
+  // Section headings (level 2)
+  show heading.where(level: 2): it => block(breakable: false, width: 100%)[
+    #v(config.at("section_spacing", default: 0.8em))
+    #set text(
+      font: config.at("heading_font", default: "New Computer Modern"),
+      size: config.at("section_font_size", default: 1em),
+      weight: "bold"
+    )
+    #if config.at("section_smallcaps", default: true) {
+      smallcaps(it.body)
+    } else {
+      upper(it.body)
+    }
+    #v(-0.4em)
+    #line(length: 100%, stroke: 1pt + black)
+  ]
+
+  doc
+}
+
+// ============================================================================
+// HEADER / CONTACT INFORMATION
+// ============================================================================
+
+#let render_header(data, config) = {
+  let personal = data.at("personal", default: none)
+  if personal == none {
+    return
+  }
+
+  align(center)[
+    // Name
+    = #personal.name
+
+    #v(-0.5em)
+
+    // Titles (if present)
+    #if "titles" in personal and personal.titles != none and personal.titles.len() > 0 {
+      block[
+        #set text(size: 0.95em, weight: "medium")
+        #personal.titles.join(" | ")
+      ]
+      v(-0.3em)
+    }
+
+    // Location (if present and config allows)
+    #if config.at("show_location", default: true) {
+      if "location" in personal and personal.location != none {
+        let loc = personal.location
+        let parts = ()
+        if "city" in loc and loc.city != none and loc.city != "" { parts.push(loc.city) }
+        if "region" in loc and loc.region != none and loc.region != "" { parts.push(loc.region) }
+        if "country" in loc and loc.country != none and loc.country != "" { parts.push(loc.country) }
+        if parts.len() > 0 {
+          block[
+            #set text(size: 0.9em)
+            #parts.join(", ")
+          ]
+          v(-0.3em)
+        }
+      }
+    }
+
+    // Contact information
+    #block[
+      #set text(size: 0.95em)
+      #let contacts = ()
+
+      // Email
+      #if "email" in personal and personal.email != none {
+        contacts.push(box[#link("mailto:" + personal.email)[#personal.email]])
+      }
+
+      // Phone (if config allows)
+      #if config.at("show_phone", default: true) {
+        if "phone" in personal and personal.phone != none {
+          contacts.push(box[#link("tel:" + personal.phone)[#personal.phone]])
+        }
+      }
+
+      // Website
+      #if "url" in personal and personal.url != none {
+        let display_url = personal.url.split("//").at(-1)
+        contacts.push(box[#link(personal.url)[#display_url]])
+      }
+
+      // Social profiles
+      #if "profiles" in personal and personal.profiles != none {
+        for profile in personal.profiles {
+          if "network" in profile and "username" in profile and profile.username != none {
+            contacts.push(box[#link(profile.url)[#profile.network: #profile.username]])
+          } else {
+            let display_url = profile.url.split("//").at(-1)
+            contacts.push(box[#link(profile.url)[#display_url]])
+          }
+        }
+      }
+
+      #contacts.join([  #sym.diamond.filled  ])
+    ]
+  ]
+
+  v(0.5em)
+}
+
+// ============================================================================
+// INTERESTS / SUMMARY SECTION
+// ============================================================================
+
+#let render_interests_summary(data, config) = {
+  if not config.at("show_interests_summary", default: false) {
+    return
+  }
+
+  if "interests_summary" in data and data.interests_summary != none {
+    block[
+      == Interests
+      #data.interests_summary
+    ]
+  }
+}
+
+// ============================================================================
+// WORK EXPERIENCE SECTION
+// ============================================================================
+
+#let render_work(data, config) = {
+  if "work" not in data or data.work == none or data.work.len() == 0 {
+    return
+  }
+
+  // Filter work entries by variant
+  let variant = config.at("variant", default: "long")
+  let work_items = filter_by_variant(data.work, variant)
+
+  if work_items.len() == 0 {
+    return
+  }
+
+  block[
+    == #config.at("work_title", default: "Experience")
+
+    #for work in work_items {
+      block(width: 100%, above: 0.5em, below: 0.3em)[
+        // Organization name and location
+        #grid(
+          columns: (1fr, auto),
+          align: (left, right),
+          {
+            if "url" in work and work.url != none {
+              strong(link(work.url)[#work.organization])
+            } else {
+              strong(work.organization)
+            }
+          },
+          {
+            if "location" in work and work.location != none {
+              strong(work.location)
+            }
+          }
+        )
+
+        // Positions within this organization
+        #if "positions" in work and work.positions != none {
+          let positions = filter_by_variant(work.positions, variant)
+          for position in positions {
+            v(0.4em)
+
+            // Position title and date range
+            grid(
+              columns: (1fr, auto),
+              align: (left, right),
+              [
+                #text(style: "italic")[#position.position]
+              ],
+              [
+                #date_range(position.at("startDate", default: none), position.at("endDate", default: none))
+              ]
+            )
+
+            // Highlights/responsibilities
+            if "highlights" in position and position.highlights != none and position.highlights.len() > 0 {
+              for highlight in position.highlights {
+                [- #highlight]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
+
+// ============================================================================
+// EDUCATION SECTION
+// ============================================================================
+
+#let render_education(data, config) = {
+  if "education" not in data or data.education == none or data.education.len() == 0 {
+    return
+  }
+
+  // Filter education entries by variant
+  let variant = config.at("variant", default: "long")
+  let edu_items = filter_by_variant(data.education, variant)
+
+  if edu_items.len() == 0 {
+    return
+  }
+
+  block[
+    == #config.at("education_title", default: "Education")
+
+    #for edu in edu_items {
+      block(width: 100%, above: 0.5em, below: 0.3em)[
+        // Institution name and location
+        #grid(
+          columns: (1fr, auto),
+          align: (left, right),
+          {
+            if "url" in edu and edu.url != none {
+              strong(link(edu.url)[#edu.institution])
+            } else {
+              strong(edu.institution)
+            }
+          },
+          {
+            if "location" in edu and edu.location != none {
+              strong(edu.location)
+            }
+          }
+        )
+
+        // Degree and date range
+        #grid(
+          columns: (1fr, auto),
+          align: (left, right),
+          [
+            #text(style: "italic")[
+              #if "studyType" in edu and edu.studyType != none {
+                edu.studyType
+              }
+              #if "area" in edu and edu.area != none {
+                [ in #edu.area]
+              }
+            ]
+          ],
+          [
+            #date_range(edu.at("startDate", default: none), edu.at("endDate", default: none))
+          ]
+        )
+
+        // Honors
+        #if "honors" in edu and edu.honors != none and edu.honors.len() > 0 {
+          [- #strong[Honors]: #edu.honors.join(", ")]
+        }
+
+        // Courses
+        #if "courses" in edu and edu.courses != none and edu.courses.len() > 0 {
+          [- #strong[Coursework]: #edu.courses.join(", ")]
+        }
+
+        // Additional highlights
+        #if "highlights" in edu and edu.highlights != none and edu.highlights.len() > 0 {
+          for highlight in edu.highlights {
+            [- #highlight]
+          }
+        }
+      ]
+    }
+  ]
+}
+
+// ============================================================================
+// PUBLICATIONS SECTION (WITH BIBTEX SUPPORT)
+// ============================================================================
+
+// Format publication from BibTeX entry using Typst's built-in bibliography
+// This is a helper that formats a single BibTeX entry
+#let format_bib_entry(bib_key, bib_file, style: "ieee", extra_links: ()) = {
+  // Return a formatted citation with extra links
+  // Note: This uses Typst's citation feature
+  [
+    #cite(label(bib_key), form: "full", style: style)
+    #if extra_links.len() > 0 {
+      [ \\ ]
+      for link_info in extra_links {
+        if "label" in link_info and "url" in link_info {
+          [[#link(link_info.url)[#link_info.label]]]
+          if link_info != extra_links.last() {
+            [ | ]
+          }
+        }
+      }
+    }
+  ]
+}
+
+#let render_publications(data, config) = {
+  if "publications" not in data or data.publications == none or data.publications.len() == 0 {
+    return
+  }
+
+  // Filter publications by variant
+  let variant = config.at("variant", default: "long")
+  let pub_items = filter_by_variant(data.publications, variant)
+
+  if pub_items.len() == 0 {
+    return
+  }
+
+  block[
+    == #config.at("publications_title", default: "Publications")
+
+    #for pub in pub_items {
+      // Check if this is a BibTeX reference or YAML entry
+      if "bib_key" in pub {
+        // BibTeX entry: use formatted citation
+        let extra_links = pub.at("links", default: ())
+
+        block(width: 100%, above: 0.6em, below: 0.6em)[
+          // Format: Citation + extra links (code, data, etc.)
+          #cite(label(pub.bib_key), form: "full")
+
+          // Add extra links if present
+          #if extra_links.len() > 0 {
+            [ \\ ]
+            let link_parts = ()
+            for link_info in extra_links {
+              if "label" in link_info and "url" in link_info {
+                link_parts.push(link(link_info.url)[#link_info.label])
+              }
+            }
+            [[#link_parts.join([ | ])]]
+          }
+        ]
+      } else {
+        // YAML entry: use manual formatting (original behavior)
+        block(width: 100%, above: 0.3em, below: 0.1em)[
+          // Publication title
+          #{
+            if "url" in pub and pub.url != none {
+              strong(link(pub.url)[#pub.name])
+            } else {
+              strong(pub.name)
+            }
+          }
+
+          // Authors (if present)
+          #if "authors" in pub and pub.authors != none {
+            [ \\ #pub.authors]
+          }
+
+          // Venue and date
+          #if "publisher" in pub and pub.publisher != none {
+            [ \\ #emph(pub.publisher)]
+          }
+          #if "releaseDate" in pub and pub.releaseDate != none {
+            let date = parse_date(pub.releaseDate)
+            if date != none {
+              [, #date]
+            }
+          }
+
+          // Status (for submitted/in-progress works)
+          #if "status" in pub and pub.status != none {
+            if "publisher" not in pub or pub.publisher == none {
+              [ \\ #emph[#pub.status]]
+            } else {
+              [ (#pub.status)]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
+
+// ============================================================================
+// PROJECTS SECTION
+// ============================================================================
+
+#let render_projects(data, config) = {
+  if "projects" not in data or data.projects == none or data.projects.len() == 0 {
+    return
+  }
+
+  // Filter projects by variant
+  let variant = config.at("variant", default: "long")
+  let project_items = filter_by_variant(data.projects, variant)
+
+  if project_items.len() == 0 {
+    return
+  }
+
+  block[
+    == #config.at("projects_title", default: "Projects")
+
+    #for project in project_items {
+      block(width: 100%, above: 0.7em, below: 0.7em)[
+        // Project name and date
+        #grid(
+          columns: (1fr, auto),
+          align: (left, right),
+          {
+            if "url" in project and project.url != none {
+              strong(link(project.url)[#project.name])
+            } else {
+              strong(project.name)
+            }
+          },
+          [
+            #date_range(project.at("startDate", default: none), project.at("endDate", default: none))
+          ]
+        )
+
+        // Affiliation/organization
+        #if "affiliation" in project and project.affiliation != none {
+          text(style: "italic")[#project.affiliation]
+        }
+
+        // Highlights/description
+        #if "highlights" in project and project.highlights != none and project.highlights.len() > 0 {
+          for highlight in project.highlights {
+            [- #highlight]
+          }
+        }
+      ]
+    }
+  ]
+}
+
+// ============================================================================
+// AWARDS AND HONORS SECTION
+// ============================================================================
+
+#let render_awards(data, config) = {
+  if "awards" not in data or data.awards == none or data.awards.len() == 0 {
+    return
+  }
+
+  // Filter awards by variant
+  let variant = config.at("variant", default: "long")
+  let award_items = filter_by_variant(data.awards, variant)
+
+  if award_items.len() == 0 {
+    return
+  }
+
+  block[
+    == #config.at("awards_title", default: "Honors and Awards")
+
+    #for award in award_items {
+      block(width: 100%, above: 0.3em, below: 0.1em)[
+        // Award title and location
+        #grid(
+          columns: (1fr, auto),
+          align: (left, right),
+          {
+            if "url" in award and award.url != none {
+              strong(link(award.url)[#award.title])
+            } else {
+              strong(award.title)
+            }
+          },
+          {
+            if "location" in award and award.location != none {
+              strong(award.location)
+            }
+          }
+        )
+
+        // Issuer and date
+        #if "issuer" in award and award.issuer != none {
+          [Issued by #emph(award.issuer)]
+        }
+        #if "date" in award and award.date != none {
+          let date = parse_date(award.date)
+          if date != none {
+            [ #h(1fr) #date]
+          }
+        }
+
+        // Additional highlights
+        #if "highlights" in award and award.highlights != none and award.highlights.len() > 0 {
+          for highlight in award.highlights {
+            [- #highlight]
+          }
+        }
+      ]
+    }
+  ]
+}
+
+// ============================================================================
+// SKILLS SECTION
+// ============================================================================
+
+#let render_skills(data, config) = {
+  if "skills" not in data or data.skills == none or data.skills.len() == 0 {
+    return
+  }
+
+  block[
+    == #config.at("skills_title", default: "Skills")
+
+    #for skill_group in data.skills {
+      block(above: 0.5em)[
+        #set text(size: 0.95em)
+        #strong(skill_group.category): #skill_group.skills.join(", ")
+      ]
+    }
+  ]
+}
+
+// ============================================================================
+// LANGUAGES SECTION
+// ============================================================================
+
+#let render_languages(data, config) = {
+  if "languages" not in data or data.languages == none or data.languages.len() == 0 {
+    return
+  }
+
+  if not config.at("show_languages", default: true) {
+    return
+  }
+
+  block[
+    == #config.at("languages_title", default: "Languages")
+
+    #let lang_list = ()
+    #for lang in data.languages {
+      lang_list.push([#lang.language (#lang.fluency)])
+    }
+
+    #lang_list.join(", ")
+  ]
+}
+
+// ============================================================================
+// INTERESTS SECTION (as list)
+// ============================================================================
+
+#let render_interests(data, config) = {
+  if "interests" not in data or data.interests == none or data.interests.len() == 0 {
+    return
+  }
+
+  if not config.at("show_interests", default: true) {
+    return
+  }
+
+  block[
+    == #config.at("interests_title", default: "Interests")
+
+    #data.interests.join(", ")
+  ]
+}
+
+// ============================================================================
+// REFERENCES SECTION
+// ============================================================================
+
+#let render_references(data, config) = {
+  if "references" not in data or data.references == none or data.references.len() == 0 {
+    return
+  }
+
+  if not config.at("show_references", default: false) {
+    return
+  }
+
+  block[
+    == #config.at("references_title", default: "References")
+
+    #for ref in data.references {
+      block(width: 100%, above: 0.6em)[
+        #if "url" in ref and ref.url != none {
+          [- #strong(link(ref.url)[#ref.name]): "#ref.reference"]
+        } else {
+          [- #strong(ref.name): "#ref.reference"]
+        }
+      ]
+    }
+  ]
+}
+
+// ============================================================================
+// CONFIG MANAGEMENT
+// ============================================================================
+
+// Flatten nested YAML config into flat config dictionary
+#let flatten_config(yaml_config) = {
+  let flat = (:)
+
+  // Variant
+  if "variant" in yaml_config {
+    flat.insert("variant", yaml_config.variant)
+  }
+
+  // Fonts
+  if "fonts" in yaml_config {
+    let fonts = yaml_config.fonts
+    if "heading_font" in fonts { flat.insert("heading_font", fonts.heading_font) }
+    if "body_font" in fonts { flat.insert("body_font", fonts.body_font) }
+    if "font_size" in fonts { flat.insert("font_size", eval(str(fonts.font_size))) }
+    if "name_font_size" in fonts { flat.insert("name_font_size", eval(str(fonts.name_font_size))) }
+    if "section_font_size" in fonts { flat.insert("section_font_size", eval(str(fonts.section_font_size))) }
+  }
+
+  // Layout
+  if "layout" in yaml_config {
+    let layout = yaml_config.layout
+    if "margin" in layout { flat.insert("margin", eval(str(layout.margin))) }
+    if "line_spacing" in layout { flat.insert("line_spacing", eval(str(layout.line_spacing))) }
+    if "list_spacing" in layout { flat.insert("list_spacing", eval(str(layout.list_spacing))) }
+    if "section_spacing" in layout { flat.insert("section_spacing", eval(str(layout.section_spacing))) }
+  }
+
+  // Styling
+  if "styling" in yaml_config {
+    let styling = yaml_config.styling
+    if "section_smallcaps" in styling { flat.insert("section_smallcaps", styling.section_smallcaps) }
+  }
+
+  // Visibility
+  if "visibility" in yaml_config {
+    let visibility = yaml_config.visibility
+    if "show_location" in visibility { flat.insert("show_location", visibility.show_location) }
+    if "show_phone" in visibility { flat.insert("show_phone", visibility.show_phone) }
+    if "show_interests_summary" in visibility { flat.insert("show_interests_summary", visibility.show_interests_summary) }
+    if "show_languages" in visibility { flat.insert("show_languages", visibility.show_languages) }
+    if "show_interests" in visibility { flat.insert("show_interests", visibility.show_interests) }
+    if "show_references" in visibility { flat.insert("show_references", visibility.show_references) }
+  }
+
+  // Section titles
+  if "section_titles" in yaml_config {
+    let titles = yaml_config.section_titles
+    if "work" in titles { flat.insert("work_title", titles.work) }
+    if "education" in titles { flat.insert("education_title", titles.education) }
+    if "publications" in titles { flat.insert("publications_title", titles.publications) }
+    if "projects" in titles { flat.insert("projects_title", titles.projects) }
+    if "awards" in titles { flat.insert("awards_title", titles.awards) }
+    if "skills" in titles { flat.insert("skills_title", titles.skills) }
+    if "languages" in titles { flat.insert("languages_title", titles.languages) }
+    if "interests" in titles { flat.insert("interests_title", titles.interests) }
+    if "references" in titles { flat.insert("references_title", titles.references) }
+  }
+
+  // Section order
+  if "section_order" in yaml_config {
+    flat.insert("section_order", yaml_config.section_order)
+  }
+
+  return flat
+}
+
+// Load config from YAML file and merge with provided config
+#let load_config(config_file: none, inline_config: (:)) = {
+  // Start with file config as base
+  let final_config = (:)
+
+  // If config file specified, load it as base
+  if config_file != none {
+    let yaml_config = yaml(config_file)
+    final_config = flatten_config(yaml_config)
+  }
+
+  // Merge inline_config on top (takes precedence)
+  for (key, value) in inline_config {
+    final_config.insert(key, value)
+  }
+
+  return final_config
+}
+
+// ============================================================================
+// MAIN RESUME BUILDER FUNCTION
+// ============================================================================
+
+#let build_resume(data, config, config_file: none, bib_file: none) = {
+  // Load and merge config from file if provided
+  let merged_config = load_config(config_file: config_file, inline_config: config)
+  let config = merged_config
+
+  // Store bib_file in config if provided
+  if bib_file != none {
+    config.insert("bib_file", bib_file)
+  }
+
+  // Apply document settings
+  show: doc => apply_settings(config, doc)
+  show: doc => apply_heading_styles(config, doc)
+
+  // If bib_file is specified, set up bibliography (hidden, only for citations)
+  if bib_file != none {
+    show bibliography: none  // Hide default bibliography section
+    bibliography(bib_file, style: config.at("bib_style", default: "ieee"))
+  }
+
+  // Render header
+  render_header(data, config)
+
+  // Render sections in configured order
+  let section_order = config.at("section_order", default: (
+    "interests_summary",
+    "work",
+    "education",
+    "publications",
+    "projects",
+    "awards",
+    "skills",
+    "languages",
+    "interests",
+    "references",
+  ))
+
+  for section in section_order {
+    if section == "interests_summary" { render_interests_summary(data, config) }
+    else if section == "work" { render_work(data, config) }
+    else if section == "education" { render_education(data, config) }
+    else if section == "publications" { render_publications(data, config) }
+    else if section == "projects" { render_projects(data, config) }
+    else if section == "awards" { render_awards(data, config) }
+    else if section == "skills" { render_skills(data, config) }
+    else if section == "languages" { render_languages(data, config) }
+    else if section == "interests" { render_interests(data, config) }
+    else if section == "references" { render_references(data, config) }
+  }
+}
+`;
+
+    const LS_RESUME = 'resume_compiler_resume_yaml';
+    const LS_CONFIG = 'resume_compiler_config_yaml';
+    const LS_BIB = 'resume_compiler_publications_bib';
+
+    const preview = document.getElementById('preview');
+    const statusBar = document.getElementById('status-bar');
+    const btnDownload = document.getElementById('btn-download');
+    const btnReset = document.getElementById('btn-reset');
+    const overlay = document.getElementById('loading-overlay');
+
+    const cmResume = CodeMirror(document.getElementById('cm-resume'), {
+      mode: 'yaml',
+      lineNumbers: true,
+      tabSize: 2,
+      indentWithTabs: false,
+      lineWrapping: true,
+    });
+
+    const cmConfig = CodeMirror(document.getElementById('cm-config'), {
+      mode: 'yaml',
+      lineNumbers: true,
+      tabSize: 2,
+      indentWithTabs: false,
+      lineWrapping: true,
+    });
+
+    const cmBib = CodeMirror(document.getElementById('cm-bib'), {
+      mode: null,
+      lineNumbers: true,
+      tabSize: 2,
+      lineWrapping: true,
+    });
+
+    let activeTab = 'resume';
+    const editors = { resume: cmResume, config: cmConfig, bib: cmBib };
+    const containers = {
+      resume: document.getElementById('cm-resume'),
+      config: document.getElementById('cm-config'),
+      bib: document.getElementById('cm-bib'),
+    };
+
+    let templateContent = '';
+    let compileTimeout = null;
+    let ready = false;
+
+    function setStatus(text, level) {
+      statusBar.textContent = text;
+      statusBar.className = 'status-bar' + (level ? ' ' + level : '');
+    }
+
+    const tabs = document.querySelectorAll('.tab[data-tab]');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        activeTab = tab.dataset.tab;
+        Object.entries(containers).forEach(([key, el]) => {
+          el.classList.toggle('hidden', key !== activeTab);
+        });
+        editors[activeTab].refresh();
+      });
+    });
+
+    const btnUpload = document.getElementById('btn-upload');
+    const fileInput = document.getElementById('file-input');
+    btnUpload.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        editors[activeTab].setValue(ev.target.result);
+        scheduleCompile();
+      };
+      reader.readAsText(file);
+      fileInput.value = '';
+    });
+
+    function scheduleCompile() {
+      if (compileTimeout) clearTimeout(compileTimeout);
+      compileTimeout = setTimeout(compile, 600);
+    }
+
+    cmResume.on('change', scheduleCompile);
+    cmConfig.on('change', scheduleCompile);
+    cmBib.on('change', scheduleCompile);
+
+    function getMainContent() {
+      const bibContent = cmBib.getValue().trim();
+      if (bibContent) {
+        return `#import "/template.typ": build_resume\n#let resume_data = yaml("/resume.yml")\n#build_resume(resume_data, (:), config_file: "/config.yml", bib_file: "/publications.bib")`;
+      }
+      return `#import "/template.typ": build_resume\n#let resume_data = yaml("/resume.yml")\n#build_resume(resume_data, (:), config_file: "/config.yml")`;
+    }
+
+    async function compile() {
+      if (!ready) return;
+
+      setStatus('Compiling...', 'compiling');
+
+      try {
+        await $typst.addSource('/template.typ', templateContent);
+        await $typst.addSource('/resume.yml', cmResume.getValue());
+        await $typst.addSource('/config.yml', cmConfig.getValue());
+
+        const bibContent = cmBib.getValue().trim();
+        if (bibContent) {
+          await $typst.addSource('/publications.bib', bibContent);
+        }
+
+        const mainContent = getMainContent();
+        const result = await $typst.svg({ mainContent });
+
+        preview.innerHTML = '';
+
+        if (typeof result === 'string') {
+          const page = document.createElement('div');
+          page.className = 'page';
+          page.innerHTML = result;
+          preview.appendChild(page);
+        } else if (Array.isArray(result)) {
+          result.forEach(pageSvg => {
+            const page = document.createElement('div');
+            page.className = 'page';
+            page.innerHTML = pageSvg;
+            preview.appendChild(page);
+          });
+        }
+
+        localStorage.setItem(LS_RESUME, cmResume.getValue());
+        localStorage.setItem(LS_CONFIG, cmConfig.getValue());
+        localStorage.setItem(LS_BIB, cmBib.getValue());
+
+        setStatus('Ready', 'ready');
+      } catch (err) {
+        setStatus('Error: ' + err.message, 'error');
+      }
+    }
+
+    btnDownload.addEventListener('click', async () => {
+      if (!ready) return;
+      btnDownload.disabled = true;
+      setStatus('Generating PDF...', 'compiling');
+
+      try {
+        await $typst.addSource('/template.typ', templateContent);
+        await $typst.addSource('/resume.yml', cmResume.getValue());
+        await $typst.addSource('/config.yml', cmConfig.getValue());
+
+        const bibContent = cmBib.getValue().trim();
+        if (bibContent) {
+          await $typst.addSource('/publications.bib', bibContent);
+        }
+
+        const mainContent = getMainContent();
+        const pdfData = await $typst.pdf({ mainContent });
+        const blob = new Blob([pdfData], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'resume.pdf';
+        a.click();
+        URL.revokeObjectURL(url);
+        setStatus('Ready', 'ready');
+      } catch (err) {
+        setStatus('PDF error: ' + err.message, 'error');
+      } finally {
+        btnDownload.disabled = false;
+      }
+    });
+
+    btnReset.addEventListener('click', () => {
+      if (!confirm('Reset all editors to defaults? Your changes will be lost.')) return;
+      localStorage.removeItem(LS_RESUME);
+      localStorage.removeItem(LS_CONFIG);
+      localStorage.removeItem(LS_BIB);
+      location.reload();
+    });
+
+    async function fetchText(url) {
+      const resp = await fetch(url);
+      if (!resp.ok) throw new Error(`Failed to fetch ${url}: ${resp.status}`);
+      return resp.text();
+    }
+
+    async function loadDefaults() {
+      let resumeYaml = DEFAULT_RESUME_YAML;
+      let configYaml = DEFAULT_CONFIG_YAML;
+      let bibContent = DEFAULT_BIB;
+      templateContent = FALLBACK_TEMPLATE;
+
+      try { templateContent = await fetchText('./template.typ'); } catch (e) { }
+      try { resumeYaml = await fetchText('./default-resume.yml'); } catch (e) { }
+      try { configYaml = await fetchText('./default-config.yml'); } catch (e) { }
+
+      return { resumeYaml, configYaml, bibContent };
+    }
+
+    async function init() {
+      setStatus('Loading defaults...', '');
+      const defaults = await loadDefaults();
+
+      cmResume.setValue(localStorage.getItem(LS_RESUME) || defaults.resumeYaml);
+      cmConfig.setValue(localStorage.getItem(LS_CONFIG) || defaults.configYaml);
+      cmBib.setValue(localStorage.getItem(LS_BIB) || defaults.bibContent);
+
+      const typstScript = document.getElementById('typst');
+
+      function tryInit() {
+        if (typeof globalThis.$typst !== 'undefined') {
+          initTypst();
+        } else {
+          setTimeout(tryInit, 200);
+        }
+      }
+
+      if (typstScript.complete || typeof globalThis.$typst !== 'undefined') {
+        setTimeout(tryInit, 100);
+      } else {
+        typstScript.addEventListener('load', () => setTimeout(tryInit, 100));
+      }
+    }
+
+    async function initTypst() {
+      try {
+        ready = true;
+        overlay.style.display = 'none';
+        btnDownload.disabled = false;
+        setStatus('Ready', 'ready');
+        compile();
+      } catch (err) {
+        overlay.querySelector('p').textContent = 'Failed: ' + err.message;
+        setStatus('Init failed: ' + err.message, 'error');
+      }
+    }
+
+    init();
+
+  </script>
+</body>
+
+</html>

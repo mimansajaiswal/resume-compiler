@@ -1,14 +1,13 @@
 # ==============================================================================
 # RESUME CONFIGURATION
 # ==============================================================================
-# This file contains all configuration options for your resume.
-# Settings here override defaults in resume.typ
+# All settings here override defaults in template.typ
 # ==============================================================================
 
 # ------------------------------------------------------------------------------
 # RESUME VARIANT
 # ------------------------------------------------------------------------------
-variant: long  # Options: "long" or "short"
+variant: long # Options: "long" or "short"
 
 # ------------------------------------------------------------------------------
 # FONTS AND SIZES
@@ -16,8 +15,8 @@ variant: long  # Options: "long" or "short"
 fonts:
   heading_font: "New Computer Modern"
   body_font: "New Computer Modern"
-  font_size: 11pt
-  name_font_size: 2.25em
+  font_size: 10pt
+  name_font_size: 1.8em
   section_font_size: 1em
 
 # ------------------------------------------------------------------------------
@@ -25,32 +24,38 @@ fonts:
 # ------------------------------------------------------------------------------
 layout:
   margin: 0.5in
-  line_spacing: 0.65em
-  list_spacing: 0.65em
-  section_spacing: 0.8em
+  line_spacing: 0.5em # Space between lines of text
+  list_spacing: 0.4em # Space between bullet items
+  section_spacing: 0.6em # Space before section headings
+  post_section_spacing: 0.15em # Space after section heading line
+  entry_spacing: 0.4em # Space between entries (jobs, schools, etc.)
+  entry_inner_spacing: 0.15em # Space within an entry (title to bullets)
+  pub_spacing: 0.5em # Space between publication entries
+  skill_spacing: 0.15em # Space between skill groups
+  header_bottom_spacing: 0.2em # Space below the header
 
 # ------------------------------------------------------------------------------
 # STYLING
 # ------------------------------------------------------------------------------
 styling:
-  section_smallcaps: true  # Use small caps for section headings
+  section_smallcaps: true
+  contact_font_size: 0.85em
+  summary_font_size: 0.92em
 
 # ------------------------------------------------------------------------------
 # VISIBILITY TOGGLES
 # ------------------------------------------------------------------------------
-# Control what information to show/hide
 visibility:
-  show_location: false          # Show location in header
-  show_phone: true              # Show phone number
-  show_interests_summary: true  # Show interests paragraph at top
-  show_languages: true          # Show languages section
-  show_interests: false         # Show interests list at bottom
-  show_references: false        # Show references section
+  show_location: false
+  show_phone: true
+  show_interests_summary: true
+  show_languages: true
+  show_interests: false
+  show_references: false
 
 # ------------------------------------------------------------------------------
 # SECTION TITLES
 # ------------------------------------------------------------------------------
-# Customize section headings
 section_titles:
   work: "Experience"
   education: "Education"
@@ -60,13 +65,12 @@ section_titles:
   skills: "Skills"
   languages: "Languages"
   interests: "Interests"
+  interests_summary: "Interests"
   references: "References"
 
 # ------------------------------------------------------------------------------
 # SECTION ORDER
 # ------------------------------------------------------------------------------
-# Define which sections to show and in what order
-# Comment out or remove any section you don't want to display
 section_order:
   - interests_summary
   - work
@@ -75,6 +79,6 @@ section_order:
   - awards
   - skills
   - languages
-  # - projects       # Commented out = won't show
-  # - interests      # Commented out = won't show
-  # - references     # Commented out = won't show
+  # - projects
+  # - interests
+  # - references
