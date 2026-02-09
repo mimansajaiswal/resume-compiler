@@ -7,26 +7,55 @@ variant: short
 fonts:
   heading_font: "New Computer Modern"
   body_font: "New Computer Modern"
-  font_size: 10pt
+  font_size: 10.5pt
   name_font_size: 1.8em
   section_font_size: 1em
+  publications_font_size: 9.6pt
+  awards_font_size: 10pt
 
 layout:
   margin: 0.5in
-  line_spacing: 0.5em
-  list_spacing: 0.4em
-  section_spacing: 0.6em
-  post_section_spacing: 0.15em
-  entry_spacing: 0.4em
-  entry_inner_spacing: 0.15em
-  pub_spacing: 0.5em
-  skill_spacing: 0.15em
-  header_bottom_spacing: 0.2em
+  line_spacing: 0.76em
+  list_spacing: 0.2em
+  section_spacing: 0.46em
+  post_section_spacing: 0.2em
+  entry_spacing: 0.6em
+  entry_inner_spacing: 0.24em
+  work_entry_spacing: 0.48em
+  work_entry_inner_spacing: 0.22em
+  work_position_spacing: 0.24em
+  work_bullet_spacing: 0.2em
+  work_list_spacing: 0.2em
+  education_entry_spacing: 0.6em
+  education_entry_inner_spacing: 0.24em
+  education_honors_spacing: 0.22em
+  education_degree_spacing: 0.22em
+  education_courses_spacing: 0.2em
+  education_highlights_spacing: 0.22em
+  education_list_spacing: 0.16em
+  projects_entry_spacing: 0.38em
+  projects_entry_inner_spacing: 0.16em
+  awards_entry_spacing: 0.4em
+  awards_entry_inner_spacing: 0.18em
+  awards_highlights_spacing: 0.18em
+  awards_list_spacing: 0.18em
+  pub_spacing: 0.4em
+  publications_line_spacing: 0.72em
+  skill_spacing: 0.12em
+  header_bottom_spacing: 0.12em
+  last_updated_bottom_spacing: 0.18em
 
 styling:
   section_smallcaps: true
   contact_font_size: 0.85em
   summary_font_size: 0.92em
+  secondary_color: "#555555"
+  link_color: "#0b61a4"
+  section_rule_color: "#222222"
+  section_rule_thickness: 0.6pt
+  publications_link_style: "compact"
+  last_updated_font_size: 0.7em
+  last_updated_label: "Last Updated on"
 
 visibility:
   show_location: false
@@ -35,6 +64,7 @@ visibility:
   show_languages: false
   show_interests: false
   show_references: false
+  show_last_updated: true
 
 section_titles:
   work: "Experience"

@@ -39,9 +39,7 @@ jobs:
           cp template.typ dist/
           cp resume.yml dist/default-resume.yml
           cp config.yml dist/default-config.yml
-          cp config-short.yml dist/default-config-short.yml
           cp publications.bib dist/default-publications.bib
-          cp example.yml dist/default-example.yml
 
       - name: Setup Pages
         uses: actions/configure-pages@v5

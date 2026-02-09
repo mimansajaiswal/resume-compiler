@@ -1,16 +1,19 @@
 name: Upload Resume to Cloud Storage
 
-# This workflow demonstrates uploading to various cloud providers
-# Uncomment and configure the sections you need
+# This workflow demonstrates uploading to various cloud providers.
+# Uncomment and configure the provider block you need.
 
 on:
   push:
-    branches: [main, master]
+    branches:
+      - main
+      - master
     paths:
       - "**.yml"
       - "**.yaml"
       - "**.typ"
       - "**.bib"
+      - ".github/workflows/upload-to-cloud.yml"
   workflow_dispatch:
 
 jobs:
@@ -20,19 +23,30 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Compute stable last-updated date
+        id: resume_meta
+        shell: bash
+        run: |
+          LAST_UPDATED="$(git log -1 --date=format:'%B %-d, %Y' --format=%ad -- resume.yml || true)"
+          if [ -z "$LAST_UPDATED" ]; then
+            LAST_UPDATED="$(date '+%B %-d, %Y')"
+          fi
+          echo "last_updated=$LAST_UPDATED" >> "$GITHUB_OUTPUT"
 
       - name: Install Typst
         uses: typst-community/setup-typst@v3
 
-      - name: Build resume
+      - name: Build resume PDFs
         run: |
-          typst compile resume.typ resume.pdf
-          [ -f resume-short.typ ] && typst compile resume-short.typ resume-short.pdf || true
+          typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume.typ resume-long.pdf
+          typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume-short.typ resume-short.pdf
 
       # ============================================================================
       # OPTION 1: Upload to AWS S3
       # ============================================================================
-      # Uncomment and configure AWS credentials in repository secrets
       # - name: Configure AWS credentials
       #   uses: aws-actions/configure-aws-credentials@v4
       #   with:
@@ -42,23 +56,21 @@ jobs:
       #
       # - name: Upload to S3
       #   run: |
-      #     aws s3 cp resume.pdf s3://your-bucket-name/resume.pdf --acl public-read
-      #     aws s3 cp resume-short.pdf s3://your-bucket-name/resume-short.pdf --acl public-read || true
+      #     aws s3 cp resume-long.pdf s3://your-bucket-name/resume-long.pdf --acl public-read
+      #     aws s3 cp resume-short.pdf s3://your-bucket-name/resume-short.pdf --acl public-read
 
       # ============================================================================
       # OPTION 2: Upload to Cloudflare R2
       # ============================================================================
-      # Uncomment and configure R2 credentials in repository secrets
       # - name: Upload to Cloudflare R2
       #   uses: cloudflare/wrangler-action@v3
       #   with:
       #     apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      #     command: r2 object put your-bucket/resume.pdf --file=resume.pdf
+      #     command: r2 object put your-bucket/resume-long.pdf --file=resume-long.pdf
 
       # ============================================================================
       # OPTION 3: Upload to GitHub Pages
       # ============================================================================
-      # Uncomment to deploy to GitHub Pages
       # - name: Deploy to GitHub Pages
       #   uses: peaceiris/actions-gh-pages@v4
       #   with:
@@ -71,38 +83,22 @@ jobs:
       # ============================================================================
       # OPTION 4: Upload to Google Drive
       # ============================================================================
-      # Uncomment and use rclone with Google Drive credentials
       # - name: Upload to Google Drive
       #   run: |
-      #     # Install rclone
       #     curl https://rclone.org/install.sh | sudo bash
-      #
-      #     # Configure rclone (use secrets for credentials)
+      #     mkdir -p ~/.config/rclone
       #     echo "${{ secrets.RCLONE_CONFIG }}" > ~/.config/rclone/rclone.conf
-      #
-      #     # Upload files
-      #     rclone copy resume.pdf remote:your-folder/
+      #     rclone copy resume-long.pdf remote:your-folder/
+      #     rclone copy resume-short.pdf remote:your-folder/
 
       # ============================================================================
-      # EXAMPLE: Simple artifact upload (default enabled)
+      # Default enabled output: upload as GitHub artifact
       # ============================================================================
       - name: Upload as GitHub artifact
         uses: actions/upload-artifact@v4
         with:
           name: resume-pdfs-${{ github.sha }}
           path: |
-            resume.pdf
+            resume-long.pdf
             resume-short.pdf
           retention-days: 90
-
-      - name: Comment on PR with download link
-        if: github.event_name == 'pull_request'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: '📄 Resume PDFs have been generated! Download them from the [Actions artifacts](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})'
-            })

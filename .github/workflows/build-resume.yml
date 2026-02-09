@@ -2,7 +2,11 @@ name: Build Resume PDFs
 
 on:
   push:
-    branches: [main, master]
+    branches:
+      - main
+      - master
+    tags:
+      - "v*"
     paths:
       - "resume.yml"
       - "resume-bibtex.yml"
@@ -11,8 +15,11 @@ on:
       - "publications.bib"
       - "template.typ"
       - "*.typ"
+      - ".github/workflows/build-resume.yml"
   pull_request:
-    branches: [main, master]
+    branches:
+      - main
+      - master
   workflow_dispatch:
 
 permissions:
@@ -24,6 +31,18 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Compute stable last-updated date
+        id: resume_meta
+        shell: bash
+        run: |
+          LAST_UPDATED="$(git log -1 --date=format:'%B %-d, %Y' --format=%ad -- resume.yml || true)"
+          if [ -z "$LAST_UPDATED" ]; then
+            LAST_UPDATED="$(date '+%B %-d, %Y')"
+          fi
+          echo "last_updated=$LAST_UPDATED" >> "$GITHUB_OUTPUT"
 
       - name: Install Typst
         uses: typst-community/setup-typst@v3
@@ -31,10 +50,16 @@ jobs:
           typst-version: latest
 
       - name: Build long resume
-        run: typst compile resume.typ resume-long.pdf
+        run: typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume.typ resume-long.pdf
 
       - name: Build short resume
-        run: typst compile resume-short.typ resume-short.pdf
+        run: typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume-short.typ resume-short.pdf
+
+      - name: Build config-driven resume
+        run: typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume-with-config.typ resume-config.pdf
+
+      - name: Build BibTeX resume
+        run: typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume-with-bibtex.typ resume-bibtex.pdf
 
       - name: Upload resume PDFs (PR preview)
         if: github.event_name == 'pull_request'
@@ -44,9 +69,11 @@ jobs:
           path: |
             resume-long.pdf
             resume-short.pdf
+            resume-config.pdf
+            resume-bibtex.pdf
 
       - name: Update latest release
-        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/')
         uses: softprops/action-gh-release@v2
         with:
           tag_name: latest
@@ -55,11 +82,15 @@ jobs:
           files: |
             resume-long.pdf
             resume-short.pdf
+            resume-config.pdf
+            resume-bibtex.pdf
           body: |
-            Auto-updated resume PDFs from `${{ github.sha }}` on ${{ github.event.head_commit.timestamp }}
+            Auto-updated resume PDFs from `${{ github.sha }}`
 
             - **resume-long.pdf** — Full resume
             - **resume-short.pdf** — Short resume
+            - **resume-config.pdf** — Config-driven resume
+            - **resume-bibtex.pdf** — BibTeX resume
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -70,14 +101,28 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Compute stable last-updated date
+        id: resume_meta
+        shell: bash
+        run: |
+          LAST_UPDATED="$(git log -1 --date=format:'%B %-d, %Y' --format=%ad -- resume.yml || true)"
+          if [ -z "$LAST_UPDATED" ]; then
+            LAST_UPDATED="$(date '+%B %-d, %Y')"
+          fi
+          echo "last_updated=$LAST_UPDATED" >> "$GITHUB_OUTPUT"
 
       - name: Install Typst
         uses: typst-community/setup-typst@v3
 
       - name: Build resume PDFs
         run: |
-          typst compile resume.typ resume-long.pdf
-          typst compile resume-short.typ resume-short.pdf
+          typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume.typ resume-long.pdf
+          typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume-short.typ resume-short.pdf
+          typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume-with-config.typ resume-config.pdf
+          typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume-with-bibtex.typ resume-bibtex.pdf
 
       - name: Create versioned release
         uses: softprops/action-gh-release@v2
@@ -85,10 +130,14 @@ jobs:
           files: |
             resume-long.pdf
             resume-short.pdf
+            resume-config.pdf
+            resume-bibtex.pdf
           body: |
             ## Resume PDFs
             Generated resume PDFs for ${{ github.ref_name }}
             - `resume-long.pdf` — Full resume
             - `resume-short.pdf` — Short resume
+            - `resume-config.pdf` — Config-driven resume
+            - `resume-bibtex.pdf` — BibTeX resume
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

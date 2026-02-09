@@ -1,0 +1,5 @@
+# Generated resume artifacts
+*.pdf
+
+# macOS
+.DS_Store

@@ -62,9 +62,11 @@ resume_typst/
 │
 ├── .github/workflows/
 │   ├── build-resume.yml           # Auto-build PDFs
-│   └── upload-to-cloud.yml        # Upload to cloud storage
+│   ├── upload-to-cloud.yml        # Upload to cloud storage
+│   └── deploy-pages.yml           # Deploy web editor to GitHub Pages
 │
-└── .gitignore                     # Ignores PDF outputs
+├── .gitignore                     # Ignores generated outputs
+└── LICENSE                        # MIT license
 ```
 
 ## Core Usage Patterns
@@ -401,7 +403,7 @@ This is useful for:
 
 ### Feature 4: GitHub Actions
 
-Automatic PDF generation and deployment on every commit.
+Automatic PDF generation and deployment on relevant resume/template changes.
 
 #### Workflows Included
 
@@ -409,11 +411,12 @@ Automatic PDF generation and deployment on every commit.
 
 Triggers on:
 - Push to main/master
+- Push tags matching `v*` (for versioned releases)
 - Pull requests
 - Manual workflow dispatch
 
 Builds:
-- `resume.pdf` (long version)
+- `resume-long.pdf` (long version)
 - `resume-short.pdf` (short version)
 - `resume-config.pdf` (external config version)
 - `resume-bibtex.pdf` (BibTeX version)
@@ -429,6 +432,10 @@ Supports (uncomment sections you need):
 - **Cloudflare R2** - Upload to R2 storage
 - **GitHub Pages** - Deploy to gh-pages branch
 - **Google Drive** - Upload via rclone
+
+**3. `deploy-pages.yml` - Web App Deployment**
+
+Deploys `web/index.html` + default data/template files to GitHub Pages.
 
 #### Setup Instructions
 
@@ -490,10 +497,14 @@ layout:
   line_spacing: 0.65em         # Line height
   list_spacing: 0.65em         # Space between list items
   section_spacing: 0.8em       # Space before sections
+  entry_spacing: 0.4em         # Space between resume entries
+  entry_inner_spacing: 0.2em   # Space between entry title/details/bullets
 
 # Styling
 styling:
   section_smallcaps: true      # Use small caps for section headings
+  secondary_color: "#555555"   # Accent text color (hex)
+  link_color: "#0b61a4"        # Link color (hex)
 
 # Visibility toggles
 visibility:
@@ -783,7 +794,7 @@ Enhanced with:
 
 ## License
 
-This template is provided as-is for personal and commercial use. Feel free to modify and distribute.
+This project is licensed under the MIT License. See `LICENSE`.
 
 ---
 
