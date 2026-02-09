@@ -24,15 +24,14 @@ fonts:
 # ------------------------------------------------------------------------------
 layout:
   margin: 0.5in
-  line_spacing: 0.5em # Space between lines of text
-  list_spacing: 0.4em # Space between bullet items
-  section_spacing: 0.6em # Space before section headings
-  post_section_spacing: 0.15em # Space after section heading line
-  entry_spacing: 0.4em # Space between entries (jobs, schools, etc.)
-  entry_inner_spacing: 0.15em # Space within an entry (title to bullets)
-  pub_spacing: 0.5em # Space between publication entries
-  skill_spacing: 0.15em # Space between skill groups
-  header_bottom_spacing: 0.2em # Space below the header
+  line_spacing: 0.5em
+  list_spacing: 0.25em
+  section_spacing: 0.65em
+  post_section_spacing: 0.2em
+  entry_spacing: 0.4em
+  pub_spacing: 0.35em
+  skill_spacing: 0.15em
+  header_bottom_spacing: 0.15em
 
 # ------------------------------------------------------------------------------
 # STYLING
@@ -41,6 +40,8 @@ styling:
   section_smallcaps: true
   contact_font_size: 0.85em
   summary_font_size: 0.92em
+  secondary_color: 'rgb("#555555")'
+  link_color: 'rgb("#0b61a4")'
 
 # ------------------------------------------------------------------------------
 # VISIBILITY TOGGLES
@@ -65,7 +66,7 @@ section_titles:
   skills: "Skills"
   languages: "Languages"
   interests: "Interests"
-  interests_summary: "Interests"
+  interests_summary: "Research Interests"
   references: "References"
 
 # ------------------------------------------------------------------------------

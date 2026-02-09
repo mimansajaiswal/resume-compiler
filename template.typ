@@ -1,5 +1,5 @@
 // ============================================================================
-// TYPST RESUME TEMPLATE - Highly Configurable YAML-Based Resume System
+// TYPST RESUME TEMPLATE - Professional, ATS-Friendly, YAML-Driven
 // ============================================================================
 
 // ============================================================================
@@ -19,18 +19,8 @@
 #let month_name(n, display: "short") = {
   n = int(n)
   let months = (
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December",
   )
   if n >= 1 and n <= 12 {
     let month = months.at(n - 1)
@@ -42,10 +32,12 @@
 
 #let parse_date(date_str) = {
   if date_str == none or date_str == "" { return none }
-  let date_lower = lower(str(date_str))
+  let s = str(date_str)
+  let date_lower = lower(s)
   if date_lower == "present" { return "Present" }
-  let year = int(date_str.slice(0, 4))
-  let month = int(date_str.slice(5, 7))
+  if s.len() == 4 { return s }
+  let year = int(s.slice(0, 4))
+  let month = int(s.slice(5, 7))
   let month_str = month_name(month, display: "short")
   return month_str + " " + str(year)
 }
@@ -65,6 +57,43 @@
 }
 
 // ============================================================================
+// DESIGN PRIMITIVES
+// ============================================================================
+
+#let secondary(config, body) = {
+  let c = eval(config.at("secondary_color", default: "rgb(\"#555555\")"))
+  text(fill: c, body)
+}
+
+#let lr(left_content, right_content) = {
+  grid(
+    columns: (1fr, auto),
+    column-gutter: 1em,
+    align(left, left_content),
+    align(right, right_content),
+  )
+}
+
+#let highlight_author_name(authors_str, name) = {
+  if authors_str == none or name == none { return authors_str }
+  let name_str = str(name).trim()
+  let auth_str = str(authors_str)
+  if auth_str.contains(name_str) {
+    let parts = auth_str.split(name_str)
+    let result = ()
+    for (i, part) in parts.enumerate() {
+      if i > 0 {
+        result.push(strong(name_str))
+      }
+      result.push(part)
+    }
+    result.join()
+  } else {
+    authors_str
+  }
+}
+
+// ============================================================================
 // DOCUMENT SETUP
 // ============================================================================
 
@@ -80,15 +109,18 @@
   )
   set par(
     leading: config.at("line_spacing", default: 0.5em),
-    justify: true,
+    justify: false,
   )
   set list(
     indent: 0.6em,
-    spacing: config.at("list_spacing", default: 0.4em),
+    spacing: config.at("list_spacing", default: 0.25em),
     marker: [•],
     body-indent: 0.4em,
   )
-  show link: it => { text(fill: rgb("#0b61a4"), it) }
+  show link: it => {
+    let c = eval(config.at("link_color", default: "rgb(\"#0b61a4\")"))
+    text(fill: c, it)
+  }
   doc
 }
 
@@ -103,22 +135,23 @@
   ]
 
   show heading.where(level: 2): it => {
-    v(config.at("section_spacing", default: 0.6em))
+    v(config.at("section_spacing", default: 0.65em))
     block(breakable: false, width: 100%)[
       #set text(
         font: config.at("heading_font", default: "New Computer Modern"),
         size: config.at("section_font_size", default: 1em),
         weight: "bold",
+        tracking: 0.03em,
       )
       #if config.at("section_smallcaps", default: true) {
         smallcaps(it.body)
       } else {
         upper(it.body)
       }
-      #v(-0.5em)
-      #line(length: 100%, stroke: 0.75pt + black)
+      #v(0.15em)
+      #line(length: 100%, stroke: 0.6pt + rgb("#222222"))
     ]
-    v(config.at("post_section_spacing", default: 0.15em))
+    v(config.at("post_section_spacing", default: 0.2em))
   }
 
   doc
@@ -132,20 +165,18 @@
   let personal = data.at("personal", default: none)
   if personal == none { return }
 
-  let separator = config.at("contact_separator", default: [#h(0.25em)#sym.diamond.filled#h(0.25em)])
-  let contact_size = config.at("contact_font_size", default: 0.8em)
+  let contact_size = config.at("contact_font_size", default: 0.85em)
 
   align(center)[
     = #personal.name
 
-    #v(-0.6em)
+    #v(-0.4em)
 
     #if "titles" in personal and personal.titles != none and personal.titles.len() > 0 {
-      block(above: 0pt, below: 0pt)[
-        #set text(size: 0.9em, weight: "medium")
+      block(above: 0pt, below: 0.2em)[
+        #set text(size: 0.9em, weight: "regular", style: "italic")
         #personal.titles.join(" | ")
       ]
-      v(-0.15em)
     }
 
     #if config.at("show_location", default: true) {
@@ -158,9 +189,9 @@
         if parts.len() > 0 {
           block(above: 0pt, below: 0pt)[
             #set text(size: 0.8em)
-            #parts.join(", ")
+            #secondary(config, parts.join(", "))
           ]
-          v(-0.15em)
+          v(-0.1em)
         }
       }
     }
@@ -195,11 +226,11 @@
         }
       }
 
-      #contacts.join(separator)
+      #contacts.join([ #h(0.3em) | #h(0.3em) ])
     ]
   ]
 
-  v(config.at("header_bottom_spacing", default: 0.2em))
+  v(config.at("header_bottom_spacing", default: 0.15em))
 }
 
 // ============================================================================
@@ -229,48 +260,33 @@
   if work_items.len() == 0 { return }
 
   let entry_spacing = config.at("entry_spacing", default: 0.4em)
-  let entry_inner_spacing = config.at("entry_inner_spacing", default: 0.15em)
 
   block(above: 0pt, below: 0pt)[
     == #config.at("work_title", default: "Experience")
 
     #for (i, work) in work_items.enumerate() {
       block(width: 100%, above: if i == 0 { 0pt } else { entry_spacing }, below: 0pt, breakable: true)[
-        #grid(
-          columns: (1fr, auto),
-          column-gutter: 1em,
-          align: (left, right),
-          {
-            if "url" in work and work.url != none {
-              strong(link(work.url)[#work.organization])
-            } else {
-              strong(work.organization)
-            }
-          },
-          {
-            if "location" in work and work.location != none {
-              text(style: "italic")[#work.location]
-            }
-          },
-        )
+        #{
+          if "positions" in work and work.positions != none {
+            let positions = filter_by_variant(work.positions, variant)
+            for (j, position) in positions.enumerate() {
+              if j > 0 { v(entry_spacing * 0.5) }
 
-        #if "positions" in work and work.positions != none {
-          let positions = filter_by_variant(work.positions, variant)
-          for (j, position) in positions.enumerate() {
-            v(if j == 0 { entry_inner_spacing } else { entry_spacing * 0.6 })
+              let org_content = if "url" in work and work.url != none {
+                strong(link(work.url)[#work.organization])
+              } else {
+                strong(work.organization)
+              }
 
-            grid(
-              columns: (1fr, auto),
-              column-gutter: 1em,
-              align: (left, right),
-              [#text(style: "italic")[#position.position]],
-              [#date_range(position.at("startDate", default: none), position.at("endDate", default: none))],
-            )
+              lr(
+                [#org_content #sym.dash.em #position.position],
+                date_range(position.at("startDate", default: none), position.at("endDate", default: none)),
+              )
 
-            if "highlights" in position and position.highlights != none and position.highlights.len() > 0 {
-              v(entry_inner_spacing * 0.5)
-              for highlight in position.highlights {
-                [- #highlight]
+              if "highlights" in position and position.highlights != none and position.highlights.len() > 0 {
+                for highlight in position.highlights {
+                  [- #highlight]
+                }
               }
             }
           }
@@ -292,52 +308,48 @@
   if edu_items.len() == 0 { return }
 
   let entry_spacing = config.at("entry_spacing", default: 0.4em)
-  let entry_inner_spacing = config.at("entry_inner_spacing", default: 0.15em)
 
   block(above: 0pt, below: 0pt)[
     == #config.at("education_title", default: "Education")
 
     #for (i, edu) in edu_items.enumerate() {
       block(width: 100%, above: if i == 0 { 0pt } else { entry_spacing }, below: 0pt, breakable: false)[
-        #grid(
-          columns: (1fr, auto),
-          column-gutter: 1em,
-          align: (left, right),
-          {
-            if "url" in edu and edu.url != none {
-              strong(link(edu.url)[#edu.institution])
-            } else {
-              strong(edu.institution)
-            }
-          },
-          {
-            if "location" in edu and edu.location != none {
-              text(style: "italic")[#edu.location]
-            }
-          },
-        )
-
-        #v(entry_inner_spacing)
-
-        #grid(
-          columns: (1fr, auto),
-          column-gutter: 1em,
-          align: (left, right),
-          [
-            #text(style: "italic")[
-              #if "studyType" in edu and edu.studyType != none { edu.studyType }
-              #if "area" in edu and edu.area != none { [ in #edu.area] }
-            ]
-          ],
-          [#date_range(edu.at("startDate", default: none), edu.at("endDate", default: none))],
-        )
+        #{
+          let inst_content = if "url" in edu and edu.url != none {
+            strong(link(edu.url)[#edu.institution])
+          } else {
+            strong(edu.institution)
+          }
+          let loc_parts = ()
+          if "location" in edu and edu.location != none {
+            loc_parts.push(edu.location)
+          }
+          let left_label = if loc_parts.len() > 0 {
+            [#inst_content, #loc_parts.join(", ")]
+          } else {
+            inst_content
+          }
+          lr(
+            left_label,
+            date_range(edu.at("startDate", default: none), edu.at("endDate", default: none)),
+          )
+        }
 
         #if "honors" in edu and edu.honors != none and edu.honors.len() > 0 {
-          [- #strong[Honors]: #edu.honors.join(", ")]
+          strong(edu.honors.join(", "))
+        }
+
+        #{
+          let degree_parts = ()
+          if "studyType" in edu and edu.studyType != none { degree_parts.push(edu.studyType) }
+          if "area" in edu and edu.area != none { degree_parts.push([ in #edu.area]) }
+          if degree_parts.len() > 0 {
+            degree_parts.join()
+          }
         }
 
         #if "courses" in edu and edu.courses != none and edu.courses.len() > 0 {
-          [- #strong[Coursework]: #edu.courses.join(", ")]
+          [Coursework: #edu.courses.join(", ")]
         }
 
         #if "highlights" in edu and edu.highlights != none and edu.highlights.len() > 0 {
@@ -376,7 +388,8 @@
   let pub_items = filter_by_variant(data.publications, variant)
   if pub_items.len() == 0 { return }
 
-  let pub_spacing = config.at("pub_spacing", default: 0.5em)
+  let pub_spacing = config.at("pub_spacing", default: 0.35em)
+  let author_name = data.at("personal", default: (:)).at("name", default: none)
 
   block(above: 0pt, below: 0pt)[
     == #config.at("publications_title", default: "Publications")
@@ -400,34 +413,40 @@
       } else {
         block(width: 100%, above: if i == 0 { 0pt } else { pub_spacing }, below: 0pt)[
           #{
-            let parts = ()
+            // Title (bold, linked)
             if "url" in pub and pub.url != none {
-              parts.push(strong(link(pub.url)[#pub.name]))
+              strong(link(pub.url)[#pub.name])
             } else {
-              parts.push(strong(pub.name))
+              strong(pub.name)
             }
-            if "authors" in pub and pub.authors != none {
-              parts.push([. #pub.authors])
-            }
-            if "publisher" in pub and pub.publisher != none {
-              parts.push([. #emph(pub.publisher)])
-            }
+          }
+          #if "authors" in pub and pub.authors != none {
+            [. #highlight_author_name(pub.authors, author_name)]
+          }
+          #if "publisher" in pub and pub.publisher != none {
+            [. #emph(pub.publisher)]
             if "releaseDate" in pub and pub.releaseDate != none {
               let date = parse_date(pub.releaseDate)
               if date != none {
-                parts.push([, #date])
+                [, ]
+                secondary(config, date)
               }
             }
-            if "status" in pub and pub.status != none {
-              if "publisher" not in pub or pub.publisher == none {
-                parts.push([ --- #emph[#pub.status]])
-              } else {
-                parts.push([ (#pub.status)])
-              }
+          } else if "releaseDate" in pub and pub.releaseDate != none {
+            let date = parse_date(pub.releaseDate)
+            if date != none {
+              [. ]
+              secondary(config, date)
             }
-            parts.push([.])
-            parts.join()
           }
+          #if "status" in pub and pub.status != none {
+            if "publisher" not in pub or pub.publisher == none {
+              [ --- #emph[#pub.status]]
+            } else {
+              [ (#pub.status)]
+            }
+          }
+          .
         ]
       }
     }
@@ -446,17 +465,13 @@
   if project_items.len() == 0 { return }
 
   let entry_spacing = config.at("entry_spacing", default: 0.4em)
-  let entry_inner_spacing = config.at("entry_inner_spacing", default: 0.15em)
 
   block(above: 0pt, below: 0pt)[
     == #config.at("projects_title", default: "Projects")
 
     #for (i, project) in project_items.enumerate() {
       block(width: 100%, above: if i == 0 { 0pt } else { entry_spacing }, below: 0pt, breakable: true)[
-        #grid(
-          columns: (1fr, auto),
-          column-gutter: 1em,
-          align: (left, right),
+        #lr(
           {
             if "url" in project and project.url != none {
               strong(link(project.url)[#project.name])
@@ -464,16 +479,15 @@
               strong(project.name)
             }
           },
-          [#date_range(project.at("startDate", default: none), project.at("endDate", default: none))],
+          secondary(config, date_range(project.at("startDate", default: none), project.at("endDate", default: none))),
         )
 
         #if "affiliation" in project and project.affiliation != none {
-          v(entry_inner_spacing)
           text(style: "italic")[#project.affiliation]
         }
 
         #if "highlights" in project and project.highlights != none and project.highlights.len() > 0 {
-          v(entry_inner_spacing * 0.5)
+          v(0.1em)
           for highlight in project.highlights {
             [- #highlight]
           }
@@ -500,11 +514,8 @@
     == #config.at("awards_title", default: "Honors and Awards")
 
     #for (i, award) in award_items.enumerate() {
-      block(width: 100%, above: if i == 0 { 0pt } else { entry_spacing }, below: 0pt, breakable: false)[
-        #grid(
-          columns: (1fr, auto),
-          column-gutter: 1em,
-          align: (left, right),
+      block(width: 100%, above: if i == 0 { 0pt } else { entry_spacing * 0.6 }, below: 0pt, breakable: false)[
+        #lr(
           {
             let title_content = if "url" in award and award.url != none {
               strong(link(award.url)[#award.title])
@@ -527,7 +538,7 @@
               if date != none { right_parts.push(date) }
             }
             if right_parts.len() > 0 {
-              right_parts.join([ #sym.bar.v ])
+              secondary(config, right_parts.join([ | ]))
             }
           },
         )
@@ -577,7 +588,7 @@
     #for lang in data.languages {
       lang_list.push([#lang.language (#lang.fluency)])
     }
-    #lang_list.join([ #sym.bar.v ])
+    #lang_list.join([ | ])
   ]
 }
 
@@ -657,6 +668,8 @@
     if "section_smallcaps" in styling { flat.insert("section_smallcaps", styling.section_smallcaps) }
     if "contact_font_size" in styling { flat.insert("contact_font_size", eval(str(styling.contact_font_size))) }
     if "summary_font_size" in styling { flat.insert("summary_font_size", eval(str(styling.summary_font_size))) }
+    if "secondary_color" in styling { flat.insert("secondary_color", styling.secondary_color) }
+    if "link_color" in styling { flat.insert("link_color", styling.link_color) }
   }
 
   if "visibility" in yaml_config {
