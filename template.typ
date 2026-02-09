@@ -48,7 +48,6 @@
 #let year_pattern = regex("^[0-9]{4}$")
 #let iso_date_pattern = regex("^[0-9]{4}-[0-9]{2}(-[0-9]{2})?$")
 #let hex_color_pattern = regex("^#[0-9a-fA-F]{6}$")
-#let legacy_rgb_color_pattern = regex("^rgb\\(\"#[0-9a-fA-F]{6}\"\\)$")
 
 #let parse_dimension(value, default: none) = {
   if value == none { return default }
@@ -91,16 +90,6 @@
     return rgb(s)
   }
 
-  if s.matches(legacy_rgb_color_pattern).len() > 0 {
-    let parts = s.split("\"")
-    if parts.len() >= 2 {
-      let hex = parts.at(1)
-      if hex.matches(hex_color_pattern).len() > 0 {
-        return rgb(hex)
-      }
-    }
-  }
-
   default
 }
 
@@ -116,6 +105,49 @@
   if calc.rem(star_count, 2) != 0 or calc.rem(underscore_count, 2) != 0 { return s }
 
   eval(s, mode: "markup")
+}
+
+#let non_empty(value) = {
+  if value == none { return false }
+  str(value).trim() != ""
+}
+
+#let first_present(item, keys) = {
+  if type(item) != dictionary { return none }
+  for key in keys {
+    if key in item and non_empty(item.at(key, default: none)) {
+      return item.at(key)
+    }
+  }
+  none
+}
+
+#let normalize_key(value) = {
+  if value == none { return "" }
+  lower(str(value).trim()).replace("-", "_").replace(" ", "_")
+}
+
+#let titleize_section_key(key) = {
+  let cleaned = str(key).replace("-", " ").replace("_", " ").trim()
+  if cleaned == "" { return "Section" }
+
+  let words = ()
+  for word in cleaned.split(" ") {
+    let w = word.trim()
+    if w != "" {
+      words.push(upper(w.slice(0, 1)) + w.slice(1))
+    }
+  }
+  words.join(" ")
+}
+
+#let resolve_section_title(config, section_key) = {
+  let titles = config.at("section_titles_map", default: (:))
+  if type(titles) == dictionary and section_key in titles {
+    return titles.at(section_key)
+  }
+
+  titleize_section_key(section_key)
 }
 
 #let parse_date(date_str) = {
@@ -188,6 +220,19 @@
   )
 }
 
+#let render_plain_lines(items, spacing, indent: 1.05em) = {
+  let lines = as_array(items)
+  if lines.len() == 0 { return }
+
+  block(width: 100%, inset: (left: indent), above: 0pt, below: 0pt, breakable: true)[
+    #for (i, line) in lines.enumerate() {
+      block(width: 100%, above: if i == 0 { 0pt } else { spacing }, below: 0pt, breakable: true)[
+        #render_markup(line)
+      ]
+    }
+  ]
+}
+
 #let highlight_author_name(authors_str, name) = {
   if authors_str == none or name == none { return authors_str }
   let name_str = str(name).trim()
@@ -249,25 +294,28 @@
   ]
 
   show heading.where(level: 2): it => {
+    let show_rule = config.at("section_rule_enabled", default: false)
     let rule_color = parse_color(config.at("section_rule_color", default: none), default: rgb("#222222"))
-    let rule_thickness = config.at("section_rule_thickness", default: 0.6pt)
-    v(config.at("section_spacing", default: 0.5em))
+    let rule_thickness = config.at("section_rule_thickness", default: 0.7pt)
+    v(config.at("section_spacing", default: 0.85em))
     block(breakable: false, width: 100%)[
       #set text(
         font: config.at("heading_font", default: "New Computer Modern"),
         size: config.at("section_font_size", default: 1em),
         weight: "bold",
-        tracking: 0.03em,
+        tracking: config.at("section_heading_tracking", default: 0.02em),
       )
       #if config.at("section_smallcaps", default: true) {
         smallcaps(it.body)
       } else {
         upper(it.body)
       }
-      #v(0.12em)
-      #line(length: 100%, stroke: rule_thickness + rule_color)
+      #if show_rule {
+        v(config.at("section_rule_gap", default: 0.14em))
+        line(length: 100%, stroke: rule_thickness + rule_color)
+      }
     ]
-    v(config.at("post_section_spacing", default: 0.26em))
+    v(config.at("post_section_spacing", default: 0.32em))
   }
 
   doc
@@ -282,6 +330,11 @@
   if personal == none { return }
 
   let contact_size = config.at("contact_font_size", default: 0.85em)
+  let header_rule_color = parse_color(
+    config.at("header_rule_color", default: config.at("section_rule_color", default: none)),
+    default: rgb("#222222"),
+  )
+  let header_rule_thickness = config.at("header_rule_thickness", default: 0.7pt)
   let last_updated = resolve_last_updated(data, config)
   let show_last_updated = config.at("show_last_updated", default: true)
 
@@ -370,11 +423,14 @@
         }
       }
 
-      #contacts.join([ #h(0.3em) | #h(0.3em) ])
+      #let sep_gap = config.at("contact_separator_spacing", default: 0.24em)
+      #contacts.join([ #h(sep_gap) | #h(sep_gap) ])
     ]
   ]
 
-  v(config.at("header_bottom_spacing", default: 0.12em))
+  v(config.at("header_rule_top_spacing", default: 0.16em))
+  line(length: 100%, stroke: header_rule_thickness + header_rule_color)
+  v(config.at("header_bottom_spacing", default: 0.3em))
 }
 
 // ============================================================================
@@ -385,7 +441,7 @@
   if not config.at("show_interests_summary", default: false) { return }
   if "interests_summary" in data and data.interests_summary != none {
     block(above: 0pt, below: 0pt)[
-      == #config.at("interests_summary_title", default: "Interests")
+      == #resolve_section_title(config, "interests_summary")
       #set text(size: config.at("summary_font_size", default: 0.92em))
       #render_markup(data.interests_summary)
     ]
@@ -412,9 +468,10 @@
   let position_spacing = config.at("work_position_spacing", default: entry_inner_spacing * 1.1)
   let bullet_top_spacing = config.at("work_bullet_spacing", default: entry_inner_spacing)
   let work_list_spacing = config.at("work_list_spacing", default: config.at("list_spacing", default: 0.2em))
+  let work_highlight_indent = config.at("work_highlight_indent", default: 1.05em)
 
   block(above: 0pt, below: 0pt)[
-    == #config.at("work_title", default: "Experience")
+    == #resolve_section_title(config, "work")
 
     #for (i, work) in work_items.enumerate() {
       block(width: 100%, above: if i == 0 { 0pt } else { entry_spacing }, below: 0pt, breakable: true)[
@@ -450,10 +507,7 @@
               #let position_highlights = as_array(position.at("highlights", default: ()))
               #if position_highlights.len() > 0 {
                 block(width: 100%, above: bullet_top_spacing, below: 0pt, breakable: true)[
-                  #set list(spacing: work_list_spacing)
-                  #for highlight in position_highlights {
-                    [- #render_markup(highlight)]
-                  }
+                  #render_plain_lines(position_highlights, work_list_spacing, indent: work_highlight_indent)
                 ]
               }
             ]
@@ -486,9 +540,10 @@
   let courses_spacing = config.at("education_courses_spacing", default: entry_inner_spacing * 0.9)
   let highlights_spacing = config.at("education_highlights_spacing", default: entry_inner_spacing)
   let education_list_spacing = config.at("education_list_spacing", default: config.at("list_spacing", default: 0.22em))
+  let education_highlight_indent = config.at("education_highlight_indent", default: 1.05em)
 
   block(above: 0pt, below: 0pt)[
-    == #config.at("education_title", default: "Education")
+    == #resolve_section_title(config, "education")
 
     #for (i, edu) in edu_items.enumerate() {
       block(width: 100%, above: if i == 0 { 0pt } else { entry_spacing }, below: 0pt, breakable: true)[
@@ -553,10 +608,7 @@
         #let edu_highlights = as_array(edu.at("highlights", default: ()))
         #if edu_highlights.len() > 0 {
           block(width: 100%, above: highlights_spacing, below: 0pt, breakable: true)[
-            #set list(spacing: education_list_spacing)
-            #for highlight in edu_highlights {
-              [- #render_markup(highlight)]
-            }
+            #render_plain_lines(edu_highlights, education_list_spacing, indent: education_highlight_indent)
           ]
         }
       ]
@@ -568,6 +620,103 @@
 // PUBLICATIONS SECTION
 // ============================================================================
 
+#let publication_section_key(pub) = {
+  if type(pub) != dictionary { return "uncategorized" }
+
+  let explicit = pub.at("section", default: pub.at("group", default: none))
+  if non_empty(explicit) {
+    return normalize_key(explicit)
+  }
+
+  let status = pub.at("status", default: none)
+  if non_empty(status) {
+    let s = lower(str(status))
+    if s.contains("submit") { return "submitted" }
+    if s.contains("work") or s.contains("progress") or s.contains("research note") or s.contains("demo") {
+      return "works_in_progress"
+    }
+  }
+
+  if pub.at("publisher", default: none) == none {
+    return "works_in_progress"
+  }
+
+  "accepted"
+}
+
+#let render_publication_item(pub, idx, pub_spacing, pub_font_size, pub_link_style, pub_line_spacing, author_name, config) = {
+  if type(pub) != dictionary {
+    block(width: 100%, above: if idx == 0 { 0pt } else { pub_spacing }, below: 0pt)[
+      #set text(size: pub_font_size)
+      #set par(leading: pub_line_spacing)
+      #render_markup(pub)
+    ]
+  } else if "bib_key" in pub {
+    let extra_links = as_array(pub.at("links", default: ()))
+    block(width: 100%, above: if idx == 0 { 0pt } else { pub_spacing }, below: 0pt)[
+      #set text(size: pub_font_size)
+      #set par(leading: pub_line_spacing)
+      #cite(label(pub.bib_key), form: "full")
+      #if extra_links.len() > 0 {
+        let link_parts = ()
+        for link_info in extra_links {
+          if "label" in link_info and "url" in link_info {
+            link_parts.push(link(link_info.url)[#link_info.label])
+          }
+        }
+        if link_parts.len() > 0 {
+          if pub_link_style == "newline" {
+            [\ ]
+            [[#link_parts.join([ | ])]]
+          } else {
+            [ [#link_parts.join([ | ])]]
+          }
+        }
+      }
+    ]
+  } else {
+    block(width: 100%, above: if idx == 0 { 0pt } else { pub_spacing }, below: 0pt)[
+      #set text(size: pub_font_size)
+      #set par(leading: pub_line_spacing)
+      #{
+        let title = pub.at("name", default: pub.at("title", default: "Untitled"))
+        if "url" in pub and pub.url != none {
+          strong(link(pub.url)[#render_markup(title)])
+        } else {
+          strong(render_markup(title))
+        }
+      }
+      #if "authors" in pub and pub.authors != none {
+        [. #highlight_author_name(pub.authors, author_name)]
+      }
+      #if "publisher" in pub and pub.publisher != none {
+        [. #emph(render_markup(pub.publisher))]
+        if "releaseDate" in pub and pub.releaseDate != none {
+          let date = parse_date(pub.releaseDate)
+          if date != none {
+            [, ]
+            secondary(config, date)
+          }
+        }
+      } else if "releaseDate" in pub and pub.releaseDate != none {
+        let date = parse_date(pub.releaseDate)
+        if date != none {
+          [. ]
+          secondary(config, date)
+        }
+      }
+      #if "status" in pub and pub.status != none {
+        if "publisher" not in pub or pub.publisher == none {
+          [ --- #emph[#render_markup(pub.status)]]
+        } else {
+          [ (#render_markup(pub.status))]
+        }
+      }
+      .
+    ]
+  }
+}
+
 #let render_publications(data, config) = {
   let publication_entries = as_array(data.at("publications", default: ()))
   if publication_entries.len() == 0 { return }
@@ -576,85 +725,61 @@
   let pub_items = filter_by_variant(publication_entries, variant)
   if pub_items.len() == 0 { return }
 
-  let pub_spacing = config.at("pub_spacing", default: 0.62em)
+  let pub_spacing = config.at("pub_spacing", default: 0.58em)
   let pub_font_size = config.at("publications_font_size", default: config.at("font_size", default: 10.5pt))
   let pub_link_style = config.at("publications_link_style", default: "compact")
-  let pub_line_spacing = config.at("publications_line_spacing", default: config.at("line_spacing", default: 0.62em))
+  let pub_line_spacing = config.at("publications_line_spacing", default: config.at("line_spacing", default: 0.68em))
   let author_name = data.at("personal", default: (:)).at("name", default: none)
+  let publication_sections = as_array(config.at("publication_sections", default: ()))
 
   block(above: 0pt, below: 0pt)[
-    == #config.at("publications_title", default: "Publications")
+    #if publication_sections.len() > 0 {
+      for section in publication_sections {
+        if type(section) == dictionary {
+          let section_key = normalize_key(section.at("key", default: none))
+          if section_key != "" {
+            let section_items = ()
+            for pub in pub_items {
+              if publication_section_key(pub) == section_key {
+                section_items.push(pub)
+              }
+            }
 
-    #for (i, pub) in pub_items.enumerate() {
-      if type(pub) != dictionary {
-        block(width: 100%, above: if i == 0 { 0pt } else { pub_spacing }, below: 0pt)[
-          #set text(size: pub_font_size)
-          #set par(leading: pub_line_spacing)
-          #render_markup(pub)
-        ]
-      } else if "bib_key" in pub {
-        let extra_links = as_array(pub.at("links", default: ()))
-        block(width: 100%, above: if i == 0 { 0pt } else { pub_spacing }, below: 0pt)[
-          #set text(size: pub_font_size)
-          #set par(leading: pub_line_spacing)
-          #cite(label(pub.bib_key), form: "full")
-          #if extra_links.len() > 0 {
-            let link_parts = ()
-            for link_info in extra_links {
-              if "label" in link_info and "url" in link_info {
-                link_parts.push(link(link_info.url)[#link_info.label])
-              }
-            }
-            if link_parts.len() > 0 {
-              if pub_link_style == "newline" {
-                [\ ]
-                [[#link_parts.join([ | ])]]
-              } else {
-                [ [#link_parts.join([ | ])]]
+            if section_items.len() > 0 {
+              let section_title = section.at("title", default: resolve_section_title(config, section_key))
+              [== #section_title]
+              for (i, pub) in section_items.enumerate() {
+                render_publication_item(pub, i, pub_spacing, pub_font_size, pub_link_style, pub_line_spacing, author_name, config)
               }
             }
           }
-        ]
-      } else {
-        block(width: 100%, above: if i == 0 { 0pt } else { pub_spacing }, below: 0pt)[
-          #set text(size: pub_font_size)
-          #set par(leading: pub_line_spacing)
-          #{
-            let title = pub.at("name", default: pub.at("title", default: "Untitled"))
-            if "url" in pub and pub.url != none {
-              strong(link(pub.url)[#render_markup(title)])
-            } else {
-              strong(render_markup(title))
+        }
+      }
+
+      let remaining_items = ()
+      for pub in pub_items {
+        let matched_sections = ()
+        for section in publication_sections {
+          if type(section) == dictionary {
+            let section_key = normalize_key(section.at("key", default: none))
+            if section_key != "" and publication_section_key(pub) == section_key {
+              matched_sections.push(section_key)
             }
           }
-          #if "authors" in pub and pub.authors != none {
-            [. #highlight_author_name(pub.authors, author_name)]
-          }
-          #if "publisher" in pub and pub.publisher != none {
-            [. #emph(render_markup(pub.publisher))]
-            if "releaseDate" in pub and pub.releaseDate != none {
-              let date = parse_date(pub.releaseDate)
-              if date != none {
-                [, ]
-                secondary(config, date)
-              }
-            }
-          } else if "releaseDate" in pub and pub.releaseDate != none {
-            let date = parse_date(pub.releaseDate)
-            if date != none {
-              [. ]
-              secondary(config, date)
-            }
-          }
-          #if "status" in pub and pub.status != none {
-            if "publisher" not in pub or pub.publisher == none {
-              [ --- #emph[#render_markup(pub.status)]]
-            } else {
-              [ (#render_markup(pub.status))]
-            }
-          }
-          .
-        ]
+        }
+        if matched_sections.len() == 0 { remaining_items.push(pub) }
+      }
+
+      if remaining_items.len() > 0 {
+        [== #resolve_section_title(config, "publications")]
+        for (i, pub) in remaining_items.enumerate() {
+          render_publication_item(pub, i, pub_spacing, pub_font_size, pub_link_style, pub_line_spacing, author_name, config)
+        }
+      }
+    } else {
+      [== #resolve_section_title(config, "publications")]
+      for (i, pub) in pub_items.enumerate() {
+        render_publication_item(pub, i, pub_spacing, pub_font_size, pub_link_style, pub_line_spacing, author_name, config)
       }
     }
   ]
@@ -682,7 +807,7 @@
   )
 
   block(above: 0pt, below: 0pt)[
-    == #config.at("projects_title", default: "Projects")
+    == #resolve_section_title(config, "projects")
 
     #for (i, project) in project_items.enumerate() {
       block(width: 100%, above: if i == 0 { 0pt } else { entry_spacing }, below: 0pt, breakable: true)[
@@ -740,9 +865,10 @@
   let awards_font_size = config.at("awards_font_size", default: config.at("font_size", default: 10.5pt))
   let awards_highlights_spacing = config.at("awards_highlights_spacing", default: entry_inner_spacing)
   let awards_list_spacing = config.at("awards_list_spacing", default: config.at("list_spacing", default: 0.22em))
+  let awards_highlight_indent = config.at("awards_highlight_indent", default: 1.05em)
 
   block(above: 0pt, below: 0pt)[
-    == #config.at("awards_title", default: "Honors and Awards")
+    == #resolve_section_title(config, "awards")
 
     #for (i, award) in award_items.enumerate() {
       block(width: 100%, above: if i == 0 { 0pt } else { entry_spacing }, below: 0pt, breakable: true)[
@@ -782,10 +908,7 @@
             #let award_highlights = as_array(award.at("highlights", default: ()))
             #if award_highlights.len() > 0 {
               block(width: 100%, above: awards_highlights_spacing, below: 0pt, breakable: true)[
-                #set list(spacing: awards_list_spacing)
-                #for highlight in award_highlights {
-                  [- #render_markup(highlight)]
-                }
+                #render_plain_lines(award_highlights, awards_list_spacing, indent: awards_highlight_indent)
               ]
             }
           ]
@@ -807,13 +930,18 @@
   let skill_items = filter_by_variant(skill_entries, variant)
   if skill_items.len() == 0 { return }
 
-  let skill_spacing = config.at("skill_spacing", default: 0.1em)
+  let skill_spacing = config.at("skill_spacing", default: 0.26em)
+  let skills_line_spacing = config.at(
+    "skills_line_spacing",
+    default: config.at("line_spacing", default: 0.76em) * 0.9,
+  )
 
   block(above: 0pt, below: 0pt)[
-    == #config.at("skills_title", default: "Skills")
+    == #resolve_section_title(config, "skills")
 
     #for (i, skill_group) in skill_items.enumerate() {
       block(above: if i == 0 { 0pt } else { skill_spacing }, below: 0pt)[
+        #set par(leading: skills_line_spacing)
         #{
           if type(skill_group) == dictionary {
             let category = render_markup(skill_group.at("category", default: "Skills"))
@@ -845,7 +973,7 @@
   if lang_items.len() == 0 { return }
 
   block(above: 0pt, below: 0pt)[
-    == #config.at("languages_title", default: "Languages")
+    == #resolve_section_title(config, "languages")
 
     #let lang_list = ()
     #for lang in lang_items {
@@ -881,7 +1009,7 @@
   if interest_items.len() == 0 { return }
 
   block(above: 0pt, below: 0pt)[
-    == #config.at("interests_title", default: "Interests")
+    == #resolve_section_title(config, "interests")
     #let interest_list = ()
     #for interest in interest_items {
       if type(interest) == dictionary {
@@ -912,7 +1040,7 @@
   if refs.len() == 0 { return }
 
   block(above: 0pt, below: 0pt)[
-    == #config.at("references_title", default: "References")
+    == #resolve_section_title(config, "references")
 
     #for ref in refs {
       block(width: 100%, above: 0.3em, below: 0pt)[
@@ -926,6 +1054,141 @@
       ]
     }
   ]
+}
+
+// ============================================================================
+// GENERIC SECTION RENDERER (for custom sections like patents, talks, service)
+// ============================================================================
+
+#let render_generic_item(item, config, entry_spacing, entry_inner_spacing, highlights_spacing, highlight_indent) = {
+  if type(item) != dictionary {
+    block(width: 100%, above: entry_spacing, below: 0pt, breakable: true)[#render_markup(item)]
+    return
+  }
+
+  block(width: 100%, above: entry_spacing, below: 0pt, breakable: true)[
+    #{
+      let title = first_present(item, ("title", "name", "label", "patent", "organization", "institution"))
+      let subtitle = first_present(item, ("subtitle", "role", "position", "issuer", "publisher", "affiliation"))
+      let description = first_present(item, ("description", "summary", "details", "text", "reference"))
+
+      let date_text = if ("startDate" in item or "endDate" in item) {
+        date_range(item.at("startDate", default: none), item.at("endDate", default: none))
+      } else {
+        let one_date = first_present(item, ("date", "releaseDate", "year"))
+        if one_date != none {
+          let parsed = parse_date(one_date)
+          if parsed != none { parsed } else { render_markup(one_date) }
+        } else {
+          none
+        }
+      }
+
+      if title != none {
+        let title_content = if "url" in item and item.url != none {
+          strong(link(item.url)[#render_markup(title)])
+        } else {
+          strong(render_markup(title))
+        }
+
+        let left_line = if subtitle != none {
+          [#title_content #sym.dash.em #render_markup(subtitle)]
+        } else {
+          [#title_content]
+        }
+
+        if date_text != none and date_text != [] {
+          lr(left_line, secondary(config, date_text))
+        } else {
+          left_line
+        }
+      }
+
+      if description != none {
+        block(width: 100%, above: entry_inner_spacing, below: 0pt, breakable: true)[
+          #render_markup(description)
+        ]
+      }
+
+      if "skills" in item and type(item.skills) == array and item.skills.len() > 0 {
+        block(width: 100%, above: entry_inner_spacing, below: 0pt, breakable: true)[
+          #{
+            let skill_parts = ()
+            for s in item.skills {
+              skill_parts.push(render_markup(s))
+            }
+            skill_parts.join(", ")
+          }
+        ]
+      }
+
+      let highlights = as_array(item.at("highlights", default: ()))
+      if highlights.len() > 0 {
+        block(width: 100%, above: highlights_spacing, below: 0pt, breakable: true)[
+          #render_plain_lines(highlights, highlights_spacing, indent: highlight_indent)
+        ]
+      }
+    }
+  ]
+}
+
+#let render_generic_section(data, config, section_key) = {
+  if section_key not in data { return }
+  let section_data = data.at(section_key, default: none)
+  if section_data == none { return }
+
+  let variant = config.at("variant", default: "long")
+  let entry_spacing = config.at("generic_entry_spacing", default: config.at("entry_spacing", default: 0.58em))
+  let entry_inner_spacing = config.at(
+    "generic_entry_inner_spacing",
+    default: config.at("entry_inner_spacing", default: 0.22em),
+  )
+  let highlights_spacing = config.at(
+    "generic_highlights_spacing",
+    default: config.at("list_spacing", default: 0.2em),
+  )
+  let highlight_indent = config.at("generic_highlight_indent", default: 1.05em)
+
+  let section_title = resolve_section_title(config, section_key)
+
+  if type(section_data) == array {
+    let entries = filter_by_variant(section_data, variant)
+    if entries.len() == 0 { return }
+    block(above: 0pt, below: 0pt)[
+      == #section_title
+      #for (i, item) in entries.enumerate() {
+        render_generic_item(
+          item,
+          config,
+          if i == 0 { 0pt } else { entry_spacing },
+          entry_inner_spacing,
+          highlights_spacing,
+          highlight_indent,
+        )
+      }
+    ]
+  } else if type(section_data) == dictionary and "items" in section_data {
+    let entries = filter_by_variant(as_array(section_data.items), variant)
+    if entries.len() == 0 { return }
+    block(above: 0pt, below: 0pt)[
+      == #section_title
+      #for (i, item) in entries.enumerate() {
+        render_generic_item(
+          item,
+          config,
+          if i == 0 { 0pt } else { entry_spacing },
+          entry_inner_spacing,
+          highlights_spacing,
+          highlight_indent,
+        )
+      }
+    ]
+  } else {
+    block(above: 0pt, below: 0pt)[
+      == #section_title
+      #render_markup(section_data)
+    ]
+  }
 }
 
 // ============================================================================
@@ -962,6 +1225,9 @@
     if "line_spacing" in layout {
       flat.insert("line_spacing", parse_dimension(layout.line_spacing, default: 0.82em))
     }
+    if "skills_line_spacing" in layout {
+      flat.insert("skills_line_spacing", parse_dimension(layout.skills_line_spacing, default: 0.66em))
+    }
     if "list_spacing" in layout {
       flat.insert("list_spacing", parse_dimension(layout.list_spacing, default: 0.24em))
     }
@@ -980,6 +1246,33 @@
     if "skill_spacing" in layout {
       flat.insert("skill_spacing", parse_dimension(layout.skill_spacing, default: 0.18em))
     }
+    if "work_highlight_indent" in layout {
+      flat.insert("work_highlight_indent", parse_dimension(layout.work_highlight_indent, default: 1.05em))
+    }
+    if "education_highlight_indent" in layout {
+      flat.insert("education_highlight_indent", parse_dimension(layout.education_highlight_indent, default: 1.05em))
+    }
+    if "awards_highlight_indent" in layout {
+      flat.insert("awards_highlight_indent", parse_dimension(layout.awards_highlight_indent, default: 1.05em))
+    }
+    if "generic_entry_spacing" in layout {
+      flat.insert("generic_entry_spacing", parse_dimension(layout.generic_entry_spacing, default: 0.58em))
+    }
+    if "generic_entry_inner_spacing" in layout {
+      flat.insert(
+        "generic_entry_inner_spacing",
+        parse_dimension(layout.generic_entry_inner_spacing, default: 0.22em),
+      )
+    }
+    if "generic_highlights_spacing" in layout {
+      flat.insert(
+        "generic_highlights_spacing",
+        parse_dimension(layout.generic_highlights_spacing, default: 0.2em),
+      )
+    }
+    if "generic_highlight_indent" in layout {
+      flat.insert("generic_highlight_indent", parse_dimension(layout.generic_highlight_indent, default: 1.05em))
+    }
     if "post_section_spacing" in layout {
       flat.insert("post_section_spacing", parse_dimension(layout.post_section_spacing, default: 0.26em))
     }
@@ -991,6 +1284,12 @@
     }
     if "header_bottom_spacing" in layout {
       flat.insert("header_bottom_spacing", parse_dimension(layout.header_bottom_spacing, default: 0.12em))
+    }
+    if "header_rule_top_spacing" in layout {
+      flat.insert("header_rule_top_spacing", parse_dimension(layout.header_rule_top_spacing, default: 0.16em))
+    }
+    if "contact_separator_spacing" in layout {
+      flat.insert("contact_separator_spacing", parse_dimension(layout.contact_separator_spacing, default: 0.24em))
     }
     if "last_updated_bottom_spacing" in layout {
       flat.insert(
@@ -1084,8 +1383,21 @@
     if "section_rule_color" in styling {
       flat.insert("section_rule_color", parse_color(styling.section_rule_color, default: rgb("#222222")))
     }
+    if "header_rule_color" in styling {
+      flat.insert("header_rule_color", parse_color(styling.header_rule_color, default: rgb("#222222")))
+    }
     if "section_rule_thickness" in styling {
       flat.insert("section_rule_thickness", parse_dimension(styling.section_rule_thickness, default: 0.6pt))
+    }
+    if "header_rule_thickness" in styling {
+      flat.insert("header_rule_thickness", parse_dimension(styling.header_rule_thickness, default: 0.7pt))
+    }
+    if "section_rule_enabled" in styling { flat.insert("section_rule_enabled", styling.section_rule_enabled) }
+    if "section_rule_gap" in styling {
+      flat.insert("section_rule_gap", parse_dimension(styling.section_rule_gap, default: 0.14em))
+    }
+    if "section_heading_tracking" in styling {
+      flat.insert("section_heading_tracking", parse_dimension(styling.section_heading_tracking, default: 0.02em))
     }
     if "publications_link_style" in styling {
       flat.insert("publications_link_style", styling.publications_link_style)
@@ -1120,20 +1432,15 @@
 
   if "section_titles" in yaml_config {
     let titles = yaml_config.section_titles
-    if "work" in titles { flat.insert("work_title", titles.work) }
-    if "education" in titles { flat.insert("education_title", titles.education) }
-    if "publications" in titles { flat.insert("publications_title", titles.publications) }
-    if "projects" in titles { flat.insert("projects_title", titles.projects) }
-    if "awards" in titles { flat.insert("awards_title", titles.awards) }
-    if "skills" in titles { flat.insert("skills_title", titles.skills) }
-    if "languages" in titles { flat.insert("languages_title", titles.languages) }
-    if "interests" in titles { flat.insert("interests_title", titles.interests) }
-    if "interests_summary" in titles { flat.insert("interests_summary_title", titles.interests_summary) }
-    if "references" in titles { flat.insert("references_title", titles.references) }
+    flat.insert("section_titles_map", titles)
   }
 
   if "section_order" in yaml_config {
     flat.insert("section_order", yaml_config.section_order)
+  }
+
+  if "publication_sections" in yaml_config {
+    flat.insert("publication_sections", yaml_config.publication_sections)
   }
 
   return flat
@@ -1197,6 +1504,8 @@
       render_languages(data, config)
     } else if section == "interests" { render_interests(data, config) } else if section == "references" {
       render_references(data, config)
+    } else {
+      render_generic_section(data, config, section)
     }
   }
 }

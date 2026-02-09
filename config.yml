@@ -15,8 +15,8 @@ variant: long # Options: "long" or "short"
 fonts:
   heading_font: "New Computer Modern"
   body_font: "New Computer Modern"
-  font_size: 10.5pt
-  name_font_size: 1.8em
+  font_size: 10.4pt
+  name_font_size: 1.55em
   section_font_size: 1em
   publications_font_size: 9.6pt
   awards_font_size: 10pt
@@ -26,49 +26,64 @@ fonts:
 # ------------------------------------------------------------------------------
 layout:
   margin: 0.5in
-  line_spacing: 0.82em
-  list_spacing: 0.24em
-  section_spacing: 0.5em
-  post_section_spacing: 0.22em
-  entry_spacing: 0.72em
-  entry_inner_spacing: 0.26em
-  work_entry_spacing: 0.56em
-  work_entry_inner_spacing: 0.28em
-  work_position_spacing: 0.26em
-  work_bullet_spacing: 0.24em
-  work_list_spacing: 0.24em
-  education_entry_spacing: 0.72em
-  education_entry_inner_spacing: 0.26em
-  education_honors_spacing: 0.26em
-  education_degree_spacing: 0.26em
-  education_courses_spacing: 0.24em
-  education_highlights_spacing: 0.24em
-  education_list_spacing: 0.22em
+  line_spacing: 0.79em
+  skills_line_spacing: 0.64em
+  list_spacing: 0.16em
+  section_spacing: 0.92em
+  post_section_spacing: 0.32em
+  entry_spacing: 0.56em
+  entry_inner_spacing: 0.18em
+  work_entry_spacing: 0.46em
+  work_entry_inner_spacing: 0.14em
+  work_position_spacing: 0.22em
+  work_bullet_spacing: 0.1em
+  work_list_spacing: 0.12em
+  work_highlight_indent: 0.95em
+  education_entry_spacing: 0.48em
+  education_entry_inner_spacing: 0.14em
+  education_honors_spacing: 0.1em
+  education_degree_spacing: 0.08em
+  education_courses_spacing: 0.08em
+  education_highlights_spacing: 0.1em
+  education_list_spacing: 0.1em
+  education_highlight_indent: 0.95em
   projects_entry_spacing: 0.44em
   projects_entry_inner_spacing: 0.18em
-  awards_entry_spacing: 0.46em
-  awards_entry_inner_spacing: 0.22em
-  awards_highlights_spacing: 0.22em
-  awards_list_spacing: 0.22em
-  pub_spacing: 0.46em
-  publications_line_spacing: 0.76em
-  skill_spacing: 0.16em
-  header_bottom_spacing: 0.14em
-  last_updated_bottom_spacing: 0.2em
+  awards_entry_spacing: 0.34em
+  awards_entry_inner_spacing: 0.12em
+  awards_highlights_spacing: 0.1em
+  awards_list_spacing: 0.1em
+  awards_highlight_indent: 0.95em
+  pub_spacing: 0.48em
+  publications_line_spacing: 0.7em
+  skill_spacing: 0.32em
+  header_rule_top_spacing: 0.14em
+  header_bottom_spacing: 0.26em
+  contact_separator_spacing: 0.2em
+  last_updated_bottom_spacing: 0.16em
+  generic_entry_spacing: 0.5em
+  generic_entry_inner_spacing: 0.14em
+  generic_highlights_spacing: 0.1em
+  generic_highlight_indent: 0.95em
 
 # ------------------------------------------------------------------------------
 # STYLING
 # ------------------------------------------------------------------------------
 styling:
-  section_smallcaps: true
-  contact_font_size: 0.85em
+  section_smallcaps: false
+  contact_font_size: 0.76em
   summary_font_size: 0.92em
-  secondary_color: "#555555"
-  link_color: "#0b61a4"
-  section_rule_color: "#222222"
+  secondary_color: "#111111"
+  link_color: "#000080"
+  section_rule_color: "#111111"
   section_rule_thickness: 0.6pt
+  section_rule_enabled: false
+  section_rule_gap: 0.12em
+  section_heading_tracking: 0.01em
+  header_rule_color: "#111111"
+  header_rule_thickness: 0.7pt
   publications_link_style: "compact"
-  last_updated_font_size: 0.72em
+  last_updated_font_size: 0.68em
   last_updated_label: "Last Updated on"
 
 # ------------------------------------------------------------------------------
@@ -78,7 +93,7 @@ visibility:
   show_location: false
   show_phone: true
   show_interests_summary: true
-  show_languages: true
+  show_languages: false
   show_interests: false
   show_references: false
   show_last_updated: true
@@ -91,11 +106,11 @@ section_titles:
   education: "Education"
   publications: "Publications"
   projects: "Projects"
-  awards: "Honors and Awards"
+  awards: "Honors and Activities"
   skills: "Skills"
   languages: "Languages"
   interests: "Interests"
-  interests_summary: "Research Interests"
+  interests_summary: "Interests"
   references: "References"
 
 # ------------------------------------------------------------------------------
@@ -104,11 +119,25 @@ section_titles:
 section_order:
   - interests_summary
   - work
-  - education
   - publications
+  - education
   - awards
   - skills
-  - languages
+  # - languages
   # - projects
   # - interests
   # - references
+
+# ------------------------------------------------------------------------------
+# PUBLICATION GROUPING
+# ------------------------------------------------------------------------------
+# Optional. If set, publications are split into multiple sections by each
+# publication item's `section` field. If `section` is omitted, the template
+# infers a section from status/publisher (works in progress, submitted, accepted).
+publication_sections:
+  - key: works_in_progress
+    title: "Works in Progress"
+  - key: submitted
+    title: "Submitted Publications"
+  - key: accepted
+    title: "Accepted Publications"

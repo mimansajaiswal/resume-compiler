@@ -1,0 +1,632 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%% Simple LaTeX CV Template %%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% NOTE: If you find that it says                                     %%
+%%                                                                    %%
+%%                           1 of ??                                  %%
+%%                                                                    %%
+%% at the bottom of your first page, this means that the AUX file     %%
+%% was not available when you ran LaTeX on this source. Simply RERUN  %%
+%% LaTeX to get the ``??'' replaced with the number of the last page  %%
+%% of the document. The AUX file will be generated on the first run   %%
+%% of LaTeX and used on the second run to fill in all of the          %%
+%% references.                                                        %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% Document Setup %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Don't like 10pt? Try 11pt or 12pt
+\documentclass[10pt]{article}
+
+% The automated optical recognition software used to digitize resume
+% information works best with fonts that do not have serifs. This
+% command uses a sans serif font throughout. Uncomment both lines (or at
+% least the second) to restore a Roman font (i.e., a font with serifs).
+%\usepackage{times}
+%\renewcommand{\familydefault}{\sfdefault}
+
+% This is a helpful package that puts math inside length specifications
+\usepackage{calc}
+\usepackage{comment}
+\usepackage{array}      % +++++++++++++++++++++++++++++++++++++++
+\usepackage{ifthen}     % for conditional statements
+\usepackage[absolute]{textpos}  % for absolute positioning
+
+% Simpler bibsection for CV sections
+% (thanks to natbib for inspiration)
+\makeatletter
+\newlength{\bibhang}
+\setlength{\bibhang}{1em} %1em}
+\newlength{\bibsep}
+ {\@listi \global\bibsep\itemsep \global\advance\bibsep by\parsep}
+\newenvironment{bibsection}
+        {\begin{list}{}{
+        \setlength{\leftmargin}{0em}
+       \setlength{\itemsep}{\bibsep}
+       \setlength{\parsep}{\z@}
+        \setlength{\partopsep}{0pt}
+        \setlength{\topsep}{0pt}}}
+        {\end{list}\vspace{-.6\baselineskip}}           % +++++++++++++++++++++++++++++++++++++++
+\makeatother
+
+% Layout: Single column format
+%\reversemarginpar
+
+%
+%         PAPER SIZE, PAGE NUMBER, AND DOCUMENT LAYOUT NOTES:
+%
+% The next \usepackage line changes the layout for CV style section
+% headings as marginal notes. It also sets up the paper size as either
+% letter or A4. By default, letter was used. If A4 paper is desired,
+% comment out the letterpaper lines and uncomment the a4paper lines.
+%
+% As you can see, the margin widths and section title widths can be
+% easily adjusted.
+%
+% ALSO: Notice that the includefoot option can be commented OUT in order
+% to put the PAGE NUMBER *IN* the bottom margin. This will make the
+% effective text area larger.
+%
+% IF YOU WISH TO REMOVE THE ``of LASTPAGE'' next to each page number,
+% see the note about the +LP and -LP lines below. Comment out the +LP
+% and uncomment the -LP.
+%
+% IF YOU WISH TO REMOVE PAGE NUMBERS, be sure that the includefoot line
+% is uncommented and ALSO uncomment the \pagestyle{empty} a few lines
+% below.
+%
+
+%% Use these lines for letter-sized paper
+\usepackage[paper=letterpaper,
+            %includefoot, % Uncomment to put page number above margin
+            margin=0.65in]{geometry}
+
+%% Use these lines for A4-sized paper
+%\usepackage[paper=a4paper,
+%            %includefoot, % Uncomment to put page number above margin
+%            marginparwidth=30.5mm,    % Length of section titles
+%            marginparsep=1.5mm,       % Space between titles and text
+%            margin=25mm,              % 25mm margins
+%            includemp]{geometry}
+
+%% More layout: Get rid of indenting throughout entire document
+\setlength{\parindent}{0in}
+
+\usepackage[shortlabels]{enumitem}
+
+%% Reference the last page in the page number
+%
+% NOTE: comment the +LP line and uncomment the -LP line to have page
+%       numbers without the ``of ##'' last page reference)
+%
+% NOTE: uncomment the \pagestyle{empty} line to get rid of all page
+%       numbers (make sure includefoot is commented out above)
+%
+\usepackage{fancyhdr,lastpage}
+\pagestyle{fancy}
+%\pagestyle{empty}      % Uncomment this to get rid of page numbers
+\fancyhf{}\renewcommand{\headrulewidth}{0pt}
+\cfoot{\arabic{page} of \protect\pageref*{LastPage}}
+
+% Finally, give us PDF bookmarks
+\usepackage{color,hyperref}
+\definecolor{darkblue}{rgb}{0.0,0.0,0.3}
+\hypersetup{colorlinks,breaklinks,
+            linkcolor=darkblue,urlcolor=darkblue,
+            anchorcolor=darkblue,citecolor=darkblue}
+
+%%%%%%%%%%%%%%%%%%%%%%%% End Document Setup %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%% Helper Commands %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% The title (name) with a horizontal rule under it
+% (optional argument typesets an object right-justified across from name
+%  as well)
+%
+% Usage: \makeheading{name}
+%        OR
+%        \makeheading[right_object]{name}
+%
+% Place at top of document. It should be the first thing.
+% If ``right_object'' is provided in the square-braced optional
+% argument, it will be right justified on the same line as ``name'' at
+% the top of the CV. For example:
+%
+%       \makeheading[\emph{Curriculum vitae}]{Your Name}
+%
+% will put an emphasized ``Curriculum vitae'' at the top of the document
+% as a title. Likewise, a picture could be included:
+%
+%   \makeheading[\includegraphics[height=1.5in]{my_picutre}]{Your Name}
+%
+% the picture will be flush right across from the name.
+\newcommand{\makeheading}[2][]%
+        {\begin{center}
+             {\Large \bfseries #2}
+             \ifthenelse{\equal{#1}{}}{}{\\[0.1\baselineskip] {\small #1}}
+             \\[0.2\baselineskip]
+             \rule{\textwidth}{1pt}
+         \end{center}}
+
+% The section headings
+%
+% Usage: \section{section name}
+\renewcommand{\section}[1]{\pagebreak[3]%
+    \hyphenpenalty=10000%
+    \vspace{1\baselineskip}%
+    \phantomsection\addcontentsline{toc}{section}{#1}%
+    \noindent{\normalsize\bfseries\MakeUppercase{#1}}%
+    \vspace{0.5\baselineskip}\par}
+
+% An itemize-style list with lots of space between items
+\newenvironment{outerlist}[1][\enskip\textbullet]%
+        {\begin{itemize}[#1,leftmargin=*]}{\end{itemize}%
+         \vspace{-.6\baselineskip}}
+
+% An environment IDENTICAL to outerlist that has better pre-list spacing
+% when used as the first thing in a \section
+\newenvironment{lonelist}[1][\enskip\textbullet]%
+        {\begin{list}{#1}{%
+        \setlength{\partopsep}{0pt}%
+        \setlength{\topsep}{0pt}}}
+        {\end{list}\vspace{-.6\baselineskip}}
+
+% An itemize-style list with little space between items
+\newenvironment{innerlist}[1][\enskip\textbullet]%
+        {\begin{itemize}[#1,leftmargin=*,parsep=0pt,itemsep=0pt,topsep=0pt,partopsep=0pt]}
+        {\end{itemize}}
+
+% An environment IDENTICAL to innerlist that has better pre-list spacing
+% when used as the first thing in a \section
+\newenvironment{loneinnerlist}[1][\enskip\textbullet]%
+        {\begin{itemize}[#1,leftmargin=*,parsep=0pt,itemsep=0pt,topsep=0pt,partopsep=0pt]}
+        {\end{itemize}\vspace{-.6\baselineskip}}
+
+% To add some paragraph space between lines.
+% This also tells LaTeX to preferably break a page on one of these gaps
+% if there is a needed pagebreak nearby.
+\newcommand{\blankline}{\quad\pagebreak[3]}
+\newcommand{\halfblankline}{\quad\vspace{-0.5\baselineskip}\pagebreak[3]}
+
+% Uses hyperref to link DOI
+\newcommand\doilink[1]{\href{http://dx.doi.org/#1}{#1}}
+\newcommand\doi[1]{doi:\doilink{#1}}
+
+% For \url{SOME_URL}, links SOME_URL to the url SOME_URL
+\providecommand*\url[1]{\href{#1}{#1}}
+% Same as above, but pretty-prints SOME_URL in teletype fixed-width font
+\renewcommand*\url[1]{\href{#1}{\texttt{#1}}}
+
+% Allow better line breaking for long text
+\sloppy
+
+% For \email{ADDRESS}, links ADDRESS to the url mailto:ADDRESS
+\providecommand*\email[1]{\href{mailto:#1}{#1}}
+% Same as above, but pretty-prints ADDRESS in teletype fixed-width font
+%\renewcommand*\email[1]{\href{mailto:#1}{\texttt{#1}}}
+
+%\providecommand\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+%    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+%\providecommand\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+%    \TeX}}
+\providecommand\BibTeX{{B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    \TeX}}
+\providecommand\Matlab{\textsc{Matlab}}
+
+%%%%%%%%%%%%%%%%%%%%%%%% End Helper Commands %%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%% Begin CV Document %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+% Last updated in top right corner - positioned absolutely
+\begin{textblock*}{3in}[1,0](\paperwidth-0.3in,0.25in)
+\raggedleft\footnotesize Last Updated on \today
+\end{textblock*}
+
+\begin{center}
+{\Large \bfseries Mimansa Jaiswal}
+\\[0.2\baselineskip]
+% \small
+(734) 747-0283 $\mid$
+\href{mailto:mimansa.jaiswal@gmail.com}{\texttt{mimansa.jaiswal@gmail.com}} $\mid$
+\href{mailto:mimansa@umich.edu}{\texttt{mimansa@umich.edu}} $\mid$
+\href{https://mimansajaiswal.github.io/}{\texttt{Website}} $\mid$
+\href{https://twitter.com/MimansaJ}{@MimansaJ} $\mid$
+\href{https://www.linkedin.com/in/mimansajaiswal/}{LinkedIn}
+\\[0.2\baselineskip]
+\rule{\textwidth}{1pt}
+\end{center}
+\vspace{0.3\baselineskip}
+
+\section{Interests}
+
+My work focuses on \textbf{LLM post-training and evaluation}, with emphasis on identifying and diagnosing model failures through systematic error analysis and adversarial testing \textbf{\textit{(Failure Analysis)}}, applying alignment techniques including RLHF/RLAIF, DPO/GRPO, and reward modeling to improve model behavior and capabilities \textbf{\textit{(Post-Training)}}, designing automated evaluation frameworks and synthetic data generation pipelines to assess model performance across fine-grained skills and edge cases \textbf{\textit{(Evaluation \& Data Augmentation)}}, incorporating human feedback, preferences, and domain expertise into iterative model development workflows \textbf{\textit{(Human-in-the-Loop ML)}}, and developing interpretable model analysis techniques to understand and improve model reliability for real-world deployment \textbf{\textit{(Model Interpretability \& Deployment)}}.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Experience}
+\href{https://ai.meta.com/}{\textbf{Meta (MSL Org)}} | Research Scientist
+ \hfill {Feb 2025 to \textit{present}} \\
+\vspace{-.1in}
+\begin{innerlist}
+\item[]
+    %\vspace{-.1in}
+    \begin{innerlist}
+    \item[] Work on \href{https://www.meta.ai/}{Meta AI's} Product Capabilities team to develop and fine-tune large language models for usecases (agentic tool calling, personalized support and tutoring) using post-training techniques including RLHF/RLAIF (with and without checklists), DPO/GRPO, and reward modeling to improve production models.
+    \item[] Design and implement synthetic data generation pipelines and automated evaluation systems, including rubric-based judges, preference data collection workflows, and quality assessment frameworks to measure and improve model performance.
+    \end{innerlist}
+\end{innerlist}
+\vspace{.05in}
+
+
+\href{https://norm.ai/}{\textbf{Norm AI}} | Research Engineer
+\hfill {Oct 2023 to Oct 2024} \\
+\vspace{-.1in}
+\begin{innerlist}
+\item[]
+    %\vspace{-.1in}
+    \begin{innerlist}
+    \item[] Developed domain-specific question answering and retrieval-augmented generation (RAG) systems for legal applications, using synthetic data augmentation to expand training datasets, create evaluation benchmarks, and improve model coverage.
+    \item[] Designed agentic LLM simulation frameworks to model human group perception and consensus-building for subjective law interpretation and policy evaluation.
+    \end{innerlist}
+\end{innerlist}
+\vspace{.05in}
+
+
+\href{https://allennlp.org/}{\textbf{Allen NLP, Allen Institute for AI}} | Research Intern
+\hfill {Sep 2021 to Dec 2021} \\
+\vspace{-.1in}
+\begin{innerlist}
+\item[]
+    %\vspace{-.1in}
+    \begin{innerlist}
+    \item[] Developed interpretable evaluation frameworks for GPT-3 and other language models that decompose complex tasks into component skills, creating benchmarks for multi-aspect quality assessment.
+    \item[] Applied these evaluation methodologies to measure fine-grained model capabilities and identify failure modes in natural language understanding tasks.
+    %Manager: \href{https://www.anamarasovic.com/}{Ana Marasovic}
+    \end{innerlist}
+\end{innerlist}
+\vspace{.05in}
+
+\href{https://ai.facebook.com/research/NLP}{\textbf{NLP Team, Facebook AI Research (FAIR)}} | Research Intern \hfill {May 2021 to Aug 2021} \\
+\vspace{-.1in}
+\begin{innerlist}
+\item[]
+    %\vspace{-.1in}
+    \begin{innerlist}
+    \item[] Identified and analyzed systematic failure patterns in Natural Language Inference (NLI) through adversarial testing and error analysis.
+    \item[] Developed correction strategies and data augmentation techniques to improve model robustness on challenging NLI examples, experimenting with the CTRL model.
+    %Manager: \href{https://wp.nyu.edu/adinawilliams/}{Adina Williams}, Peers: \href{http://scottyih.org/}{Scott Yih}, \href{https://www.pedro.ai/}{Pedro Rogieruez}
+    \end{innerlist}
+\end{innerlist}
+\vspace{.05in}
+
+\vspace{.05in}
+
+\href{https://ai.facebook.com/research/conversational-ai/}{\textbf{Conversation AI, Facebook Research}} | Research Intern
+\hfill {May 2020 to Aug 2020} \\
+\vspace{-.1in}
+\begin{innerlist}
+\item[]
+    %\vspace{-.1in}
+    \begin{innerlist}
+    \item[] Developed interpretable user satisfaction metrics for conversational AI systems by integrating human knowledge and behavioral signals, training weakly supervised hierarchical label models.
+    \item[] Created evaluation frameworks that combine quantitative metrics with qualitative human feedback to assess dialogue quality.
+    %Manager: \href{https://sites.google.com/view/beirami}{Ahmad Beirami}, Peers: \href{https://shanemoon.com/}{Shane}, \href{https://satwikkottur.github.io/}{Satwik}, \href{https://chinnadhurai.github.io/}{Chinnadhurai}
+    \end{innerlist}
+\end{innerlist}
+
+% \vspace{.05in}
+
+% \href{http://chai.eecs.umich.edu}{\textbf{CHAI Lab, University of Michigan}},
+% Ann Arbor, MI \hfill {Sept 2017 to present} \\
+% \vspace{-.1in}
+% \begin{innerlist}
+% \item[]
+%     \begin{innerlist}
+%     \item[] Robust and interpretable systems for social signal processing using natural language understanding and speech processing
+%     \item[] Position: Graduate Student Research Assistant (GSRA); Advisor: \href{http://web.eecs.umich.edu/~emilykmp/}{Prof. Emily Mower Provost}
+%     \end{innerlist}
+% \end{innerlist}
+
+% \vspace{.05in}
+
+% \href{http://www.ietdavv.edu.in/}{\textbf{Institute of Engineering and Technology}},
+% Indore, India \hfill {July 2016 to May 2017} \\
+% \vspace{-.1in}
+% \begin{innerlist}
+% \item[]
+%     \begin{innerlist}
+%     \item[] Linguistic markers of mental health issues and generating automod reply conditioned on affect
+%     \item[] Position: B.E. Thesis Project; Advisor: Prof. G.L Prajapati
+%     \end{innerlist}
+% \end{innerlist}
+
+% \vspace{.05in}
+
+
+% \href{https://sentic.net/team/}{\textbf{SenticNet | Computational Intelligence Lab | NTU}},
+% Singapore \hfill {Apr 2016 to July 2016} \\
+% \vspace{-.1in}
+% \begin{innerlist}
+% \item[]
+%     \begin{innerlist}
+%     \item[] Multi-modal deception detection using automated feature set.
+%     \item[] Detecting empathetic and non-empathetic responses in comments, and where they are needed.
+%     \item[] Position: Undergraduate Research Assistant; Advisor: \href{http://sentic.net/erikcambria/}{Prof. Erik Cambria}
+%     \end{innerlist}
+% \end{innerlist}
+
+% \vspace{.05in}
+
+
+% \href{http://academiasinicanlplab.github.io/}{\textbf{NLP and Sentiment Analysis Lab | Academia Sinica}},
+% Taiwan \hfill {Dec 2015 to Feb 2016} \\
+% \vspace{-.1in}
+% \begin{innerlist}
+% \item[]
+%     \begin{innerlist}
+%     \item[] Emotion Push: Automatically conveying emotion in instant messages and notifications.
+%     \item[] GMMs for sentence recommendation system for learning difference in synonyms for ESL learners.
+%     \item[] Position: Undergraduate Research Assistant; Advisor: \href{http://www.iis.sinica.edu.tw/pages/lwku/index_en.html}{Prof. Lun-Wei Ku}
+%     \end{innerlist}
+% \end{innerlist}
+
+% \vspace{.05in}
+
+% \href{https://www.iiitd.ac.in}{\textbf{Indraprastha Institute of Information Technology Delhi}},
+% Delhi, India \hfill {May 2015 to July 2015} \\
+% \vspace{-.1in}
+% \begin{innerlist}
+% \item[]
+%     \begin{innerlist}
+%     \item[] Finding the optimal conditions under which people are willing to share rides.
+%     \item[] Developed an algorithm to optimize route matching for cab-pooling.
+%      \item[] Position: Undergraduate Research Assistant; Advisor: \href{http://faculty.iiitd.ac.in/~praveshb/}{Prof. Pravesh Biyani}
+%     \end{innerlist}
+% \end{innerlist}
+
+% \vspace{.05in}
+
+
+% \textbf{Zootout},
+% Indore, India \hfill {Jan 2015 to April 2015} \\
+% \vspace{-.1in}
+% \begin{innerlist}
+% \item[] \emph{Undergraduate Technical Assistant} \\
+%     \vspace{-.1in}
+%     \begin{innerlist}
+%     \item[] Aspect based sentiment analysis on hotel and restaurant reviews.
+%     \item[] Sentiment analysis to find the overall inclination of review for desired tags.
+%     \item[] Mentor: Sumay Dubey
+%     \end{innerlist}
+% \end{innerlist}
+
+\vspace{.05in}
+
+% \newpage
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+¸% \section{Relevant Coursework}
+
+% \emph{@}UMich: Machine Learning, Introduction to AI, Computer Vision,
+% Computational Complexity, \\Advanced Compilers, and Advanced Computer Networks.
+% \\\\
+% \emph{@}UC: Probability \& Random Processes, Optimization Methods,
+% Digital Signal Processing, \\Multivariate Calculus, Differential Equations,
+% and Linear Algebra.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \section{In Progress Work}
+% \vspace{-.1275in}
+% \begin{flushleft}
+% \begin{bibsection}
+
+% \item[] \textbf{Environmental and Synthetic Noise which is either Perceptible or Imperceptible by Humans, All Break Emotion Recognition.} \\
+% \textbf{Mimansa Jaiswal}, Emily Mower Provost
+
+% \end{bibsection}
+% \end{flushleft}
+
+\section{Works in Progress}
+\vspace{-.1275in}
+\begin{flushleft}
+\begin{bibsection}
+
+\item[] \textbf{CAPSTONE: Capability Assessment Protocol for Systematic Testing Of Natural language models' Expertise}. \textbf{Mimansa Jaiswal}.
+\\\href{https://mimansajaiswal.github.io/posts/capstone/}{Research Notes}
+
+% \item[] \textbf{Controlled Evaluation of Explanations: What Might Have Influenced Your Model Explanation Efficacy Evaluation?}\\
+% %In \textit{EMNLP 2020}.\\
+% \textbf{Mimansa Jaiswal}, Minxue Niu
+
+% \item[] \textbf{An Interpretation Framework for Explaining Multimodal Models Trained for Computational Paralinguistic Tasks.}\\
+% %In \textit{EMNLP 2020}.\\
+% \textbf{Mimansa Jaiswal}
+
+\item[] \textbf{Designing Interfaces for Delivering and Obtaining Generation Explanation Annotations}. \textbf{Mimansa Jaiswal}.
+\\\href{https://human-in-loop-explanation-annotation.vercel.app/}{Demo} and \href{https://github.com/mimansajaiswal/hil-text-annotation}{Repo}
+
+% \item[] \textbf{Investigating the Effect of Noise on Human Perception and Machine Classification of Emotion.} \\
+% In \textit{Interspeech 2020}. \\
+% \textbf{Mimansa Jaiswal}, Emily Mower Provost
+
+
+%\\\textbf{Abstract accepted} to \textit{Women in Machine Learning Workshop, co-located with NeurIPS 2019}.
+
+\end{bibsection}
+\end{flushleft}
+
+\section{Submitted Publications}
+\vspace{-.1275in}
+\begin{flushleft}
+\begin{bibsection}
+\item[]\href{https://arxiv.org/abs/2408.16961}{\textbf{The Future of Open Human Feedback.}} Shachar Don-Yehiya, Ben Burtenshaw, Ramon Fernandez Astudillo, Cailean Osborne, \textbf{Mimansa Jaiswal}, Tzu-Sheng Kuo, Wenting Zhao, Idan Shenfeld, Andi Peng, Mikhail Yurochkin, Atoosa Kasirzadeh, Yangsibo Huang, Tatsunori Hashimoto, Yacine Jernite, Daniel Vila-Suero, Omri Abend, Jennifer Ding, Sara Hooker, Hannah Rose Kirk, Leshem Choshen.
+\item \textbf{Temperature Zero Isn't the Best Choice For Accuracy in Legal Reasoning}. \textbf{Mimansa Jaiswal}, Scott Worland, John Nay.
+\item[]\href{https://arxiv.org/abs/2405.14782}{\textbf{Lessons from the Trenches on Reproducible Evaluation of Language Models.}} Stella Biderman, Hailey Schoelkopf, Lintang Sutawika,…(and 12 others) \textbf{Mimansa Jaiswal} …(and 10 others).
+\item[] \href{https://mimansajaiswal.github.io/papers-pdf/sally_anne_workshop.pdf}{\textbf{Sally-Anne False Belief Test for LLMs}}. \textbf{Mimansa Jaiswal}.
+\item[] \href{https://mimansajaiswal.github.io/papers-pdf/qualitative-gender-workshop.pdf}{\textbf{Qualitatively Studying Gender Biases in LLMs}}. \textbf{Mimansa Jaiswal}.
+\item[] \href{https://mimansajaiswal.github.io/notes/case-of-llm-evals.html}{\textbf{Assessing Large Language Models: A Comprehensive Survey and Critical Analysis of Evaluation Metrics and Methodologies}}. \textbf{Mimansa Jaiswal}.
+% \item[] \textbf{Investigating the Effect of Noise on Human Perception and Machine Classification of Emotion.} \\
+% In \textit{Interspeech 2020}. \\
+% \textbf{Mimansa Jaiswal}, Emily Mower Provost
+
+
+%\\\textbf{Abstract accepted} to \textit{Women in Machine Learning Workshop, co-located with NeurIPS 2019}.
+
+\end{bibsection}
+\end{flushleft}
+
+
+\section{Accepted Publications}
+\vspace{-.1275in}
+
+\begin{flushleft}
+\begin{bibsection}
+\item[] \href{https://arxiv.org/pdf/2408.17026}{\textbf{From Text to Emotion: Unveiling the Emotion Annotation Capabilities of LLMs}}. In \textit{Interspeech 2024}. Minxue Niu, \textbf{Mimansa Jaiswal}, Emily Mower Provost.
+
+\item[] \href{https://www.isca-archive.org/interspeech_2023/niu23b_interspeech.pdf}{\textbf{Capturing Mismatch between Textual and Acoustic Emotion Expressions for Mood Identification in Bipolar Disorder}}. In \textit{Interspeech 2023}. Minxue Niu, Amrit Romana, \textbf{Mimansa Jaiswal}, Melvin McInnis, Emily Mower Provost.
+
+\item[] \href{https://www.isca-speech.org/archive/pdfs/interspeech_2022/perez22_interspeech.pdf}{\textbf{Mind the gap: On the value of silence representations to lexical-based speech emotion recognition}}. In \textit{Interspeech 2022}. Matthew Perez, \textbf{Mimansa Jaiswal}, Minxue Niu, Cristina Gorrostieta, Matthew Roddy, Kye Taylor, Reza Lotfian, John Kane, Emily Mower Provost.
+
+\item[] \href{https://arxiv.org/pdf/2104.08792.pdf}{\textbf{Human-Centered Metric Design to Promote Generalizable and Debiased Emotion Recognition.}} At Text as Data (TADA) conference 2021. \textbf{Mimansa Jaiswal}, Emily Mower Provost.
+
+\item[] \href{https://arxiv.org/pdf/2104.08806.pdf}{\textbf{Noise Based Augmentation of Emotion Datasets: What's ideal and What Isn't?.}} In \textit{ACL-SRW 2020}. \textbf{Mimansa Jaiswal}, Emily Mower Provost.
+
+\item[] \href{https://aclanthology.org/2020.lrec-1.187.pdf}{\textbf{MuSE: Multimodal Stressed Emotion Dataset.}} In \textit{Conference on Language Resources and Evaluation (LREC) 2020}. \textbf{Mimansa Jaiswal$^*$}, CP Bara, Yuanhang Luo, Rada Mihalcea, Mihai Burzo, Emily Mower Provost.
+
+\item[] \href{https://arxiv.org/pdf/1910.13212.pdf}{\textbf{Privacy Enhanced Multimodal Neural Representations for Emotion Recognition.}} In \textit{AAAI Conference on Artificial Intelligence (AAAI) 2020}. In \textit{Human Centered Machine Learning (HCML), Privacy in Machine Learning (PriML) Workshops in NeuRIPS 2019}. \textbf{Mimansa Jaiswal}, Emily Mower Provost.
+
+\item[] \href{https://arxiv.org/pdf/1908.08979.pdf} {\textbf{Controlling for Confounders in Multimodal Emotion Classification via Adversarial Learning.}} In \textit{International Conference on Multimodal Interaction (ICMI) 2019}. \textbf{Mimansa Jaiswal}, Zakaria Aldeneh, Emily Mower Provost.
+
+\item[] \href{https://www.isca-speech.org/archive/Interspeech_2019/pdfs/1878.pdf}{\textbf{Identifying Mood Episodes Using Dialogue Features from Clinical Interviews.}} In \textit{Interspeech 2019}. Zakaria Aldeneh, \textbf{Mimansa Jaiswal}, Michael Picheny, Melvin McInnis, Emily Mower Provost.
+
+\item[] \href{https://arxiv.org/pdf/1903.11672.pdf}{\textbf{MuSE-ing on the Impact of Utterance Ordering On Crowdsourced Emotion Annotations.}} In \textit{IEEE International Conference on Acoustics, Speech, and Signal Processing (ICASSP) 2019}. \textbf{Mimansa Jaiswal}, Zakaria Aldeneh, Cristian-Paul Bara, Yuanhang Luo, Mihai Burzo, Rada Mihalcea, Emily Mower Provost.
+
+\item[] \href{https://arxiv.org/pdf/1806.10658.pdf}{\textbf{The PRIORI Emotion Dataset: Linking Mood to Emotion Detected In-the-Wild.}} In \textit{Interspeech 2018}. Soheil Khorram, \textbf{Mimansa Jaiswal}, John Gideon, Melvin McInnis, Emily Mower Provost.
+
+% \item[] \href{https://arxiv.org/pdf/1903.05210.pdf}{
+% \textbf{“Hang In There:" Lexical and Visual Analysis to Identify Posts Warranting Empathetic Responses.}}\\
+% In \textit{The Florida Artificial Intelligence Research Society Conference (FLAIRS) 2017}. \\
+% \textbf{Mimansa Jaiswal}, Sairam Tabibu, Erik Cambria
+
+% \item[] \href{https://arxiv.org/pdf/1903.04484.pdf}{
+% \textbf{The Truth and Nothing but the Truth: Multimodal Analysis for Deception Detection.}}
+% \\
+% In \textit{International Conference on Data Mining Workshops (ICDMW) 2016}. \\
+% \textbf{Mimansa Jaiswal}, Sairam Tabibu, Rajiv Bajpai
+
+% \item[]
+% \textbf{Contextual Text-mining Approach for Teacher Feedback.}
+% \\
+% In \textit{Extended Abstracts, Information Systems Research and Teaching,  2014}. \\
+% \textbf{Mimansa Jaiswal},  Vinshi Vanvat, Manasi Tiwari
+
+\end{bibsection}
+\end{flushleft}
+%\vspace{.15in} % don't need this if this is the end of a page
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Education}
+
+\href{http://www.umich.edu}{\textbf{University of Michigan}},
+Ann Arbor, MI \hfill {Sept 2017 to Aug 2023} \\
+\vspace{-.1in}
+\begin{innerlist}
+\item[] \textbf{\href{https://rackham.umich.edu/discover-rackham/announcing-the-2022-2023-barbour-scholars/}{Awarded Barbour Fellowship Amongst Over 1k+ Applicants}}
+\item[] Ph.D. in Computer Science and Engineering
+\item[] Computational Human Analysis and Integration \textit{(CHAI)} Lab
+\item[] \textbf{Advisor}: \href{http://web.eecs.umich.edu/~emilykmp}{Prof. Emily Provost}
+\item[] \textbf{Thesis}: Implicit Design Choices and Their Impact on Emotion Recognition Model Development and Evaluation
+\end{innerlist}
+\vspace{.05in}
+
+\href{http://www.umich.edu}{\textbf{University of Michigan}},
+Ann Arbor, MI \hfill {Sept 2017 to May 2019} \\
+\vspace{-.1in}
+\begin{innerlist}
+\item[] M.S. in Computer Science and Engineering, GPA: 3.87/4.00
+\item[] \textbf{Coursework:} Natural Language Processing, Advanced Artificial Intelligence, Bayesian Inference
+\end{innerlist}
+\vspace{.05in}
+
+\href{http://www.ietdavv.edu.in/}{\textbf{Institute of Engineering and Technology}},
+Indore, India \hfill {July 2013 to May 2017} \\
+\vspace{-.1in}
+\begin{innerlist}
+\item[] B.E. in Computer Science Engineering, GPA: 3.7/4.00
+\item[] \textbf{Coursework:} Information Retrieval, Machine Learning, Alogirthm Design and Analysis
+
+\end{innerlist}
+
+\section{Honors and Activities}
+
+\begin{itemize}[leftmargin=0pt,parsep=3pt,itemsep=0pt,topsep=0pt,partopsep=0pt]
+\item[] \textbf{Reviewing:} ICDMW, ICMI, ACII, CHI, CSCW, *ACL, AAAI, NeurIPS \textit{(2019-present)}.
+\item[] \textbf{\href{https://rackham.umich.edu/discover-rackham/announcing-the-2022-2023-barbour-scholars/}{Awarded Barbour Fellowship Amongst Over 1k+ Applicants}}
+\item[] Graduate Student Instructor for Affective Computing Course (Winter 2020).
+\item[] Student Representative in CSE Faculty Hiring Committee (Academic Year 2020-21).
+\item[] Invited Speaker for PyCon 2016 Singapore \href{https://www.youtube.com/watch?v=rhVhR22t2IE&t=0s&list=PLMrPHnpQRHYZcOoyqcTMpFR1t-WLJAxb9&index=7}{[video]}, PyCon 2016 India \href{https://www.youtube.com/watch?v=A1IKw67vYkE}{[video]}
+\item[] Invited to attend CRA-W Grad Cohort Workshop 2018, 2020 [declined]
+\item[] National Talent Search Examination Scholarship (Top 0.01\% in India)
+%\item[] Zonal Informatics Olympiad conducted by IARCS (Top 1\% in India)
+%\item[] Selected for Winter School of Data Analytics 2013 by Indo-German Max Planck Center (Top 1\%)
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \section{Skills and Languages}
+
+% \begin{itemize}[leftmargin=0pt,parsep=3pt,itemsep=0pt,topsep=0pt,partopsep=0pt]
+% \item[] Python, Java, C++, English [TOEFL: 118/120], Hindi
+% \end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \section{References}
+
+% Available upon request
+
+\end{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%% End CV Document %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------%
+% The following is copyright and licensing information for
+% redistribution of this LaTeX source code; it also includes a liability
+% statement. If this source code is not being redistributed to others,
+% it may be omitted. It has no effect on the function of the above code.
+%----------------------------------------------------------------------%
+% Copyright (c) 2007, 2008, 2009, 2010, 2011 by Theodore P. Pavlic
+%
+% Unless otherwise expressly stated, this work is licensed under the
+% Creative Commons Attribution-Noncommercial 3.0 United States License. To
+% view a copy of this license, visit
+% http://creativecommons.org/licenses/by-nc/3.0/us/ or send a letter to
+% Creative Commons, 171 Second Street, Suite 300, San Francisco,
+% California, 94105, USA.
+%
+% THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+% OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+% MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+% IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+% CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+% TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+% SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+%----------------------------------------------------------------------%

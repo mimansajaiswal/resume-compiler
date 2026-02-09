@@ -7,54 +7,69 @@ variant: short
 fonts:
   heading_font: "New Computer Modern"
   body_font: "New Computer Modern"
-  font_size: 10.5pt
-  name_font_size: 1.8em
+  font_size: 10.2pt
+  name_font_size: 1.5em
   section_font_size: 1em
   publications_font_size: 9.6pt
   awards_font_size: 10pt
 
 layout:
   margin: 0.5in
-  line_spacing: 0.76em
-  list_spacing: 0.2em
-  section_spacing: 0.46em
-  post_section_spacing: 0.2em
-  entry_spacing: 0.6em
-  entry_inner_spacing: 0.24em
-  work_entry_spacing: 0.48em
-  work_entry_inner_spacing: 0.22em
-  work_position_spacing: 0.24em
-  work_bullet_spacing: 0.2em
-  work_list_spacing: 0.2em
-  education_entry_spacing: 0.6em
-  education_entry_inner_spacing: 0.24em
-  education_honors_spacing: 0.22em
-  education_degree_spacing: 0.22em
-  education_courses_spacing: 0.2em
-  education_highlights_spacing: 0.22em
-  education_list_spacing: 0.16em
+  line_spacing: 0.74em
+  skills_line_spacing: 0.6em
+  list_spacing: 0.14em
+  section_spacing: 0.82em
+  post_section_spacing: 0.28em
+  entry_spacing: 0.48em
+  entry_inner_spacing: 0.12em
+  work_entry_spacing: 0.38em
+  work_entry_inner_spacing: 0.12em
+  work_position_spacing: 0.16em
+  work_bullet_spacing: 0.06em
+  work_list_spacing: 0.1em
+  work_highlight_indent: 0.9em
+  education_entry_spacing: 0.38em
+  education_entry_inner_spacing: 0.12em
+  education_honors_spacing: 0.06em
+  education_degree_spacing: 0.06em
+  education_courses_spacing: 0.05em
+  education_highlights_spacing: 0.06em
+  education_list_spacing: 0.1em
+  education_highlight_indent: 0.9em
   projects_entry_spacing: 0.38em
   projects_entry_inner_spacing: 0.16em
-  awards_entry_spacing: 0.4em
-  awards_entry_inner_spacing: 0.18em
-  awards_highlights_spacing: 0.18em
-  awards_list_spacing: 0.18em
+  awards_entry_spacing: 0.28em
+  awards_entry_inner_spacing: 0.12em
+  awards_highlights_spacing: 0.1em
+  awards_list_spacing: 0.1em
+  awards_highlight_indent: 0.9em
   pub_spacing: 0.4em
-  publications_line_spacing: 0.72em
-  skill_spacing: 0.12em
-  header_bottom_spacing: 0.12em
+  publications_line_spacing: 0.64em
+  skill_spacing: 0.24em
+  header_rule_top_spacing: 0.12em
+  header_bottom_spacing: 0.22em
+  contact_separator_spacing: 0.18em
   last_updated_bottom_spacing: 0.18em
+  generic_entry_spacing: 0.4em
+  generic_entry_inner_spacing: 0.12em
+  generic_highlights_spacing: 0.1em
+  generic_highlight_indent: 0.9em
 
 styling:
-  section_smallcaps: true
-  contact_font_size: 0.85em
+  section_smallcaps: false
+  contact_font_size: 0.74em
   summary_font_size: 0.92em
-  secondary_color: "#555555"
-  link_color: "#0b61a4"
-  section_rule_color: "#222222"
+  secondary_color: "#111111"
+  link_color: "#000080"
+  section_rule_color: "#111111"
   section_rule_thickness: 0.6pt
+  section_rule_enabled: false
+  section_rule_gap: 0.1em
+  section_heading_tracking: 0.01em
+  header_rule_color: "#111111"
+  header_rule_thickness: 0.7pt
   publications_link_style: "compact"
-  last_updated_font_size: 0.7em
+  last_updated_font_size: 0.66em
   last_updated_label: "Last Updated on"
 
 visibility:
@@ -69,9 +84,9 @@ visibility:
 section_titles:
   work: "Experience"
   education: "Education"
-  publications: "Selected Publications"
+  publications: "Publications"
   projects: "Projects"
-  awards: "Honors and Awards"
+  awards: "Honors and Activities"
   skills: "Skills"
   languages: "Languages"
   interests: "Interests"
@@ -79,7 +94,13 @@ section_titles:
 
 section_order:
   - work
-  - education
   - publications
+  - education
   - awards
   - skills
+
+publication_sections:
+  - key: submitted
+    title: "Submitted Publications"
+  - key: accepted
+    title: "Selected Publications"

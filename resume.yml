@@ -166,6 +166,7 @@ education:
 publications:
   # Works in Progress
   - name: "CAPSTONE: Capability Assessment Protocol for Systematic Testing Of Natural language models' Expertise"
+    section: works_in_progress
     authors: Mimansa Jaiswal
     publisher: null
     releaseDate: null
@@ -174,6 +175,7 @@ publications:
     include_short: false
 
   - name: "Designing Interfaces for Delivering and Obtaining Generation Explanation Annotations"
+    section: works_in_progress
     authors: Mimansa Jaiswal
     publisher: null
     releaseDate: null
@@ -183,6 +185,7 @@ publications:
 
   # Submitted Publications
   - name: "The Future of Open Human Feedback"
+    section: submitted
     authors: "Shachar Don-Yehiya, Ben Burtenshaw, Ramon Fernandez Astudillo, Cailean Osborne, Mimansa Jaiswal, Tzu-Sheng Kuo, Wenting Zhao, Idan Shenfeld, Andi Peng, Mikhail Yurochkin, Atoosa Kasirzadeh, Yangsibo Huang, Tatsunori Hashimoto, Yacine Jernite, Daniel Vila-Suero, Omri Abend, Jennifer Ding, Sara Hooker, Hannah Rose Kirk, Leshem Choshen"
     publisher: null
     releaseDate: null
@@ -191,6 +194,7 @@ publications:
     include_short: false
 
   - name: "Temperature Zero Isn't the Best Choice For Accuracy in Legal Reasoning"
+    section: submitted
     authors: "Mimansa Jaiswal, Scott Worland, John Nay"
     publisher: null
     releaseDate: null
@@ -199,6 +203,7 @@ publications:
     include_short: false
 
   - name: "Lessons from the Trenches on Reproducible Evaluation of Language Models"
+    section: submitted
     authors: "Stella Biderman, Hailey Schoelkopf, Lintang Sutawika, …(and 12 others) Mimansa Jaiswal …(and 10 others)"
     publisher: null
     releaseDate: null
@@ -207,6 +212,7 @@ publications:
     include_short: false
 
   - name: "Sally-Anne False Belief Test for LLMs"
+    section: submitted
     authors: Mimansa Jaiswal
     publisher: null
     releaseDate: null
@@ -215,6 +221,7 @@ publications:
     include_short: false
 
   - name: "Qualitatively Studying Gender Biases in LLMs"
+    section: submitted
     authors: Mimansa Jaiswal
     publisher: null
     releaseDate: null
@@ -223,6 +230,7 @@ publications:
     include_short: false
 
   - name: "Assessing Large Language Models: A Comprehensive Survey and Critical Analysis of Evaluation Metrics and Methodologies"
+    section: submitted
     authors: Mimansa Jaiswal
     publisher: null
     releaseDate: null

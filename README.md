@@ -394,6 +394,10 @@ You can mix both formats in the same `publications` section:
 - Entries with `bib_key` → formatted via BibTeX
 - Entries without `bib_key` → formatted manually (YAML)
 
+You can also split publications into multiple headings (for example `Works in Progress`, `Submitted Publications`, `Accepted Publications`) by:
+- Setting `publication_sections` in `config.yml`
+- Adding `section: submitted` (or any configured key) on each publication item
+
 This is useful for:
 - Works in progress (not yet in BibTeX)
 - Preprints or workshop papers
@@ -722,46 +726,35 @@ Functions are modular and well-commented for easy modification.
 
 ### Adding Custom Sections
 
-1. Add data to `resume.yml`:
+No template edits are required anymore for most custom sections.
+
+1. Add data to `resume.yml` (any key name works, e.g. `patents`):
 ```yaml
-custom_section:
-  - item: "Something"
-    details: "Details here"
+patents:
+  - title: "System and Method for X"
+    issuer: "USPTO"
+    date: 2025-01-01
+    url: "https://example.com/patent"
+    highlights:
+      - "Co-inventor"
 ```
 
-2. Create render function in `template.typ`:
-```typst
-#let render_custom(data, config) = {
-  if "custom_section" not in data { return }
-
-  block[
-    == Custom Section Title
-    #for item in data.custom_section {
-      [- #item.item: #item.details]
-    }
-  ]
-}
-```
-
-3. Add to main render loop:
-```typst
-#let build_resume(data, config, ...) = {
-  // ... existing code ...
-
-  for section in section_order {
-    // ... existing sections ...
-    else if section == "custom" { render_custom(data, config) }
-  }
-}
-```
-
-4. Add to `section_order`:
+2. Add it to `section_order` in `config.yml`:
 ```yaml
 section_order:
   - work
   - education
-  - custom  # Your new section
+  - patents
 ```
+
+3. Set a custom title in `section_titles` (optional):
+```yaml
+section_titles:
+  patents: "Patents"
+```
+
+The template will auto-render arrays/dictionaries using a generic resume layout.
+Use common fields like `title`, `name`, `subtitle`, `issuer`, `date`, `url`, `description`, and `highlights`.
 
 ---
 
