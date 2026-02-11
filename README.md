@@ -10,7 +10,8 @@ A highly configurable, ATS-friendly resume template for [Typst](https://typst.ap
 - **No-JS/plain-text variant** - Generate a PDF with links rendered as plain text
 - **BibTeX support** - Professional citation formatting with custom links
 - **Markdown-first content** - Use inline markdown in text fields (bold, italics, links)
-- **Configurable contact display** - Render contact row as labels, icons+labels, or icons-only
+- **Configurable contact display** - Render contact row as labels or icons+labels
+- **Brand/academic profile icons** - Uses Typst Universe `scienceicons` + `sicons` (Google Scholar/DBLP/ORCID, etc.); unknown networks render label-only
 - **GitHub Actions** - Automatic PDF generation and cloud upload
 - **Highly configurable** - Customize fonts, spacing, colors, and section order
 - **ATS-friendly** - Single-column layout that parses well in Applicant Tracking Systems
@@ -35,10 +36,10 @@ Install Typst:
    ```
 
 This generates:
-- `artifacts/{FirstName}{LastName}_Resume.pdf` (default long, config-driven)
-- `artifacts/{FirstName}{LastName}_Resume_S.pdf`
-- `artifacts/{FirstName}{LastName}_Resume_B.pdf`
-- `artifacts/{FirstName}{LastName}_Resume_N.pdf`
+- `artifacts/{FirstName}{LastName}_Resume.pdf` (mode: `default`)
+- `artifacts/{FirstName}{LastName}_Resume_S.pdf` (mode: `short`)
+- `artifacts/{FirstName}{LastName}_Resume_B.pdf` (mode: `bibtex`)
+- `artifacts/{FirstName}{LastName}_Resume_N.pdf` (mode: `no-js`)
 
 ### Markdown in YAML Fields
 
@@ -90,10 +91,7 @@ resume_typst/
 ├── README.md                       # This file
 ├── template.typ                    # Core template library (18KB)
 │
-├── resume.typ                      # Main config-driven resume entrypoint
-├── resume-short.typ                # Short resume variant
-├── resume-with-bibtex.typ          # With BibTeX citations
-├── resume-no-js.typ                # Links disabled (plain-text output)
+├── resume.typ                      # Single mode-driven entrypoint
 │
 ├── resume.yml                      # Your resume data
 ├── resume-bibtex.yml               # Example with BibTeX references
@@ -135,7 +133,7 @@ vim resume.yml
 
 ### Pattern 2: Long/Short Variants
 
-**Files:** `resume.yml` (with `include_short` flags) + `resume.typ` + `resume-short.typ`
+**Files:** `resume.yml` (with `include_short` flags) + `resume.typ` + `config-short.yml`
 
 Add `include_short: false` to exclude items from short version:
 
@@ -150,7 +148,8 @@ publications:
 
 Compile both:
 ```bash
-./build-resumes.sh
+typst compile --input mode=default resume.typ
+typst compile --input mode=short resume.typ
 ```
 
 **Best for:** Job applications (short) vs academic CVs (long)
@@ -167,7 +166,7 @@ Store all settings in `config.yml`:
 # config.yml
 variant: long
 fonts:
-  font: "New Computer Modern"
+  font: "Libertinus Serif"
   mono_font: "DejaVu Sans Mono"
   font_size: 11pt
 layout:
@@ -188,8 +187,7 @@ typst compile resume.typ
 
 Short config example:
 ```bash
-typst compile resume-short.typ
-# resume-short.typ uses config-short.yml
+typst compile --input mode=short resume.typ
 ```
 
 **Best for:** Managing multiple resume styles, team templates
@@ -198,7 +196,7 @@ typst compile resume-short.typ
 
 ### Pattern 4: BibTeX Publications
 
-**Files:** `publications.bib` + `resume-bibtex.yml` + `resume-with-bibtex.typ`
+**Files:** `publications.bib` + `resume-bibtex.yml` + `resume.typ`
 
 1. Create `publications.bib`:
 ```bibtex
@@ -228,9 +226,11 @@ publications:
 
 3. Compile:
 ```bash
-./build-resumes.sh
-# BibTeX file will be artifacts/{FirstName}{LastName}_Resume_B.pdf
+typst compile --input mode=bibtex resume.typ
+# Canonical local output name when using build script: artifacts/{FirstName}{LastName}_Resume_B.pdf
 ```
+
+`mode=bibtex` reads `resume-bibtex.yml` by default. Web editor mode uses the active resume YAML editor content.
 
 **Best for:** Academics with many publications, maintaining consistency with other documents
 
@@ -278,18 +278,18 @@ publications:
 
 #### Configuration
 
-Set `variant` in your .typ file:
+Set the compile mode at the CLI:
 
-```typst
-#let config = (
-  variant: "long",  // or "short"
-  // ... other settings
-)
+```bash
+typst compile --input mode=default resume.typ
+typst compile --input mode=short resume.typ
 ```
 
-Or use the pre-configured files:
-- `resume.typ` → variant: "long"
-- `resume-short.typ` → variant: "short"
+Mode mapping:
+- `default` → uses `config.yml`
+- `short` → uses `config-short.yml`
+- `bibtex` → uses `config.yml` and `publications.bib`
+- `no-js` → uses `config.yml` with links disabled
 
 #### Default Behavior
 
@@ -308,7 +308,7 @@ Separate your settings from your resume logic for easier management.
 variant: long
 
 fonts:
-  font: "New Computer Modern"
+  font: "Libertinus Serif"
   mono_font: "DejaVu Sans Mono"
   font_size: 11pt
   name_font_size: 2.25em
@@ -542,22 +542,26 @@ paper_size: letter            # Options: "letter" or "a4"
 
 # Fonts
 fonts:
-  font: "New Computer Modern"
+  font: "Libertinus Serif"
   mono_font: "DejaVu Sans Mono"
   font_size: 11pt              # Base font size
   name_font_size: 2.25em       # Your name size
   section_font_size: 1em       # Section headings size
+  page_number_font_size: 0.85em
+  header_title_font_size: 0.9em
+  location_font_size: 0.8em
+  work_role_font_size: 0.98em
 
 # Layout
 layout:
   margin: 0.5in                # Page margins
-  line_spacing: 0.33em         # Line spacing within wrapped lines
-  list_spacing: 0.61em         # Space between adjacent items
-  section_spacing: 1.2em       # Space before section headings
-  post_section_spacing: 0.78em # Space after section headings
-  entry_spacing: 0.62em        # Space between resume entries
-  entry_inner_spacing: 0.48em  # Space between entry title/details/content
-  header_rule_top_spacing: 0.52em # Gap between contact row and horizontal rule
+  line_spacing: 0.38em         # Line spacing within wrapped lines
+  list_spacing: 0.7em          # Space between adjacent items
+  section_spacing: 1.38em      # Space before section headings
+  post_section_spacing: 0.9em  # Space after section headings
+  entry_spacing: 0.71em        # Space between resume entries
+  entry_inner_spacing: 0.55em  # Space between entry title/details/content
+  header_rule_top_spacing: 0.6em # Gap between contact row and horizontal rule
   publication_number_width: 2.2em # Hanging indent width for numbered publications
 
 # Styling
@@ -565,9 +569,9 @@ styling:
   section_smallcaps: true      # Use small caps for section headings
   secondary_color: "#555555"   # Accent text color (hex)
   link_color: "#1C398D"        # Link color (hex)
-  contact_display_mode: "label"   # "label" | "icon_label" | "icon"
-  contact_icon_family: "lucide"   # "lucide" | "mdi" | "phosphor"
-  contact_icon_spacing: 0.18em
+  section_heading_sticky: true # Keep section heading with following content
+  contact_display_mode: "icon_label"   # "label" | "icon_label"
+  contact_icon_spacing: 0.21em
 
 # Visibility toggles
 visibility:
@@ -612,7 +616,7 @@ section_order:
 ```typst
 #let config = (
   variant: "long",
-  font: "New Computer Modern",
+  font: "Libertinus Serif",
   mono_font: "DejaVu Sans Mono",
   font_size: 11pt,
   margin: 0.5in,
@@ -663,7 +667,7 @@ typst compile resume.typ
 
 **Compile:**
 ```bash
-typst compile resume-short.typ
+typst compile --input mode=short resume.typ
 ```
 
 ---
@@ -683,8 +687,8 @@ typst compile resume-short.typ
 
 **Compile:**
 ```bash
-typst compile resume.typ              # Academic CV
-typst compile resume-short.typ        # Industry resume
+typst compile --input mode=default resume.typ   # Academic CV
+typst compile --input mode=short resume.typ     # Industry resume
 ```
 
 ---
@@ -710,7 +714,7 @@ typst compile resume-short.typ        # Industry resume
 
 1. **Use standard section names** - Stick with "Experience", "Education", "Skills"
 2. **Single-column layout** - Already implemented
-3. **Standard fonts** - Use system fonts (New Computer Modern, Linux Libertine, Liberation Sans)
+3. **Standard fonts** - Use proven serif families (Libertinus Serif, New Computer Modern, TeX Gyre Termes)
 4. **Avoid tables in main content** - Template uses grid for alignment only
 5. **Include keywords** - Add relevant skills and technologies
 6. **Export as PDF** - Typst generates proper searchable PDFs
@@ -758,7 +762,7 @@ typst compile resume-short.typ        # Industry resume
 **Short resume showing everything:**
 - Ensure `variant: "short"` is set in config
 - Check that items have `include_short: false` in YAML
-- Verify you're compiling `resume-short.typ`
+- Verify you're compiling with `--input mode=short`
 
 **BibTeX citations not formatted:**
 - Ensure `bib_file` parameter is passed to `build_resume()`

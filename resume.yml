@@ -5,7 +5,7 @@
 # ==============================================================================
 # Complete synthetic example resume (theorem proving / formal verification).
 # LONG/SHORT VARIANTS:
-# Add include_short: false to hide an entry in resume-short.typ.
+# Add include_short: false to hide an entry when compiling with --input mode=short.
 # ==============================================================================
 
 personal:
@@ -341,7 +341,6 @@ interests:
   - content: Verified Systems Design
   - content: History of Logic
   - content: Long-Distance Cycling
-
 # references:
 #   - name: Prof. Rachel Underwood
 #     reference: "Reference available upon request"

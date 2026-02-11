@@ -2,6 +2,12 @@
 // TYPST RESUME TEMPLATE - Professional, ATS-Friendly, YAML-Driven
 // ============================================================================
 
+#import "@preview/scienceicons:0.1.0": (
+  arxiv-icon, bluesky-icon, discord-icon, discourse-icon, email-icon, github-icon, linkedin-icon, mastodon-icon,
+  orcid-icon, ror-icon, slack-icon, twitter-icon, website-icon, x-icon, youtube-icon,
+)
+#import "@preview/sicons:16.0.0": sicon
+
 // ============================================================================
 // HELPER FUNCTIONS
 // ============================================================================
@@ -33,8 +39,18 @@
 #let month_name(n, display: "short") = {
   n = int(n)
   let months = (
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December",
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
   )
   if n >= 1 and n <= 12 {
     let month = months.at(n - 1)
@@ -410,8 +426,7 @@
   grid(
     columns: (1fr, auto),
     column-gutter: 1em,
-    align(left + top, left_content),
-    align(right + top, right_content),
+    align(left + top, left_content), align(right + top, right_content),
   )
 }
 
@@ -461,50 +476,176 @@
   "profile"
 }
 
-#let contact_icon(kind, family: "lucide") = {
-  let k = lower(str(kind).trim())
-  let f = lower(str(family).trim())
-
-  if f == "mdi" {
-    if k == "phone" { return [☎] }
-    if k == "email" { return [✉] }
-    if k == "website" or k == "url" { return [⌂] }
-    if k == "linkedin" { return [◫] }
-    if k == "github" { return [◇] }
-    if k == "twitter" { return [◌] }
-    return [◦]
-  }
-
-  if f == "phosphor" {
-    if k == "phone" { return [☏] }
-    if k == "email" { return [✉] }
-    if k == "website" or k == "url" { return [⌂] }
-    if k == "linkedin" { return [◧] }
-    if k == "github" { return [⬡] }
-    if k == "twitter" { return [◍] }
-    return [•]
-  }
-
-  // Default: lucide-like minimal glyph set (unicode-safe fallback)
-  if k == "phone" { return [✆] }
-  if k == "email" { return [✉] }
-  if k == "website" or k == "url" { return [⌁] }
-  if k == "linkedin" { return [◩] }
-  if k == "github" { return [⬢] }
-  if k == "twitter" { return [◌] }
-  [•]
+#let normalize_network_key(value) = {
+  if value == none { return "" }
+  lower(str(value).trim()).replace(regex("[^a-z0-9]+"), "")
 }
 
-#let render_contact_entry(kind, label, url, config) = {
-  let mode = lower(str(config.at("contact_display_mode", default: "label")).trim())
-  let family = config.at("contact_icon_family", default: "lucide")
+#let infer_network_key_from_url(url) = {
+  if url == none { return "" }
+  let u = lower(str(url).trim())
+  if u == "" { return "" }
+
+  if u.contains("scholar.google.") { return "googlescholar" }
+  if u.contains("dblp.org") { return "dblp" }
+  if u.contains("orcid.org") { return "orcid" }
+  if u.contains("researchgate.net") { return "researchgate" }
+  if u.contains("semanticscholar.org") { return "semanticscholar" }
+  if u.contains("arxiv.org") { return "arxiv" }
+  if u.contains("ssrn.com") { return "ssrn" }
+  if u.contains("academia.edu") { return "academia" }
+  if u.contains("mendeley.com") { return "mendeley" }
+  if u.contains("zotero.org") { return "zotero" }
+  if u.contains("publons.com") or u.contains("webofscience.com") { return "publons" }
+  if u.contains("scopus.com") { return "scopus" }
+
+  if u.contains("github.com") { return "github" }
+  if u.contains("gitlab.com") { return "gitlab" }
+  if u.contains("bitbucket.org") { return "bitbucket" }
+  if u.contains("linkedin.com") { return "linkedin" }
+  if u.contains("twitter.com") { return "twitter" }
+  if u.contains("x.com") { return "x" }
+  if u.contains("youtube.com") or u.contains("youtu.be") { return "youtube" }
+  if u.contains("mastodon.") { return "mastodon" }
+  if u.contains("bsky.app") or u.contains("bluesky") { return "bluesky" }
+  if u.contains("discord.com") or u.contains("discord.gg") { return "discord" }
+  if u.contains("slack.com") { return "slack" }
+  if u.contains("discourse.") { return "discourse" }
+  if u.contains("medium.com") { return "medium" }
+  if u.contains("substack.com") { return "substack" }
+  if u.contains("dev.to") { return "devdotto" }
+  if u.contains("hashnode.com") { return "hashnode" }
+  if u.contains("stackoverflow.com") { return "stackoverflow" }
+  if u.contains("stackexchange.com") { return "stackexchange" }
+  if u.contains("reddit.com") { return "reddit" }
+  if u.contains("facebook.com") { return "facebook" }
+  if u.contains("instagram.com") { return "instagram" }
+  if u.contains("threads.net") { return "threads" }
+  if u.contains("tiktok.com") { return "tiktok" }
+  if u.contains("snapchat.com") { return "snapchat" }
+  if u.contains("pinterest.com") { return "pinterest" }
+  if u.contains("telegram.me") or u.contains("t.me") { return "telegram" }
+  if u.contains("wa.me") or u.contains("whatsapp.com") { return "whatsapp" }
+  if u.contains("wechat.com") { return "wechat" }
+  if u.contains("line.me") { return "line" }
+  if u.contains("qq.com") { return "qq" }
+  if u.contains("behance.net") { return "behance" }
+  if u.contains("dribbble.com") { return "dribbble" }
+  if u.contains("figma.com") { return "figma" }
+  if u.contains("vimeo.com") { return "vimeo" }
+  if u.contains("kaggle.com") { return "kaggle" }
+  if u.contains("leetcode.com") { return "leetcode" }
+  if u.contains("codeforces.com") { return "codeforces" }
+  if u.contains("codechef.com") { return "codechef" }
+  if u.contains("hackerrank.com") { return "hackerrank" }
+  if u.contains("huggingface.co") { return "huggingface" }
+  if u.contains("notion.so") { return "notion" }
+  if u.contains("linktr.ee") { return "linktree" }
+  if u.contains("about.me") { return "aboutdotme" }
+
+  ""
+}
+
+#let resolve_contact_network_key(kind, network, url) = {
+  let n = normalize_network_key(network)
+  if n != "" { return n }
+  let from_url = infer_network_key_from_url(url)
+  if from_url != "" { return from_url }
+
+  let k = normalize_network_key(kind)
+  if k.contains("email") { return "email" }
+  if k == "website" or k == "url" { return "website" }
+  k
+}
+
+#let science_icon_for(key, color, size, baseline) = {
+  if key == "email" { return email-icon(color: color, height: size, baseline: baseline) }
+  if key == "website" { return website-icon(color: color, height: size, baseline: baseline) }
+  if key == "github" { return github-icon(color: color, height: size, baseline: baseline) }
+  if key == "linkedin" { return linkedin-icon(color: color, height: size, baseline: baseline) }
+  if key == "twitter" { return twitter-icon(color: color, height: size, baseline: baseline) }
+  if key == "x" { return x-icon(color: color, height: size, baseline: baseline) }
+  if key == "youtube" { return youtube-icon(color: color, height: size, baseline: baseline) }
+  if key == "mastodon" { return mastodon-icon(color: color, height: size, baseline: baseline) }
+  if key == "bluesky" { return bluesky-icon(color: color, height: size, baseline: baseline) }
+  if key == "discord" { return discord-icon(color: color, height: size, baseline: baseline) }
+  if key == "discourse" { return discourse-icon(color: color, height: size, baseline: baseline) }
+  if key == "slack" { return slack-icon(color: color, height: size, baseline: baseline) }
+  if key == "orcid" { return orcid-icon(color: color, height: size, baseline: baseline) }
+  if key == "arxiv" { return arxiv-icon(color: color, height: size, baseline: baseline) }
+  if key == "ror" { return ror-icon(color: color, height: size, baseline: baseline) }
+  none
+}
+
+#let sicons_slug_for(key) = {
+  if key == "gitlab" { return "gitlab" }
+  if key == "bitbucket" { return "bitbucket" }
+  if key == "reddit" { return "reddit" }
+  if key == "stackoverflow" { return "stackoverflow" }
+  if key == "stackexchange" { return "stackexchange" }
+  if key == "medium" { return "medium" }
+  if key == "substack" { return "substack" }
+  if key == "devto" or key == "devdotto" { return "devdotto" }
+  if key == "hashnode" { return "hashnode" }
+  if key == "facebook" { return "facebook" }
+  if key == "instagram" { return "instagram" }
+  if key == "threads" { return "threads" }
+  if key == "tiktok" { return "tiktok" }
+  if key == "snapchat" { return "snapchat" }
+  if key == "pinterest" { return "pinterest" }
+  if key == "telegram" { return "telegram" }
+  if key == "whatsapp" { return "whatsapp" }
+  if key == "wechat" { return "wechat" }
+  if key == "line" { return "line" }
+  if key == "qq" { return "qq" }
+  if key == "behance" { return "behance" }
+  if key == "dribbble" { return "dribbble" }
+  if key == "figma" { return "figma" }
+  if key == "vimeo" { return "vimeo" }
+  if key == "kaggle" { return "kaggle" }
+  if key == "leetcode" { return "leetcode" }
+  if key == "codeforces" { return "codeforces" }
+  if key == "codechef" { return "codechef" }
+  if key == "hackerrank" { return "hackerrank" }
+  if key == "huggingface" { return "huggingface" }
+  if key == "googlescholar" or key == "scholar" { return "googlescholar" }
+  if key == "dblp" { return "dblp" }
+  if key == "researchgate" { return "researchgate" }
+  if key == "semanticscholar" { return "semanticscholar" }
+  if key == "ssrn" { return "ssrn" }
+  if key == "academia" or key == "academiadotedu" { return "academia" }
+  if key == "mendeley" { return "mendeley" }
+  if key == "zotero" { return "zotero" }
+  if key == "publons" { return "publons" }
+  if key == "scopus" { return "scopus" }
+  if key == "notion" { return "notion" }
+  if key == "linktree" { return "linktree" }
+  if key == "aboutme" or key == "aboutdotme" { return "aboutdotme" }
+  none
+}
+
+#let contact_icon(kind, network, url, config) = {
+  let key = resolve_contact_network_key(kind, network, url)
+  let color = config.at("secondary_color", default: rgb("#111111"))
+  let size = 1.05em
+  let baseline = 13.5%
+
+  let science_icon = science_icon_for(key, color, size, baseline)
+  if science_icon != none { return science_icon }
+
+  let slug = sicons_slug_for(key)
+  if slug != none { return sicon(slug: slug, size: size, icon-color: color.to-hex()) }
+
+  none
+}
+
+#let render_contact_entry(kind, label, url, config, network: none) = {
+  let mode = lower(str(config.at("contact_display_mode", default: "icon_label")).trim())
   let icon_spacing = config.at("contact_icon_spacing", default: 0.18em)
-  let icon = contact_icon(kind, family: family)
+  let icon = contact_icon(kind, network, url, config)
   let text_label = render_rich(label, config)
 
-  let body = if mode == "icon" {
-    icon
-  } else if mode == "icon_label" or mode == "icons_labels" {
+  let body = if mode == "icon_label" and icon != none {
     [#icon#h(icon_spacing)#text_label]
   } else {
     text_label
@@ -519,9 +660,15 @@
 
 #let section_heading(title, config) = {
   v(config.at("section_spacing", default: 1.08em))
-  block(width: 100%, above: 0pt, below: 0pt, breakable: false)[
+  block(
+    width: 100%,
+    above: 0pt,
+    below: 0pt,
+    breakable: false,
+    sticky: config.at("section_heading_sticky", default: true),
+  )[
     #set text(
-      font: config.at("font", default: "New Computer Modern"),
+      font: config.at("font", default: "Libertinus Serif"),
       size: config.at("section_font_size", default: 1em),
       weight: "bold",
       tracking: config.at("section_heading_tracking", default: 0.01em),
@@ -545,7 +692,7 @@
     paper: resolve_paper_size(config.at("paper_size", default: "letter")),
     margin: config.at("margin", default: 0.65in),
     footer: if show_page_numbers {
-      context align(center, text(size: 0.85em)[
+      context align(center, text(size: config.at("page_number_font_size", default: 0.85em))[
         #counter(page).display("1") of #counter(page).final().first()
       ])
     } else {
@@ -553,7 +700,7 @@
     },
   )
   set text(
-    font: config.at("font", default: "New Computer Modern"),
+    font: config.at("font", default: "Libertinus Serif"),
     size: config.at("font_size", default: 10pt),
     hyphenate: false,
   )
@@ -574,7 +721,7 @@
 #let apply_heading_styles(config, doc) = {
   show heading.where(level: 1): it => block(width: 100%)[
     #set text(
-      font: config.at("font", default: "New Computer Modern"),
+      font: config.at("font", default: "Libertinus Serif"),
       size: config.at("name_font_size", default: 1.4em),
       weight: "bold",
     )
@@ -622,7 +769,7 @@
       let titles = as_array(personal.at("titles", default: ()))
       if titles.len() > 0 {
         block(above: 0pt, below: 0.2em)[
-          #set text(size: 0.9em, weight: "regular", style: "italic")
+          #set text(size: config.at("header_title_font_size", default: 0.9em), weight: "regular", style: "italic")
           #{
             let title_items = ()
             for title in titles {
@@ -640,10 +787,12 @@
         let parts = ()
         if "city" in loc and loc.city != none and loc.city != "" { parts.push(render_rich(loc.city, config)) }
         if "region" in loc and loc.region != none and loc.region != "" { parts.push(render_rich(loc.region, config)) }
-        if "country" in loc and loc.country != none and loc.country != "" { parts.push(render_rich(loc.country, config)) }
+        if "country" in loc and loc.country != none and loc.country != "" {
+          parts.push(render_rich(loc.country, config))
+        }
         if parts.len() > 0 {
           block(above: 0pt, below: 0pt)[
-            #set text(size: 0.8em)
+            #set text(size: config.at("location_font_size", default: 0.8em))
             #secondary(config, parts.join(", "))
           ]
           v(-0.1em)
@@ -662,7 +811,13 @@
       }
 
       #if "email" in personal and personal.email != none {
-        contacts.push(render_contact_entry("email", personal.email, "mailto:" + personal.email, config))
+        contacts.push(render_contact_entry(
+          "email",
+          personal.email,
+          "mailto:" + personal.email,
+          config,
+          network: "email",
+        ))
       }
 
       #let profiles = as_array(personal.at("profiles", default: ()))
@@ -673,9 +828,9 @@
         if network.contains("email") {
           let label = resolve_profile_label(profile)
           if "url" in profile and profile.url != none {
-            contacts.push(render_contact_entry("email", label, profile.url, config))
+            contacts.push(render_contact_entry("email", label, profile.url, config, network: network))
           } else {
-            contacts.push(render_contact_entry("email", label, none, config))
+            contacts.push(render_contact_entry("email", label, none, config, network: network))
           }
         }
       }
@@ -684,7 +839,7 @@
         let display = if url_label != none { url_label } else {
           personal.url.split("//").at(-1).trim("/", at: end)
         }
-        contacts.push(render_contact_entry("website", display, personal.url, config))
+        contacts.push(render_contact_entry("website", display, personal.url, config, network: "website"))
       }
 
       #for profile in profiles {
@@ -693,9 +848,9 @@
           let label = resolve_profile_label(profile)
           let kind = contact_kind_from_network(network)
           if "url" in profile and profile.url != none {
-            contacts.push(render_contact_entry(kind, label, profile.url, config))
+            contacts.push(render_contact_entry(kind, label, profile.url, config, network: network))
           } else {
-            contacts.push(render_contact_entry(kind, label, none, config))
+            contacts.push(render_contact_entry(kind, label, none, config, network: network))
           }
         }
       }
@@ -784,10 +939,18 @@
 
           #for (j, position) in positions.enumerate() {
             let role = position.at("name", default: none)
+            let role_content = if non_empty(role) {
+              text(size: config.at("work_role_font_size", default: 0.98em), weight: "semibold", render_rich(
+                role,
+                config,
+              ))
+            } else {
+              []
+            }
             let left_line = if multi_position {
-              if non_empty(role) { render_rich(role, config) } else { [] }
+              role_content
             } else if non_empty(role) {
-              [#company_line | #render_rich(role, config)]
+              [#company_line | #role_content]
             } else {
               [#company_line]
             }
@@ -824,7 +987,12 @@
                 v(bullet_top_spacing)
                 block(width: 100%, above: 0pt, below: 0pt, inset: (left: work_highlight_indent), breakable: true)[
                   #for (hi, hl) in position_content.enumerate() {
-                    block(width: 100%, above: if hi == 0 { 0pt } else { work_list_spacing }, below: 0pt, breakable: true)[
+                    block(
+                      width: 100%,
+                      above: if hi == 0 { 0pt } else { work_list_spacing },
+                      below: 0pt,
+                      breakable: true,
+                    )[
                       #render_rich(hl, config)
                     ]
                   }
@@ -930,9 +1098,20 @@
             lines.push([#strong[Coursework:] #courses.join(", ")])
           }
 
-          block(width: 100%, above: entry_inner_spacing, below: 0pt, inset: (left: education_highlight_indent), breakable: true)[
+          block(
+            width: 100%,
+            above: entry_inner_spacing,
+            below: 0pt,
+            inset: (left: education_highlight_indent),
+            breakable: true,
+          )[
             #for (idx, line) in lines.enumerate() {
-              block(width: 100%, above: if idx == 0 { 0pt } else { education_list_spacing }, below: 0pt, breakable: true)[
+              block(
+                width: 100%,
+                above: if idx == 0 { 0pt } else { education_list_spacing },
+                below: 0pt,
+                breakable: true,
+              )[
                 #line
               ]
             }
@@ -1011,7 +1190,9 @@
     }
     let title_override = first_present(pub, ("name",))
     let title_from_bib = if type(bib_entry) == dictionary { bib_entry.at("title", default: none) } else { none }
-    let title = if non_empty(title_override) { title_override } else if non_empty(title_from_bib) { title_from_bib } else { "Untitled" }
+    let title = if non_empty(title_override) { title_override } else if non_empty(title_from_bib) {
+      title_from_bib
+    } else { "Untitled" }
     let authors_override = first_present(pub, ("authors",))
     let authors_from_bib = if type(bib_entry) == dictionary { bib_entry.at("authors", default: none) } else { none }
     let authors = if non_empty(authors_override) { authors_override } else { authors_from_bib }
@@ -1122,8 +1303,7 @@
       grid(
         columns: (number_width, 1fr),
         column-gutter: 0.15em,
-        align(left + top, [#publication_number]),
-        align(left + top, body),
+        align(left + top, [#publication_number]), align(left + top, body),
       )
     } else {
       body
@@ -1282,7 +1462,10 @@
                   strong(render_rich(project_title, config))
                 }
               },
-              secondary(config, date_range(project.at("startDate", default: none), project.at("endDate", default: none))),
+              secondary(config, date_range(project.at("startDate", default: none), project.at(
+                "endDate",
+                default: none,
+              ))),
             )
 
             #if "affiliation" in project and project.affiliation != none {
@@ -1333,10 +1516,19 @@
             let has_url = "url" in award and award.url != none
             let is_flat = award.at("flat", default: false)
 
-            let extra_keys = award.keys().filter(
-              k => k != "content" and k != "flat" and k != "include_short"
-                and k != "bold_label" and k != "links" and k != "url" and k != "name",
-            )
+            let extra_keys = award
+              .keys()
+              .filter(
+                k => (
+                  k != "content"
+                    and k != "flat"
+                    and k != "include_short"
+                    and k != "bold_label"
+                    and k != "links"
+                    and k != "url"
+                    and k != "name"
+                ),
+              )
             if is_flat or extra_keys.len() == 0 {
               let bold_label = award.at("bold_label", default: none)
               if bold_label != none and str(title).starts-with(str(bold_label)) {
@@ -1364,7 +1556,6 @@
                 }
               }
             }
-
           }
         }
       ]
@@ -1585,7 +1776,6 @@
           }
         ]
       }
-
     }
   ]
 }
@@ -1641,7 +1831,9 @@
   let flat = (:)
 
   if "variant" in yaml_config { flat.insert("variant", yaml_config.variant) }
-  if "paper_size" in yaml_config { flat.insert("paper_size", resolve_paper_size(yaml_config.paper_size, default: "us-letter")) }
+  if "paper_size" in yaml_config {
+    flat.insert("paper_size", resolve_paper_size(yaml_config.paper_size, default: "us-letter"))
+  }
 
   if "fonts" in yaml_config {
     let fonts = yaml_config.fonts
@@ -1659,6 +1851,18 @@
     }
     if "awards_font_size" in fonts {
       flat.insert("awards_font_size", parse_dimension(fonts.awards_font_size, default: 10pt))
+    }
+    if "page_number_font_size" in fonts {
+      flat.insert("page_number_font_size", parse_dimension(fonts.page_number_font_size, default: 0.85em))
+    }
+    if "header_title_font_size" in fonts {
+      flat.insert("header_title_font_size", parse_dimension(fonts.header_title_font_size, default: 0.9em))
+    }
+    if "location_font_size" in fonts {
+      flat.insert("location_font_size", parse_dimension(fonts.location_font_size, default: 0.8em))
+    }
+    if "work_role_font_size" in fonts {
+      flat.insert("work_role_font_size", parse_dimension(fonts.work_role_font_size, default: 0.98em))
     }
   }
 
@@ -1849,6 +2053,9 @@
     if "section_heading_tracking" in styling {
       flat.insert("section_heading_tracking", parse_dimension(styling.section_heading_tracking, default: 0.01em))
     }
+    if "section_heading_sticky" in styling {
+      flat.insert("section_heading_sticky", styling.section_heading_sticky)
+    }
     if "publications_link_style" in styling {
       flat.insert("publications_link_style", styling.publications_link_style)
     }
@@ -1863,9 +2070,6 @@
     }
     if "contact_display_mode" in styling {
       flat.insert("contact_display_mode", lower(str(styling.contact_display_mode)))
-    }
-    if "contact_icon_family" in styling {
-      flat.insert("contact_icon_family", lower(str(styling.contact_icon_family)))
     }
     if "contact_icon_spacing" in styling {
       flat.insert("contact_icon_spacing", parse_dimension(styling.contact_icon_spacing, default: 0.18em))
@@ -1890,7 +2094,9 @@
     if "links_disabled_behavior" in visibility {
       flat.insert("links_disabled_behavior", lower(str(visibility.links_disabled_behavior)))
     }
-    if "show_publication_numbers" in visibility { flat.insert("show_publication_numbers", visibility.show_publication_numbers) }
+    if "show_publication_numbers" in visibility {
+      flat.insert("show_publication_numbers", visibility.show_publication_numbers)
+    }
   }
 
   if "last_updated" in yaml_config and yaml_config.last_updated != none {
@@ -1975,17 +2181,17 @@
   ))
 
   for section in section_order {
-    if section == "interests_summary" { render_interests_summary(data, config) }
-    else if section == "work" { render_work(data, config) }
-    else if section == "education" { render_education(data, config) }
-    else if section == "publications" { render_publications(data, config) }
-    else if section == "projects" { render_projects(data, config) }
-    else if section == "awards" { render_awards(data, config) }
-    else if section == "skills" { render_skills(data, config) }
-    else if section == "languages" { render_languages(data, config) }
-    else if section == "interests" { render_interests(data, config) }
-    else if section == "references" { render_references(data, config) }
-    else { render_generic_section(data, config, section) }
+    if section == "interests_summary" { render_interests_summary(data, config) } else if section == "work" {
+      render_work(data, config)
+    } else if section == "education" { render_education(data, config) } else if section == "publications" {
+      render_publications(data, config)
+    } else if section == "projects" { render_projects(data, config) } else if section == "awards" {
+      render_awards(data, config)
+    } else if section == "skills" { render_skills(data, config) } else if section == "languages" {
+      render_languages(data, config)
+    } else if section == "interests" { render_interests(data, config) } else if section == "references" {
+      render_references(data, config)
+    } else { render_generic_section(data, config, section) }
   }
 
   let special_keys = ("personal", "meta", "interests_summary")

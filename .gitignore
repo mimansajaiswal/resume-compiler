@@ -1,6 +1,6 @@
 # Generated resume artifacts
 artifacts/
-*.pdf
+references/
 
 # macOS
 .DS_Store

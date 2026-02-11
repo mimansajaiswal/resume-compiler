@@ -76,17 +76,159 @@
       font-weight: 700;
     }
 
-    .paper-size-wrap select {
+    .native-select-hidden {
+      position: absolute !important;
+      width: 1px !important;
+      height: 1px !important;
+      margin: -1px !important;
+      padding: 0 !important;
+      border: 0 !important;
+      overflow: hidden !important;
+      clip: rect(0, 0, 0, 0) !important;
+      white-space: nowrap !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+
+    .custom-select {
+      position: relative;
+      min-width: 7.25rem;
+    }
+
+    .custom-select-trigger {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      padding: 0.3rem 0.45rem;
+      border: 1px solid var(--earth);
+      background: var(--linen);
+      color: var(--charcoal);
+      font-family: var(--mono);
+      font-size: 0.67rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+
+    .custom-select-trigger:hover {
+      border-color: #9b8f7c;
+      background: #f9f6f0;
+    }
+
+    .custom-select.open .custom-select-trigger {
+      border-color: var(--pink);
+      background: #fff9fa;
+    }
+
+    .custom-select-value {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      text-align: left;
+    }
+
+    .custom-select-chevron {
+      flex: 0 0 auto;
+      width: 0.45rem;
+      height: 0.45rem;
+      border-right: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+      transform: rotate(45deg) translateY(-1px);
+      transition: transform 0.14s ease;
+      opacity: 0.8;
+      margin-right: 0.1rem;
+    }
+
+    .custom-select.open .custom-select-chevron {
+      transform: rotate(-135deg) translateY(-1px);
+    }
+
+    .custom-select-menu {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: calc(100% + 0.28rem);
+      background: #fffdf8;
+      border: 1px solid var(--earth);
+      box-shadow: 0 10px 22px rgba(43, 39, 30, 0.12);
+      max-height: 14rem;
+      overflow-y: auto;
+      z-index: 40;
+      display: none;
+      padding: 0.25rem;
+    }
+
+    .custom-select.open .custom-select-menu {
+      display: block;
+    }
+
+    .custom-select-option {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      color: #3f3a31;
+      text-align: left;
+      padding: 0.36rem 0.44rem;
+      font-family: var(--mono);
+      font-size: 0.67rem;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    .custom-select-option:hover {
+      background: #f1ebe2;
+    }
+
+    .custom-select-option.selected {
+      background: #e8dfd2;
+      color: #2f2a22;
+      font-weight: 700;
+    }
+
+    .paper-size-wrap .custom-select {
+      min-width: 5.6rem;
+    }
+
+    .paper-size-wrap .custom-select-trigger {
       background: transparent;
       color: var(--linen);
-      border: 1px solid var(--earth);
-      border-radius: 0;
-      font-family: var(--mono);
+      border-color: var(--earth);
       font-size: 0.65rem;
-      padding: 0.2rem 0.35rem;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      cursor: pointer;
+      padding: 0.22rem 0.36rem;
+    }
+
+    .paper-size-wrap .custom-select-trigger:hover {
+      background: rgba(255, 255, 255, 0.07);
+      border-color: var(--linen-dark);
+    }
+
+    .paper-size-wrap .custom-select.open .custom-select-trigger {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: var(--linen);
+    }
+
+    .paper-size-wrap .custom-select-menu {
+      background: #353535;
+      border-color: #696252;
+    }
+
+    .paper-size-wrap .custom-select-option {
+      color: var(--linen);
+    }
+
+    .paper-size-wrap .custom-select-option:hover {
+      background: #45413a;
+    }
+
+    .paper-size-wrap .custom-select-option.selected {
+      background: #5b5448;
+      color: #fff;
     }
 
     .header-actions button {
@@ -146,6 +288,34 @@
       overflow: hidden;
     }
 
+    .mobile-view-toggle {
+      display: none;
+      border-bottom: 1px solid var(--earth);
+      background: #eae3d7;
+      padding: 0.35rem 0.7rem;
+      gap: 0.35rem;
+    }
+
+    .mobile-view-toggle button {
+      border: 1px solid #9f927f;
+      background: #f5f0e7;
+      color: #4a4338;
+      font-family: var(--mono);
+      font-size: 0.64rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-weight: 700;
+      padding: 0.28rem 0.55rem;
+      cursor: pointer;
+      flex: 1;
+    }
+
+    .mobile-view-toggle button.active {
+      background: #2f2d2a;
+      border-color: #2f2d2a;
+      color: #f7f2ea;
+    }
+
     .editor-panel {
       width: 45%;
       min-width: 300px;
@@ -192,6 +362,10 @@
       border-color: var(--charcoal);
     }
 
+    .tab.hidden {
+      display: none;
+    }
+
     .tab-actions {
       margin-left: auto;
       padding-right: 0.2rem;
@@ -218,6 +392,11 @@
       background: var(--oatmeal);
     }
 
+    .tab-actions button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
     .schema-help {
       border-bottom: 1px solid var(--earth);
       background: var(--linen-dark);
@@ -240,12 +419,6 @@
       font-size: 0.64rem;
       background: #ece7dd;
       padding: 0.02rem 0.2rem;
-    }
-
-    .schema-help iconify-icon {
-      font-size: 0.78rem;
-      vertical-align: -0.12em;
-      margin-right: 0.14rem;
     }
 
     .override-panel {
@@ -271,13 +444,112 @@
       color: #5a5449;
     }
 
-    .override-item select {
-      font-family: var(--mono);
-      font-size: 0.68rem;
-      padding: 0.2rem 0.28rem;
+    .override-item.span-2 {
+      grid-column: span 2;
+    }
+
+    .override-panel .custom-select {
+      min-width: 0;
+    }
+
+    .mode-segmented {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       border: 1px solid var(--earth);
-      background: var(--linen);
-      color: var(--charcoal);
+      background: #e4ddcf;
+      padding: 0.14rem;
+      gap: 0.14rem;
+    }
+
+    .mode-segmented label {
+      position: relative;
+      margin: 0;
+      padding: 0;
+      cursor: pointer;
+    }
+
+    .mode-segmented input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .mode-segmented span {
+      display: block;
+      text-align: center;
+      font-family: var(--mono);
+      font-size: 0.66rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 0.28rem 0.35rem;
+      color: #5d5549;
+      border: 1px solid transparent;
+      background: #f5f0e7;
+      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .mode-segmented input:checked+span {
+      background: #2f2d2a;
+      color: #f7f2ea;
+      border-color: #2f2d2a;
+      font-weight: 700;
+    }
+
+    .compile-controls {
+      border: 1px solid var(--earth);
+      background: #f5f0e7;
+      padding: 0.22rem;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 0.24rem;
+      align-items: center;
+    }
+
+    .compile-controls .mode-segmented {
+      border: 0;
+      background: transparent;
+      padding: 0;
+      gap: 0.16rem;
+    }
+
+    .compile-now-btn {
+      border: 1px solid #8b816f;
+      background: #322f2b;
+      color: #f4efe6;
+      font-family: var(--mono);
+      font-size: 0.66rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      font-weight: 700;
+      padding: 0.34rem 0.55rem;
+      cursor: pointer;
+      min-width: 5.5rem;
+    }
+
+    .compile-now-btn:hover {
+      background: #433f3a;
+    }
+
+    .compile-now-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.45;
+      background: #756f66;
+      border-color: #756f66;
+      color: #dfd8ce;
+    }
+
+    .compile-mode-hint {
+      grid-column: 1 / -1;
+      font-size: 0.6rem;
+      color: #655d50;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      font-weight: 700;
+      padding: 0 0.12rem 0.05rem;
+    }
+
+    .compile-mode-hint.pending {
+      color: #9b6b1a;
     }
 
     .editor-wrapper {
@@ -358,9 +630,37 @@
       background: var(--oatmeal);
       display: flex;
       flex-direction: column;
-      align-items: center;
+      align-items: stretch;
       padding: 1.5rem;
       gap: 1rem;
+      position: relative;
+    }
+
+    .preview-toolbar {
+      width: min(880px, 100%);
+      margin: 0 auto;
+      background: #eee7db;
+      border: 1px solid var(--earth);
+      padding: 0.35rem 0.45rem 0.42rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.22rem;
+    }
+
+    .preview-toolbar label {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #5a5449;
+    }
+
+    .preview-pages {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      width: 100%;
     }
 
     .preview-panel .page {
@@ -374,6 +674,63 @@
       display: block;
       max-width: 100%;
       height: auto;
+    }
+
+    .preview-feedback {
+      position: absolute;
+      inset: 1.5rem;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      z-index: 15;
+    }
+
+    .preview-panel.compiling .preview-feedback {
+      display: flex;
+    }
+
+    .preview-panel.compiling .preview-pages {
+      opacity: 0.58;
+      filter: saturate(0.82);
+    }
+
+    .preview-feedback-card {
+      padding: 0.8rem 0.92rem;
+      background: rgba(248, 243, 234, 0.97);
+      border: 1px dashed #a89b87;
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      box-shadow: 0 2px 10px rgba(37, 33, 27, 0.08);
+      max-width: 100%;
+    }
+
+    .preview-feedback-spinner {
+      width: 0.85rem;
+      height: 0.85rem;
+      border: 2px solid rgba(125, 107, 138, 0.2);
+      border-top-color: var(--purple);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      flex: 0 0 auto;
+    }
+
+    .preview-feedback-text {
+      font-size: 0.67rem;
+      color: #534d41;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 700;
+    }
+
+    .preview-panel.has-error .preview-feedback-card {
+      background: rgba(244, 222, 226, 0.96);
+      border-color: var(--pink);
+    }
+
+    .preview-panel.has-error .preview-feedback-text {
+      color: #6f2d38;
     }
 
     .status-bar {
@@ -400,6 +757,10 @@
 
     .status-bar.ready {
       color: #8a9a7d;
+    }
+
+    .status-bar.pending {
+      color: #d8be7b;
     }
 
     .loading-overlay {
@@ -438,6 +799,112 @@
       color: var(--earth);
     }
 
+    .confirm-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(23, 21, 18, 0.62);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 120;
+      padding: 1rem;
+    }
+
+    .confirm-modal.open {
+      display: flex;
+    }
+
+    .confirm-dialog {
+      width: min(420px, 100%);
+      background: #f6f1e7;
+      border: 1px solid #9d927f;
+      box-shadow: 0 12px 30px rgba(28, 26, 22, 0.24);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+
+    .confirm-dialog h2 {
+      font-size: 0.82rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #312d25;
+    }
+
+    .confirm-dialog p {
+      font-size: 0.69rem;
+      line-height: 1.5;
+      color: #4a4439;
+      letter-spacing: 0.02em;
+    }
+
+    .confirm-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.45rem;
+    }
+
+    .confirm-actions button {
+      border: 1px solid #9d927f;
+      background: transparent;
+      color: #3a352c;
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 0.33rem 0.7rem;
+      cursor: pointer;
+    }
+
+    .confirm-actions button:hover {
+      background: #ece4d7;
+    }
+
+    .confirm-actions .danger {
+      background: #c4909a;
+      border-color: #c4909a;
+      color: #2d1f22;
+      font-weight: 700;
+    }
+
+    .confirm-actions .danger:hover {
+      background: #b47f89;
+    }
+
+    @media (max-width: 1024px) {
+      .mobile-view-toggle {
+        display: flex;
+      }
+
+      .main-container {
+        flex-direction: column;
+      }
+
+      .editor-panel,
+      .preview-panel {
+        width: 100%;
+        min-width: 0;
+      }
+
+      .editor-panel {
+        border-right: none;
+        border-bottom: 1px solid var(--earth);
+      }
+
+      .preview-panel {
+        border-top: 1px solid var(--earth);
+      }
+
+      .main-container.mobile-editor .preview-panel {
+        display: none;
+      }
+
+      .main-container.mobile-preview .editor-panel {
+        display: none;
+      }
+    }
+
     @media (max-width: 768px) {
       .main-container {
         flex-direction: column;
@@ -446,13 +913,15 @@
       .editor-panel {
         width: 100%;
         min-width: 0;
-        height: 45%;
         border-right: none;
-        border-bottom: 1px solid var(--earth);
       }
 
       .preview-panel {
         padding: 1rem;
+      }
+
+      .preview-feedback {
+        inset: 1rem;
       }
 
       .tabs {
@@ -462,6 +931,26 @@
       .tab {
         padding: 0.3rem 0.6rem;
         font-size: 0.62rem;
+      }
+
+      .override-item.span-2 {
+        grid-column: span 1;
+      }
+
+      .override-panel {
+        grid-template-columns: 1fr;
+      }
+
+      .compile-controls {
+        grid-template-columns: 1fr;
+      }
+
+      .compile-now-btn {
+        width: 100%;
+      }
+
+      .preview-toolbar {
+        padding: 0.3rem 0.35rem 0.36rem;
       }
 
       .paper-size-wrap span {
@@ -497,46 +986,33 @@
     </div>
   </header>
 
-  <div class="main-container">
+  <div class="mobile-view-toggle" id="mobile-view-toggle">
+    <button type="button" data-mobile-view="editor" class="active">Editor + Overrides</button>
+    <button type="button" data-mobile-view="preview">Preview PDF</button>
+  </div>
+
+  <div class="main-container mobile-editor">
     <div class="editor-panel">
-      <div class="tabs">
-        <div class="tab active" data-tab="resume">Resume (YAML)</div>
-        <div class="tab" data-tab="config">Config (YAML)</div>
-        <div class="tab" data-tab="bib">Publications (BibTeX)</div>
-        <div class="tab-actions">
-          <button id="btn-upload" title="Upload file">Upload</button>
-          <input type="file" id="file-input" accept=".yml,.yaml,.bib,.txt" style="display:none">
-        </div>
-      </div>
-      <details class="schema-help">
-        <summary>Supported Keys</summary>
-        <div>
-          <div>Schema style is standardized (no legacy aliases): use the keys shown below directly.</div>
-          <div>Work: <code>work[].name</code>, <code>work[].positions[].name</code>, <code>work[].positions[].content[]</code></div>
-          <div>Education: <code>education[].name</code>, optional <code>content[]</code>, <code>honors[]</code>, <code>courses[]</code>, <code>thesis</code></div>
-          <div>Publications: <code>bib_key</code> or markdown-first entries with <code>name</code> (title), <code>content</code> (details), <code>authors</code>, <code>links[]</code></div>
-          <div>BibTeX links: set <code>publications[].url</code> to override, or omit it to use the BibTeX <code>url</code> field.</div>
-          <div>No-link behavior: <code>visibility.links_disabled_behavior</code> = <code>label</code> or <code>label_with_url</code>.</div>
-          <div>Generic sections: any extra top-level array (example: <code>community_service</code>) auto-renders even if not in <code>section_order</code>.</div>
-          <div>Fonts: configure <code>fonts.font</code> (general) and <code>fonts.mono_font</code> (inline code/monospace).</div>
-          <div>Contact icons: <iconify-icon icon="mdi:phone-outline"></iconify-icon><iconify-icon icon="mdi:email-outline"></iconify-icon><iconify-icon icon="mdi:web"></iconify-icon><iconify-icon icon="mdi:github"></iconify-icon><iconify-icon icon="mdi:linkedin"></iconify-icon> set <code>styling.contact_display_mode</code> to <code>label</code>, <code>icon_label</code>, or <code>icon</code>.</div>
-        </div>
-      </details>
       <div class="override-panel">
         <div class="override-item">
-          <label for="override-variant">Variant Override</label>
+          <label>Length</label>
           <select id="override-variant">
-            <option value="config">Use config.yml</option>
-            <option value="long">Long</option>
-            <option value="short">Short</option>
+            <option value="default">default</option>
+            <option value="short">short</option>
           </select>
         </div>
         <div class="override-item">
-          <label for="override-links">Links Override</label>
-          <select id="override-links">
-            <option value="config">Use config.yml</option>
-            <option value="on">Enabled</option>
-            <option value="off">Disabled</option>
+          <label for="override-source">Source</label>
+          <select id="override-source">
+            <option value="resume">resume yaml</option>
+            <option value="bibtex">bibtex</option>
+          </select>
+        </div>
+        <div class="override-item">
+          <label for="override-link-mode">Link Mode</label>
+          <select id="override-link-mode">
+            <option value="links">links on</option>
+            <option value="no-js">no-js</option>
           </select>
         </div>
         <div class="override-item">
@@ -561,7 +1037,6 @@
             <option value="config">Use config.yml</option>
             <option value="label">Label</option>
             <option value="icon_label">Icon + Label</option>
-            <option value="icon">Icon Only</option>
           </select>
         </div>
         <div class="override-item">
@@ -588,21 +1063,95 @@
           </select>
         </div>
       </div>
+      <div class="tabs">
+        <div class="tab active" data-tab="resume">Resume (YAML)</div>
+        <div class="tab" data-tab="config">Config (YAML)</div>
+        <div class="tab" data-tab="config-short">Config Short (YAML)</div>
+        <div class="tab" data-tab="bib">Publications (BibTeX)</div>
+        <div class="tab-actions">
+          <button id="btn-undo" aria-label="Undo (Cmd/Ctrl+Z)">Undo</button>
+          <button id="btn-redo" aria-label="Redo (Cmd/Ctrl+Shift+Z or Ctrl+Y)">Redo</button>
+          <button id="btn-upload" aria-label="Upload file">Upload</button>
+          <input type="file" id="file-input" accept=".yml,.yaml,.bib,.txt" style="display:none">
+        </div>
+      </div>
+      <details class="schema-help">
+        <summary>Supported Keys</summary>
+        <div>
+          <div>Schema style is standardized (no legacy aliases): use the keys shown below directly.</div>
+          <div>Work: <code>work[].name</code>, <code>work[].positions[].name</code>,
+            <code>work[].positions[].content[]</code></div>
+          <div>Education: <code>education[].name</code>, optional <code>content[]</code>, <code>honors[]</code>,
+            <code>courses[]</code>, <code>thesis</code></div>
+          <div>Publications: <code>bib_key</code> or markdown-first entries with <code>name</code> (title),
+            <code>content</code> (details), <code>authors</code>, <code>links[]</code></div>
+          <div>Build controls are split: <code>length</code> (<code>default</code>/<code>short</code>),
+            <code>source</code> (<code>resume</code>/<code>bibtex</code>), and <code>link mode</code>
+            (<code>links on</code>/<code>no-js</code>).</div>
+          <div>BibTeX links: set <code>publications[].url</code> to override, or omit it to use the BibTeX
+            <code>url</code> field.</div>
+          <div>No-link behavior: <code>visibility.links_disabled_behavior</code> = <code>label</code> or
+            <code>label_with_url</code>.</div>
+          <div>Generic sections: any extra top-level array (example: <code>community_service</code>) auto-renders even
+            if not in <code>section_order</code>.</div>
+          <div>Fonts: configure <code>fonts.font</code> (general) and <code>fonts.mono_font</code> (inline
+            code/monospace).</div>
+          <div>Contact icons come from Typst Universe (<code>scienceicons</code> + <code>sicons</code>, including
+            academic networks like Google Scholar/DBLP/ORCID); unknown networks render as label-only even with
+            <code>icon_label</code>.</div>
+        </div>
+      </details>
       <div class="editor-wrapper">
         <div class="cm-container" id="cm-resume"></div>
         <div class="cm-container hidden" id="cm-config"></div>
+        <div class="cm-container hidden" id="cm-config-short"></div>
         <div class="cm-container hidden" id="cm-bib"></div>
       </div>
     </div>
-    <div class="preview-panel" id="preview"></div>
+    <div class="preview-panel" id="preview">
+      <div class="preview-toolbar">
+        <label>Compile</label>
+        <div class="compile-controls">
+          <div class="mode-segmented" role="radiogroup" aria-label="Compile mode">
+            <label>
+              <input type="radio" name="compile-mode" value="auto" checked>
+              <span>auto</span>
+            </label>
+            <label>
+              <input type="radio" name="compile-mode" value="manual">
+              <span>manual</span>
+            </label>
+          </div>
+          <button id="btn-compile-now" class="compile-now-btn" type="button">Compile</button>
+          <div id="compile-mode-hint" class="compile-mode-hint">Auto compile on every change</div>
+        </div>
+      </div>
+      <div class="preview-pages" id="preview-pages"></div>
+      <div class="preview-feedback" id="preview-feedback" aria-live="polite">
+        <div class="preview-feedback-card">
+          <div class="preview-feedback-spinner"></div>
+          <div class="preview-feedback-text" id="preview-feedback-text">Compiling changes...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="confirm-modal" id="confirm-modal" aria-hidden="true">
+    <div class="confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="confirm-title"
+      aria-describedby="confirm-message">
+      <h2 id="confirm-title">Confirm action</h2>
+      <p id="confirm-message">Proceed?</p>
+      <div class="confirm-actions">
+        <button type="button" id="confirm-cancel">Cancel</button>
+        <button type="button" id="confirm-accept" class="danger">Confirm</button>
+      </div>
+    </div>
   </div>
 
   <div class="status-bar" id="status-bar">Loading...</div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/codemirror.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/mode/yaml/yaml.min.js"></script>
-  <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
-
   <script type="module"
     src="https://cdn.jsdelivr.net/npm/@myriaddreamin/typst.ts@0.7.0-rc2/dist/esm/contrib/all-in-one-lite.bundle.js"
     id="typst">
@@ -658,46 +1207,51 @@ skills:
       - Skill 3
 `;
 
-const DEFAULT_CONFIG_YAML = `variant: long
+    const DEFAULT_CONFIG_YAML = `variant: long
 paper_size: "letter"
 fonts:
-  font: "New Computer Modern"
+  font: "Libertinus Serif"
   mono_font: "DejaVu Sans Mono"
   font_size: 10pt
   name_font_size: 1.4em
   section_font_size: 1em
   publications_font_size: 9.6pt
   awards_font_size: 10pt
+  page_number_font_size: 0.85em
+  header_title_font_size: 0.9em
+  location_font_size: 0.8em
+  work_role_font_size: 0.98em
 layout:
   margin: 0.5in
-  line_spacing: 0.33em
-  list_spacing: 0.61em
-  section_spacing: 1.2em
-  post_section_spacing: 0.78em
-  entry_spacing: 0.62em
-  entry_inner_spacing: 0.48em
-  pub_spacing: 0.61em
-  publications_line_spacing: 0.33em
+  line_spacing: 0.38em
+  list_spacing: 0.7em
+  section_spacing: 1.38em
+  post_section_spacing: 0.9em
+  entry_spacing: 0.71em
+  entry_inner_spacing: 0.55em
+  pub_spacing: 0.7em
+  publications_line_spacing: 0.38em
   publications_heading_tighten: 0pt
-  skill_spacing: 0.61em
-  header_rule_top_spacing: 0.52em
-  header_bottom_spacing: 0.3em
-  last_updated_bottom_spacing: 0.2em
+  skill_spacing: 0.7em
+  header_rule_top_spacing: 0.6em
+  header_bottom_spacing: 0.35em
+  contact_separator_spacing: 0.35em
+  last_updated_bottom_spacing: 0.23em
 styling:
   section_smallcaps: false
   secondary_color: "#111111"
   link_color: "#1C398D"
   section_rule_color: "#9F9FA8"
   section_rule_thickness: 0.6pt
+  section_heading_sticky: true
   header_rule_color: "#9F9FA8"
   publications_link_style: "compact"
   contact_font_size: 0.85em
   summary_font_size: 1em
   last_updated_font_size: 0.8em
   last_updated_label: "Last Updated on"
-  contact_display_mode: "label"
-  contact_icon_family: "lucide"
-  contact_icon_spacing: 0.18em
+  contact_display_mode: "icon_label"
+  contact_icon_spacing: 0.21em
 visibility:
   show_location: false
   show_phone: true
@@ -722,7 +1276,79 @@ section_order:
   - skills
 `;
 
-const DEFAULT_BIB = `@article{example2024,
+    const DEFAULT_SHORT_CONFIG_YAML = `variant: short
+paper_size: "letter"
+fonts:
+  font: "Libertinus Serif"
+  mono_font: "DejaVu Sans Mono"
+  font_size: 10.2pt
+  name_font_size: 1.5em
+  section_font_size: 1em
+  publications_font_size: 9.6pt
+  awards_font_size: 10pt
+  page_number_font_size: 0.8em
+  header_title_font_size: 0.84em
+  location_font_size: 0.74em
+  work_role_font_size: 0.96em
+layout:
+  margin: 0.5in
+  line_spacing: 0.33em
+  skills_line_spacing: 0.33em
+  list_spacing: 0.54em
+  section_spacing: 1em
+  post_section_spacing: 0.68em
+  entry_spacing: 0.5em
+  entry_inner_spacing: 0.42em
+  pub_spacing: 0.54em
+  publications_line_spacing: 0.33em
+  publications_heading_tighten: 0pt
+  skill_spacing: 0.54em
+  header_rule_top_spacing: 0.36em
+  header_bottom_spacing: 0.22em
+  contact_separator_spacing: 0.18em
+  last_updated_bottom_spacing: 0.18em
+styling:
+  section_smallcaps: false
+  secondary_color: "#111111"
+  link_color: "#1C398D"
+  section_rule_color: "#9F9FA8"
+  section_rule_thickness: 0.6pt
+  section_heading_sticky: true
+  header_rule_color: "#9F9FA8"
+  publications_link_style: "compact"
+  contact_font_size: 0.74em
+  summary_font_size: 0.92em
+  last_updated_font_size: 0.66em
+  last_updated_label: "Last Updated on"
+  contact_display_mode: "icon_label"
+  contact_icon_spacing: 0.16em
+visibility:
+  show_location: false
+  show_phone: true
+  show_interests_summary: false
+  show_languages: false
+  show_interests: false
+  show_references: false
+  show_last_updated: true
+  enable_links: true
+  links_disabled_behavior: "label"
+  show_publication_numbers: false
+section_titles:
+  work: "Experience"
+  education: "Education"
+  publications: "Publications"
+  projects: "Projects"
+  awards: "Honors and Activities"
+  skills: "Skills"
+section_order:
+  - work
+  - publications
+  - education
+  - awards
+  - skills
+`;
+
+    const DEFAULT_BIB = `@article{example2024,
   title={Your Paper Title},
   author={Last, First and Other, Author},
   journal={Conference or Journal Name},
@@ -731,32 +1357,109 @@ const DEFAULT_BIB = `@article{example2024,
 }
 `;
 
-    const LS_RESUME = 'resume_compiler_resume_yaml';
-    const LS_CONFIG = 'resume_compiler_config_yaml';
-    const LS_BIB = 'resume_compiler_publications_bib';
-    const LS_PAPER = 'resume_compiler_paper_size';
-    const LS_OVERRIDE_VARIANT = 'resume_compiler_override_variant';
-    const LS_OVERRIDE_LINKS = 'resume_compiler_override_links';
-    const LS_OVERRIDE_LINKS_DISABLED_BEHAVIOR = 'resume_compiler_override_links_disabled_behavior';
-    const LS_OVERRIDE_PUBNUMS = 'resume_compiler_override_pubnums';
-    const LS_OVERRIDE_CONTACT = 'resume_compiler_override_contact';
-    const LS_OVERRIDE_FONT = 'resume_compiler_override_font';
-    const LS_OVERRIDE_MONO_FONT = 'resume_compiler_override_mono_font';
+    const APP_STORAGE_SCOPE = (() => {
+      const path = (window.location.pathname || '/').replace(/\/+$/, '');
+      if (!path || path === '/') return 'root';
+      const normalized = path
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '_')
+        .replace(/^_+|_+$/g, '');
+      return normalized || 'root';
+    })();
+    const APP_STORAGE_PREFIX = `resume_compiler__${APP_STORAGE_SCOPE}__`;
+    const lsKey = (name) => `${APP_STORAGE_PREFIX}${name}`;
+
+    const CACHE_VERSION = '2026-02-11-mode-v1';
+    const LS_CACHE_VERSION = lsKey('cache_version');
+    const LS_RESUME = lsKey('resume_yaml');
+    const LS_CONFIG = lsKey('config_yaml');
+    const LS_CONFIG_SHORT = lsKey('config_short_yaml');
+    const LS_BIB = lsKey('publications_bib');
+    const LS_PAPER = lsKey('paper_size');
+    const LS_OVERRIDE_MODE_LEGACY = lsKey('override_mode');
+    const LS_OVERRIDE_VARIANT = lsKey('override_variant');
+    const LS_OVERRIDE_SOURCE = lsKey('override_source');
+    const LS_OVERRIDE_LINK_MODE = lsKey('override_link_mode');
+    const LS_COMPILE_MODE = lsKey('compile_mode');
+    const LS_ACTIVE_TAB = lsKey('active_tab');
+    const LS_MOBILE_VIEW = lsKey('mobile_view');
+    const LS_EDITOR_HISTORY = lsKey('editor_history_v1');
+    const LS_OVERRIDE_LINKS_DISABLED_BEHAVIOR = lsKey('override_links_disabled_behavior');
+    const LS_OVERRIDE_PUBNUMS = lsKey('override_pubnums');
+    const LS_OVERRIDE_CONTACT = lsKey('override_contact');
+    const LS_OVERRIDE_FONT = lsKey('override_font');
+    const LS_OVERRIDE_MONO_FONT = lsKey('override_mono_font');
+    const LS_KEYS = [
+      LS_CACHE_VERSION,
+      LS_RESUME,
+      LS_CONFIG,
+      LS_CONFIG_SHORT,
+      LS_BIB,
+      LS_PAPER,
+      LS_OVERRIDE_MODE_LEGACY,
+      LS_OVERRIDE_VARIANT,
+      LS_OVERRIDE_SOURCE,
+      LS_OVERRIDE_LINK_MODE,
+      LS_COMPILE_MODE,
+      LS_ACTIVE_TAB,
+      LS_MOBILE_VIEW,
+      LS_EDITOR_HISTORY,
+      LS_OVERRIDE_LINKS_DISABLED_BEHAVIOR,
+      LS_OVERRIDE_PUBNUMS,
+      LS_OVERRIDE_CONTACT,
+      LS_OVERRIDE_FONT,
+      LS_OVERRIDE_MONO_FONT,
+    ];
+    const EDITOR_CONTENT_KEYS = {
+      resume: LS_RESUME,
+      config: LS_CONFIG,
+      'config-short': LS_CONFIG_SHORT,
+      bib: LS_BIB,
+    };
+    const BIB_SOURCE_ALIASES = [
+      '/publications.bib',
+      '/default-publications.bib',
+      '/web/publications.bib',
+      '/web/default-publications.bib',
+    ];
 
     const preview = document.getElementById('preview');
+    const mainContainer = document.querySelector('.main-container');
+    const mobileViewButtons = Array.from(document.querySelectorAll('[data-mobile-view]'));
+    const previewPages = document.getElementById('preview-pages');
+    const previewFeedbackText = document.getElementById('preview-feedback-text');
     const statusBar = document.getElementById('status-bar');
     const btnDownload = document.getElementById('btn-download');
     const btnDownloadTyp = document.getElementById('btn-download-typ');
+    const btnUndo = document.getElementById('btn-undo');
+    const btnRedo = document.getElementById('btn-redo');
+    const btnCompileNow = document.getElementById('btn-compile-now');
     const btnReset = document.getElementById('btn-reset');
+    const compileModeHint = document.getElementById('compile-mode-hint');
     const paperSize = document.getElementById('paper-size');
+    const compileModeInputs = Array.from(document.querySelectorAll('input[name="compile-mode"]'));
     const overrideVariant = document.getElementById('override-variant');
-    const overrideLinks = document.getElementById('override-links');
+    const overrideSource = document.getElementById('override-source');
+    const overrideLinkMode = document.getElementById('override-link-mode');
     const overrideLinksDisabledBehavior = document.getElementById('override-links-disabled-behavior');
     const overridePubnums = document.getElementById('override-pubnums');
     const overrideContact = document.getElementById('override-contact');
     const overrideFont = document.getElementById('override-font');
     const overrideMonoFont = document.getElementById('override-mono-font');
     const overlay = document.getElementById('loading-overlay');
+    const confirmModal = document.getElementById('confirm-modal');
+    const confirmTitle = document.getElementById('confirm-title');
+    const confirmMessage = document.getElementById('confirm-message');
+    const confirmCancel = document.getElementById('confirm-cancel');
+    const confirmAccept = document.getElementById('confirm-accept');
+
+    const EDITOR_EXTRA_KEYS = {
+      'Cmd-Z': () => performEditorUndo(),
+      'Ctrl-Z': () => performEditorUndo(),
+      'Cmd-Shift-Z': () => performEditorRedo(),
+      'Ctrl-Shift-Z': () => performEditorRedo(),
+      'Ctrl-Y': () => performEditorRedo(),
+    };
 
     const cmResume = CodeMirror(document.getElementById('cm-resume'), {
       mode: 'yaml',
@@ -764,6 +1467,7 @@ const DEFAULT_BIB = `@article{example2024,
       tabSize: 2,
       indentWithTabs: false,
       lineWrapping: true,
+      extraKeys: EDITOR_EXTRA_KEYS,
     });
 
     const cmConfig = CodeMirror(document.getElementById('cm-config'), {
@@ -772,6 +1476,16 @@ const DEFAULT_BIB = `@article{example2024,
       tabSize: 2,
       indentWithTabs: false,
       lineWrapping: true,
+      extraKeys: EDITOR_EXTRA_KEYS,
+    });
+
+    const cmConfigShort = CodeMirror(document.getElementById('cm-config-short'), {
+      mode: 'yaml',
+      lineNumbers: true,
+      tabSize: 2,
+      indentWithTabs: false,
+      lineWrapping: true,
+      extraKeys: EDITOR_EXTRA_KEYS,
     });
 
     const cmBib = CodeMirror(document.getElementById('cm-bib'), {
@@ -779,35 +1493,522 @@ const DEFAULT_BIB = `@article{example2024,
       lineNumbers: true,
       tabSize: 2,
       lineWrapping: true,
+      extraKeys: EDITOR_EXTRA_KEYS,
     });
 
     let activeTab = 'resume';
-    const editors = { resume: cmResume, config: cmConfig, bib: cmBib };
+    const editors = { resume: cmResume, config: cmConfig, "config-short": cmConfigShort, bib: cmBib };
     const containers = {
       resume: document.getElementById('cm-resume'),
       config: document.getElementById('cm-config'),
+      "config-short": document.getElementById('cm-config-short'),
       bib: document.getElementById('cm-bib'),
     };
 
     let templateContent = '';
     let compileTimeout = null;
     let ready = false;
+    let hasPendingManualChanges = false;
+    let compileRequestId = 0;
+    let activeCustomSelect = null;
+    let pendingConfirmResolve = null;
+    let pendingConfirmFocus = null;
+    let suppressHistoryTracking = false;
+    let historyPersistTimer = null;
+    const editorHistoryTimers = {};
+    const EDITOR_HISTORY_LIMIT = 25;
+    const editorHistories = {};
 
     function setStatus(text, level) {
       statusBar.textContent = text;
       statusBar.className = 'status-bar' + (level ? ' ' + level : '');
     }
 
-    const tabs = document.querySelectorAll('.tab[data-tab]');
-    tabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        tabs.forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-        activeTab = tab.dataset.tab;
-        Object.entries(containers).forEach(([key, el]) => {
-          el.classList.toggle('hidden', key !== activeTab);
+    function showPreviewFeedback(text, isError = false) {
+      previewFeedbackText.textContent = text;
+      preview.classList.add('compiling');
+      preview.classList.toggle('has-error', !!isError);
+    }
+
+    function hidePreviewFeedback() {
+      preview.classList.remove('compiling');
+      preview.classList.remove('has-error');
+    }
+
+    function closeActiveCustomSelect() {
+      if (!activeCustomSelect) return;
+      activeCustomSelect.classList.remove('open');
+      const trigger = activeCustomSelect.querySelector('.custom-select-trigger');
+      if (trigger) trigger.setAttribute('aria-expanded', 'false');
+      activeCustomSelect = null;
+    }
+
+    function refreshCustomSelects() {
+      document.querySelectorAll('select').forEach((select) => {
+        if (typeof select._refreshCustomSelect === 'function') {
+          select._refreshCustomSelect();
+        }
+      });
+    }
+
+    function enhanceSelect(select) {
+      if (!select || select.dataset.customized === '1') return;
+      select.dataset.customized = '1';
+      select.classList.add('native-select-hidden');
+
+      const custom = document.createElement('div');
+      custom.className = 'custom-select';
+
+      const trigger = document.createElement('button');
+      trigger.type = 'button';
+      trigger.className = 'custom-select-trigger';
+      trigger.setAttribute('aria-haspopup', 'listbox');
+      trigger.setAttribute('aria-expanded', 'false');
+
+      const value = document.createElement('span');
+      value.className = 'custom-select-value';
+      trigger.appendChild(value);
+
+      const chevron = document.createElement('span');
+      chevron.className = 'custom-select-chevron';
+      trigger.appendChild(chevron);
+
+      const menu = document.createElement('div');
+      menu.className = 'custom-select-menu';
+      menu.setAttribute('role', 'listbox');
+
+      const selectOption = (nextValue) => {
+        if (select.value !== nextValue) {
+          select.value = nextValue;
+          select.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+        syncFromNative();
+        closeActiveCustomSelect();
+      };
+
+      const syncFromNative = () => {
+        const selectedOption = select.options[select.selectedIndex];
+        value.textContent = selectedOption ? selectedOption.textContent : '';
+        Array.from(menu.querySelectorAll('.custom-select-option')).forEach((optionButton) => {
+          const isSelected = optionButton.dataset.value === select.value;
+          optionButton.classList.toggle('selected', isSelected);
+          optionButton.setAttribute('aria-selected', isSelected ? 'true' : 'false');
         });
-        editors[activeTab].refresh();
+      };
+
+      Array.from(select.options).forEach((option) => {
+        const optionButton = document.createElement('button');
+        optionButton.type = 'button';
+        optionButton.className = 'custom-select-option';
+        optionButton.dataset.value = option.value;
+        optionButton.textContent = option.textContent;
+        optionButton.setAttribute('role', 'option');
+        optionButton.addEventListener('click', () => selectOption(option.value));
+        menu.appendChild(optionButton);
+      });
+
+      trigger.addEventListener('click', (event) => {
+        event.preventDefault();
+        if (activeCustomSelect === custom) {
+          closeActiveCustomSelect();
+          return;
+        }
+        closeActiveCustomSelect();
+        custom.classList.add('open');
+        trigger.setAttribute('aria-expanded', 'true');
+        activeCustomSelect = custom;
+      });
+
+      trigger.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+          closeActiveCustomSelect();
+          return;
+        }
+        if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp' && event.key !== 'Enter' && event.key !== ' ') return;
+        event.preventDefault();
+        if (activeCustomSelect !== custom) {
+          closeActiveCustomSelect();
+          custom.classList.add('open');
+          trigger.setAttribute('aria-expanded', 'true');
+          activeCustomSelect = custom;
+        }
+        const options = Array.from(select.options);
+        const currentIndex = Math.max(select.selectedIndex, 0);
+        if (event.key === 'ArrowDown') {
+          const nextIndex = (currentIndex + 1) % options.length;
+          selectOption(options[nextIndex].value);
+        } else if (event.key === 'ArrowUp') {
+          const nextIndex = (currentIndex - 1 + options.length) % options.length;
+          selectOption(options[nextIndex].value);
+        }
+      });
+
+      select.parentNode.insertBefore(custom, select.nextSibling);
+      custom.appendChild(trigger);
+      custom.appendChild(menu);
+      select._refreshCustomSelect = syncFromNative;
+      syncFromNative();
+
+      if (select.id) {
+        const boundLabel = document.querySelector(`label[for="${select.id}"]`);
+        if (boundLabel) {
+          boundLabel.addEventListener('click', (event) => {
+            if (event.target.closest('.custom-select')) return;
+            event.preventDefault();
+            trigger.click();
+          });
+        }
+      }
+    }
+
+    function enhanceAllSelects() {
+      document.querySelectorAll('select').forEach(enhanceSelect);
+      document.addEventListener('click', (event) => {
+        if (event.target.closest('.custom-select')) return;
+        closeActiveCustomSelect();
+      });
+      window.addEventListener('resize', closeActiveCustomSelect);
+    }
+
+    function openConfirmDialog({
+      title = 'Confirm action',
+      message = 'Proceed?',
+      confirmText = 'Confirm',
+      cancelText = 'Cancel',
+      destructive = false,
+    } = {}) {
+      if (pendingConfirmResolve) {
+        pendingConfirmResolve(false);
+        pendingConfirmResolve = null;
+      }
+
+      confirmTitle.textContent = title;
+      confirmMessage.textContent = message;
+      confirmCancel.textContent = cancelText;
+      confirmAccept.textContent = confirmText;
+      confirmAccept.classList.toggle('danger', !!destructive);
+      confirmModal.classList.add('open');
+      confirmModal.setAttribute('aria-hidden', 'false');
+      pendingConfirmFocus = document.activeElement;
+
+      return new Promise((resolve) => {
+        pendingConfirmResolve = resolve;
+        confirmCancel.focus();
+      });
+    }
+
+    function closeConfirmDialog(accepted) {
+      if (!pendingConfirmResolve) return;
+      const resolve = pendingConfirmResolve;
+      pendingConfirmResolve = null;
+      confirmModal.classList.remove('open');
+      confirmModal.setAttribute('aria-hidden', 'true');
+      resolve(accepted);
+      if (pendingConfirmFocus && typeof pendingConfirmFocus.focus === 'function') {
+        pendingConfirmFocus.focus();
+      }
+      pendingConfirmFocus = null;
+    }
+
+    confirmCancel.addEventListener('click', () => closeConfirmDialog(false));
+    confirmAccept.addEventListener('click', () => closeConfirmDialog(true));
+    confirmModal.addEventListener('click', (event) => {
+      if (event.target === confirmModal) closeConfirmDialog(false);
+    });
+    document.addEventListener('keydown', (event) => {
+      handleGlobalUndoRedoShortcut(event);
+      if (event.key === 'Escape' && pendingConfirmResolve) closeConfirmDialog(false);
+    });
+
+    enhanceAllSelects();
+
+    const tabs = Array.from(document.querySelectorAll('.tab[data-tab]'));
+
+    function getCompileMode() {
+      const selected = compileModeInputs.find((input) => input.checked);
+      return selected && selected.value === 'manual' ? 'manual' : 'auto';
+    }
+
+    function setCompileMode(value) {
+      const normalized = value === 'manual' ? 'manual' : 'auto';
+      compileModeInputs.forEach((input) => {
+        input.checked = input.value === normalized;
+      });
+    }
+
+    function updateCompileControlsUI() {
+      const manual = getCompileMode() === 'manual';
+      btnCompileNow.disabled = !manual || !ready;
+      compileModeHint.classList.toggle('pending', manual && hasPendingManualChanges);
+      if (!manual) {
+        compileModeHint.textContent = 'Auto compile on every change';
+      } else if (hasPendingManualChanges) {
+        compileModeHint.textContent = 'Changes pending. Click compile';
+      } else {
+        compileModeHint.textContent = 'Manual mode. No pending changes';
+      }
+    }
+
+    function getModeVariant() {
+      return overrideVariant.value === 'short' ? 'short' : 'default';
+    }
+
+    function setModeVariant(value) {
+      setSelectValue(overrideVariant, value, 'default');
+    }
+
+    function getModeSource() {
+      return overrideSource.value === 'bibtex' ? 'bibtex' : 'resume';
+    }
+
+    function setModeSource(value) {
+      setSelectValue(overrideSource, value, 'resume');
+    }
+
+    function getModeLinkMode() {
+      return overrideLinkMode.value === 'no-js' ? 'no-js' : 'links';
+    }
+
+    function setModeLinkMode(value) {
+      setSelectValue(overrideLinkMode, value, 'links');
+    }
+
+    function getMobileView() {
+      if (mainContainer.classList.contains('mobile-preview')) return 'preview';
+      return 'editor';
+    }
+
+    function setMobileView(view) {
+      const normalized = view === 'preview' ? 'preview' : 'editor';
+      mainContainer.classList.toggle('mobile-preview', normalized === 'preview');
+      mainContainer.classList.toggle('mobile-editor', normalized === 'editor');
+      mobileViewButtons.forEach((button) => {
+        button.classList.toggle('active', button.dataset.mobileView === normalized);
+      });
+    }
+
+    function persistPreferences() {
+      localStorage.setItem(LS_PAPER, paperSize.value);
+      localStorage.setItem(LS_OVERRIDE_VARIANT, getModeVariant());
+      localStorage.setItem(LS_OVERRIDE_SOURCE, getModeSource());
+      localStorage.setItem(LS_OVERRIDE_LINK_MODE, getModeLinkMode());
+      localStorage.setItem(LS_COMPILE_MODE, getCompileMode());
+      localStorage.setItem(LS_OVERRIDE_MODE_LEGACY, getSelectedMode());
+      localStorage.setItem(LS_OVERRIDE_LINKS_DISABLED_BEHAVIOR, overrideLinksDisabledBehavior.value);
+      localStorage.setItem(LS_OVERRIDE_PUBNUMS, overridePubnums.value);
+      localStorage.setItem(LS_OVERRIDE_CONTACT, overrideContact.value);
+      localStorage.setItem(LS_OVERRIDE_FONT, overrideFont.value);
+      localStorage.setItem(LS_OVERRIDE_MONO_FONT, overrideMonoFont.value);
+      localStorage.setItem(LS_ACTIVE_TAB, activeTab);
+      localStorage.setItem(LS_MOBILE_VIEW, getMobileView());
+    }
+
+    function createDefaultHistory(value) {
+      return { undo: [], redo: [], current: String(value || '') };
+    }
+
+    function trimHistoryStack(stack) {
+      if (stack.length > EDITOR_HISTORY_LIMIT) {
+        stack.splice(0, stack.length - EDITOR_HISTORY_LIMIT);
+      }
+    }
+
+    function queuePersistHistories() {
+      if (historyPersistTimer) clearTimeout(historyPersistTimer);
+      historyPersistTimer = setTimeout(() => {
+        localStorage.setItem(LS_EDITOR_HISTORY, JSON.stringify(editorHistories));
+      }, 120);
+    }
+
+    function normalizeLoadedHistory(key, loaded, currentValue) {
+      if (!loaded || typeof loaded !== 'object') return createDefaultHistory(currentValue);
+      const normalized = {
+        undo: Array.isArray(loaded.undo) ? loaded.undo.filter((v) => typeof v === 'string') : [],
+        redo: Array.isArray(loaded.redo) ? loaded.redo.filter((v) => typeof v === 'string') : [],
+        current: typeof loaded.current === 'string' ? loaded.current : String(currentValue || ''),
+      };
+      trimHistoryStack(normalized.undo);
+      trimHistoryStack(normalized.redo);
+      if (normalized.current !== currentValue) {
+        return createDefaultHistory(currentValue);
+      }
+      return normalized;
+    }
+
+    function loadEditorHistoriesFromStorage() {
+      let loaded = {};
+      try {
+        loaded = JSON.parse(localStorage.getItem(LS_EDITOR_HISTORY) || '{}') || {};
+      } catch (err) {
+        loaded = {};
+      }
+
+      Object.keys(editors).forEach((key) => {
+        const currentValue = editors[key].getValue();
+        editorHistories[key] = normalizeLoadedHistory(key, loaded[key], currentValue);
+      });
+      queuePersistHistories();
+      updateUndoRedoButtons();
+    }
+
+    function flushEditorHistoryTimer(editorKey) {
+      if (!editorHistoryTimers[editorKey]) return;
+      clearTimeout(editorHistoryTimers[editorKey]);
+      editorHistoryTimers[editorKey] = null;
+      const editor = editors[editorKey];
+      if (!editor) return;
+      recordEditorSnapshot(editorKey, editor.getValue());
+    }
+
+    function recordEditorSnapshot(editorKey, nextValue) {
+      if (suppressHistoryTracking) return;
+      const history = editorHistories[editorKey] || createDefaultHistory('');
+      const value = String(nextValue || '');
+      if (history.current === value) return;
+      history.undo.push(history.current);
+      trimHistoryStack(history.undo);
+      history.current = value;
+      history.redo = [];
+      editorHistories[editorKey] = history;
+      const contentKey = EDITOR_CONTENT_KEYS[editorKey];
+      if (contentKey) localStorage.setItem(contentKey, value);
+      queuePersistHistories();
+      updateUndoRedoButtons();
+    }
+
+    function scheduleEditorHistorySnapshot(editorKey) {
+      if (suppressHistoryTracking) return;
+      if (editorHistoryTimers[editorKey]) clearTimeout(editorHistoryTimers[editorKey]);
+      editorHistoryTimers[editorKey] = setTimeout(() => {
+        editorHistoryTimers[editorKey] = null;
+        const editor = editors[editorKey];
+        if (!editor) return;
+        recordEditorSnapshot(editorKey, editor.getValue());
+      }, 240);
+    }
+
+    function editorHasUndo(editorKey) {
+      const history = editorHistories[editorKey];
+      return !!(history && history.undo.length > 0);
+    }
+
+    function editorHasRedo(editorKey) {
+      const history = editorHistories[editorKey];
+      return !!(history && history.redo.length > 0);
+    }
+
+    function updateUndoRedoButtons() {
+      btnUndo.disabled = !editorHasUndo(activeTab);
+      btnRedo.disabled = !editorHasRedo(activeTab);
+    }
+
+    function applyHistoryValue(editorKey, nextValue) {
+      const editor = editors[editorKey];
+      if (!editor) return;
+      suppressHistoryTracking = true;
+      editor.setValue(nextValue);
+      suppressHistoryTracking = false;
+      const contentKey = EDITOR_CONTENT_KEYS[editorKey];
+      if (contentKey) localStorage.setItem(contentKey, nextValue);
+      queuePersistHistories();
+      updateUndoRedoButtons();
+      scheduleCompile();
+    }
+
+    function performEditorUndo(editorKey = activeTab) {
+      flushEditorHistoryTimer(editorKey);
+      const history = editorHistories[editorKey];
+      if (!history || history.undo.length === 0) return;
+      const previous = history.undo.pop();
+      history.redo.push(history.current);
+      trimHistoryStack(history.redo);
+      history.current = previous;
+      applyHistoryValue(editorKey, previous);
+    }
+
+    function performEditorRedo(editorKey = activeTab) {
+      flushEditorHistoryTimer(editorKey);
+      const history = editorHistories[editorKey];
+      if (!history || history.redo.length === 0) return;
+      const next = history.redo.pop();
+      history.undo.push(history.current);
+      trimHistoryStack(history.undo);
+      history.current = next;
+      applyHistoryValue(editorKey, next);
+    }
+
+    function handleGlobalUndoRedoShortcut(event) {
+      if (event.defaultPrevented) return;
+      if (!(event.metaKey || event.ctrlKey) || event.altKey) return;
+      if (pendingConfirmResolve) return;
+      const target = event.target;
+      const tag = target && target.tagName ? target.tagName.toUpperCase() : '';
+      if ((tag === 'INPUT' || tag === 'TEXTAREA') && !target.closest('.CodeMirror')) return;
+      if (target && target.isContentEditable) return;
+
+      const key = String(event.key || '').toLowerCase();
+      const wantsUndo = key === 'z' && !event.shiftKey;
+      const wantsRedo = (key === 'z' && event.shiftKey) || (key === 'y' && event.ctrlKey && !event.metaKey);
+      if (!wantsUndo && !wantsRedo) return;
+
+      event.preventDefault();
+      if (wantsUndo) {
+        performEditorUndo();
+      } else {
+        performEditorRedo();
+      }
+    }
+
+    function isTabRelevant(tabId) {
+      if (tabId === 'bib') return getModeSource() === 'bibtex';
+      if (tabId === 'config') return getModeVariant() === 'default';
+      if (tabId === 'config-short') return getModeVariant() === 'short';
+      return true;
+    }
+
+    function syncActiveTabView() {
+      tabs.forEach((tab) => {
+        tab.classList.toggle('active', tab.dataset.tab === activeTab && !tab.classList.contains('hidden'));
+      });
+      Object.entries(containers).forEach(([key, el]) => {
+        el.classList.toggle('hidden', key !== activeTab);
+      });
+      if (editors[activeTab]) editors[activeTab].refresh();
+      updateUndoRedoButtons();
+    }
+
+    function updateTabVisibility() {
+      const visibleTabs = [];
+      tabs.forEach((tab) => {
+        const visible = isTabRelevant(tab.dataset.tab);
+        tab.classList.toggle('hidden', !visible);
+        if (visible) visibleTabs.push(tab.dataset.tab);
+      });
+      if (!visibleTabs.includes(activeTab)) {
+        if (activeTab === 'config' && visibleTabs.includes('config-short')) {
+          activeTab = 'config-short';
+        } else if (activeTab === 'config-short' && visibleTabs.includes('config')) {
+          activeTab = 'config';
+        } else {
+          activeTab = visibleTabs.includes('resume') ? 'resume' : (visibleTabs[0] || 'resume');
+        }
+      }
+      syncActiveTabView();
+    }
+
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        if (tab.classList.contains('hidden')) return;
+        activeTab = tab.dataset.tab;
+        syncActiveTabView();
+        persistPreferences();
+      });
+    });
+
+    mobileViewButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        setMobileView(button.dataset.mobileView);
+        persistPreferences();
       });
     });
 
@@ -819,7 +2020,14 @@ const DEFAULT_BIB = `@article{example2024,
       if (!file) return;
       const reader = new FileReader();
       reader.onload = (ev) => {
+        suppressHistoryTracking = true;
         editors[activeTab].setValue(ev.target.result);
+        suppressHistoryTracking = false;
+        editorHistories[activeTab] = createDefaultHistory(ev.target.result);
+        const contentKey = EDITOR_CONTENT_KEYS[activeTab];
+        if (contentKey) localStorage.setItem(contentKey, ev.target.result);
+        queuePersistHistories();
+        updateUndoRedoButtons();
         scheduleCompile();
       };
       reader.readAsText(file);
@@ -828,12 +2036,35 @@ const DEFAULT_BIB = `@article{example2024,
 
     function scheduleCompile() {
       if (compileTimeout) clearTimeout(compileTimeout);
+      if (getCompileMode() === 'manual') {
+        hasPendingManualChanges = true;
+        updateCompileControlsUI();
+        if (ready) {
+          setStatus('Manual mode: changes pending. Click compile.', 'pending');
+        }
+        return;
+      }
+      hasPendingManualChanges = false;
+      updateCompileControlsUI();
       compileTimeout = setTimeout(compile, 600);
     }
 
-    cmResume.on('change', scheduleCompile);
-    cmConfig.on('change', scheduleCompile);
-    cmBib.on('change', scheduleCompile);
+    cmResume.on('change', () => {
+      scheduleEditorHistorySnapshot('resume');
+      scheduleCompile();
+    });
+    cmConfig.on('change', () => {
+      scheduleEditorHistorySnapshot('config');
+      scheduleCompile();
+    });
+    cmConfigShort.on('change', () => {
+      scheduleEditorHistorySnapshot('config-short');
+      scheduleCompile();
+    });
+    cmBib.on('change', () => {
+      scheduleEditorHistorySnapshot('bib');
+      scheduleCompile();
+    });
 
     function formatLastUpdatedDate(dateObj = new Date()) {
       return dateObj.toLocaleDateString('en-US', {
@@ -849,21 +2080,64 @@ const DEFAULT_BIB = `@article{example2024,
       return m[1].toLowerCase() === 'a4' ? 'a4' : 'letter';
     }
 
-    function parseConfigBoolean(configText, key, fallback) {
-      const top = configText.match(new RegExp(`^\\s*${key}\\s*:\\s*(true|false)\\s*$`, 'mi'));
-      const nested = configText.match(new RegExp(`^\\s{2}${key}\\s*:\\s*(true|false)\\s*$`, 'mi'));
-      if (top) return top[1].toLowerCase() === 'true';
-      if (nested) return nested[1].toLowerCase() === 'true';
-      return fallback;
+    function normalizeMode(mode) {
+      return String(mode || 'default')
+        .toLowerCase()
+        .trim()
+        .replace(/_/g, '-')
+        .replace(/\s+/g, '');
     }
 
-    function parseConfigVariant(configText) {
-      const m = configText.match(/^\s*variant\s*:\s*["']?([A-Za-z-]+)["']?\s*$/m);
-      return m ? m[1].toLowerCase() : 'long';
+    function modeHas(mode, token) {
+      const parts = normalizeMode(mode).split('+').filter(Boolean);
+      return parts.includes(token);
+    }
+
+    function modeUsesShort(mode) {
+      return modeHas(mode, 'short');
+    }
+
+    function modeUsesBib(mode) {
+      return modeHas(mode, 'bibtex');
+    }
+
+    function modeDisablesLinks(mode) {
+      return modeHas(mode, 'no-js');
+    }
+
+    function modeToControlValues(mode) {
+      const normalized = normalizeMode(mode);
+      return {
+        variant: modeUsesShort(normalized) ? 'short' : 'default',
+        source: modeUsesBib(normalized) ? 'bibtex' : 'resume',
+        linkMode: modeDisablesLinks(normalized) ? 'no-js' : 'links',
+      };
+    }
+
+    function setSelectValue(select, nextValue, fallbackValue) {
+      const values = Array.from(select.options).map((option) => option.value);
+      if (values.includes(nextValue)) {
+        select.value = nextValue;
+      } else {
+        select.value = fallbackValue;
+      }
     }
 
     function escapeTypstString(value) {
       return String(value).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+    }
+
+    function clearSavedState() {
+      LS_KEYS.forEach(key => localStorage.removeItem(key));
+    }
+
+    function getSelectedMode() {
+      const parts = [];
+      if (getModeLinkMode() === 'no-js') parts.push('no-js');
+      if (getModeSource() === 'bibtex') parts.push('bibtex');
+      if (getModeVariant() === 'short') parts.push('short');
+      if (parts.length === 0) return 'default';
+      return parts.join('+');
     }
 
     function getRuntimeOverridesObject() {
@@ -872,12 +2146,8 @@ const DEFAULT_BIB = `@article{example2024,
         paper_size: paperSize.value,
       };
 
-      if (overrideVariant.value !== 'config') {
-        overrides.variant = overrideVariant.value;
-      }
-      if (overrideLinks.value === 'on') {
-        overrides.enable_links = true;
-      } else if (overrideLinks.value === 'off') {
+      overrides.variant = getModeVariant() === 'short' ? 'short' : 'long';
+      if (getModeLinkMode() === 'no-js') {
         overrides.enable_links = false;
       }
       if (overrideLinksDisabledBehavior.value !== 'config') {
@@ -914,34 +2184,85 @@ const DEFAULT_BIB = `@article{example2024,
     }
 
     function getResumeTypSource() {
-      const bibContent = cmBib.getValue().trim();
       const runtimeOverrides = overridesToTypstDict(getRuntimeOverridesObject());
-      if (bibContent) {
-        return `#import "/template.typ": build_resume\n#let resume_data = yaml("/resume.yml")\n#let runtime_overrides = ${runtimeOverrides}\n#build_resume(resume_data, runtime_overrides, config_file: "/config.yml", bib_file: "/publications.bib")`;
-      }
-      return `#import "/template.typ": build_resume\n#let resume_data = yaml("/resume.yml")\n#let runtime_overrides = ${runtimeOverrides}\n#build_resume(resume_data, runtime_overrides, config_file: "/config.yml")`;
+      const selectedMode = escapeTypstString(getSelectedMode());
+      return `#import "/template.typ": build_resume
+
+#let normalize_mode(mode) = {
+  lower(str(mode).trim())
+    .replace(" ", "")
+    .replace("_", "")
+    .replace("-", "")
+    .replace("+", "")
+}
+
+#let build_resume_by_mode(
+  mode: "default",
+  runtime_overrides: (:),
+  resume_file: "/resume.yml",
+  bib_resume_file: "/resume.yml",
+  config_long_file: "/config.yml",
+  config_short_file: "/config-short.yml",
+  bib_file: "/publications.bib",
+) = {
+  let m = normalize_mode(mode)
+  let use_short = m.contains("short")
+  let use_bib = m.contains("bibtex")
+  let use_no_js = m.contains("nojs")
+
+  let config_file = if use_short { config_short_file } else { config_long_file }
+  let active_resume_file = if use_bib { bib_resume_file } else { resume_file }
+  let resume_data = yaml(active_resume_file)
+  let overrides = runtime_overrides
+
+  if use_no_js {
+    overrides.insert("enable_links", false)
+  }
+
+  if use_bib {
+    build_resume(resume_data, overrides, config_file: config_file, bib_file: bib_file)
+  } else {
+    build_resume(resume_data, overrides, config_file: config_file)
+  }
+}
+
+#let runtime_overrides = ${runtimeOverrides}
+#let selected_mode = "${selectedMode}"
+#build_resume_by_mode(mode: selected_mode, runtime_overrides: runtime_overrides)`;
     }
 
     function getMainContent() {
       return `#include "/resume.typ"`;
     }
 
-    function detectVariantSuffix(configText, bibText = '') {
-      const hasBib = Boolean((bibText || '').trim());
-      let enableLinks = parseConfigBoolean(configText, 'enable_links', true);
-      let variant = parseConfigVariant(configText);
-      if (overrideLinks.value === 'on') enableLinks = true;
-      if (overrideLinks.value === 'off') enableLinks = false;
-      if (overrideVariant.value !== 'config') variant = overrideVariant.value;
-
-      if (!enableLinks) return '_N';
-      if (hasBib) return '_B';
-      if (variant === 'short') return '_S';
-      if (variant === 'long') return '';
-      return '_C';
+    async function registerTypstSources() {
+      const bibContent = cmBib.getValue();
+      await $typst.addSource('/template.typ', templateContent);
+      await $typst.addSource('/resume.yml', cmResume.getValue());
+      await $typst.addSource('/resume.typ', getResumeTypSource());
+      await $typst.addSource('/config.yml', cmConfig.getValue());
+      await $typst.addSource('/config-short.yml', cmConfigShort.getValue());
+      for (const bibPath of BIB_SOURCE_ALIASES) {
+        await $typst.addSource(bibPath, bibContent);
+      }
     }
 
-    function deriveResumeFilename(resumeYamlText, configText, bibText) {
+    function modeOutputSuffix(mode) {
+      const m = normalizeMode(mode);
+      const noJs = modeDisablesLinks(m);
+      const bib = modeUsesBib(m);
+      const short = modeUsesShort(m);
+      if (noJs && bib && short) return '_NBS';
+      if (noJs && bib) return '_NB';
+      if (noJs && short) return '_NS';
+      if (noJs) return '_N';
+      if (bib && short) return '_BS';
+      if (bib) return '_B';
+      if (short) return '_S';
+      return '';
+    }
+
+    function deriveResumeFilename(resumeYamlText, mode) {
       const lines = resumeYamlText.split(/\r?\n/);
       let inPersonal = false;
       let fullName = '';
@@ -960,7 +2281,7 @@ const DEFAULT_BIB = `@article{example2024,
         }
       }
 
-      const variantSuffix = detectVariantSuffix(configText, bibText);
+      const variantSuffix = modeOutputSuffix(mode);
       if (!fullName) return `Resume${variantSuffix}.pdf`;
       const tokens = fullName.split(/\s+/).filter(Boolean);
       if (tokens.length === 0) return `Resume${variantSuffix}.pdf`;
@@ -973,53 +2294,60 @@ const DEFAULT_BIB = `@article{example2024,
 
     async function compile() {
       if (!ready) return;
+      Object.keys(editors).forEach((key) => flushEditorHistoryTimer(key));
+      if (compileTimeout) {
+        clearTimeout(compileTimeout);
+        compileTimeout = null;
+      }
+      const requestId = ++compileRequestId;
+      const hadPendingManualChanges = hasPendingManualChanges;
+      hasPendingManualChanges = false;
+      updateCompileControlsUI();
 
       setStatus('Compiling...', 'compiling');
+      showPreviewFeedback('Compiling changes...');
 
       try {
-        await $typst.addSource('/template.typ', templateContent);
-        await $typst.addSource('/resume.yml', cmResume.getValue());
-        await $typst.addSource('/resume.typ', getResumeTypSource());
-        await $typst.addSource('/config.yml', cmConfig.getValue());
-
-        const bibContent = cmBib.getValue().trim();
-        if (bibContent) {
-          await $typst.addSource('/publications.bib', bibContent);
-        }
+        await registerTypstSources();
 
         const mainContent = getMainContent();
         const result = await $typst.svg({ mainContent });
 
-        preview.innerHTML = '';
+        if (requestId !== compileRequestId) return;
+
+        previewPages.innerHTML = '';
 
         if (typeof result === 'string') {
           const page = document.createElement('div');
           page.className = 'page';
           page.innerHTML = result;
-          preview.appendChild(page);
+          previewPages.appendChild(page);
         } else if (Array.isArray(result)) {
           result.forEach(pageSvg => {
             const page = document.createElement('div');
             page.className = 'page';
             page.innerHTML = pageSvg;
-            preview.appendChild(page);
+            previewPages.appendChild(page);
           });
         }
 
         localStorage.setItem(LS_RESUME, cmResume.getValue());
         localStorage.setItem(LS_CONFIG, cmConfig.getValue());
+        localStorage.setItem(LS_CONFIG_SHORT, cmConfigShort.getValue());
         localStorage.setItem(LS_BIB, cmBib.getValue());
-        localStorage.setItem(LS_PAPER, paperSize.value);
-        localStorage.setItem(LS_OVERRIDE_VARIANT, overrideVariant.value);
-        localStorage.setItem(LS_OVERRIDE_LINKS, overrideLinks.value);
-        localStorage.setItem(LS_OVERRIDE_LINKS_DISABLED_BEHAVIOR, overrideLinksDisabledBehavior.value);
-        localStorage.setItem(LS_OVERRIDE_PUBNUMS, overridePubnums.value);
-        localStorage.setItem(LS_OVERRIDE_CONTACT, overrideContact.value);
-        localStorage.setItem(LS_OVERRIDE_FONT, overrideFont.value);
-        localStorage.setItem(LS_OVERRIDE_MONO_FONT, overrideMonoFont.value);
+        persistPreferences();
 
+        hidePreviewFeedback();
+        hasPendingManualChanges = false;
+        updateCompileControlsUI();
         setStatus('Ready', 'ready');
       } catch (err) {
+        if (requestId !== compileRequestId) return;
+        if (getCompileMode() === 'manual' || hadPendingManualChanges) {
+          hasPendingManualChanges = true;
+          updateCompileControlsUI();
+        }
+        showPreviewFeedback('Compilation failed. Fix the error and keep typing.', true);
         setStatus('Error: ' + err.message, 'error');
       }
     }
@@ -1030,15 +2358,7 @@ const DEFAULT_BIB = `@article{example2024,
       setStatus('Generating PDF...', 'compiling');
 
       try {
-        await $typst.addSource('/template.typ', templateContent);
-        await $typst.addSource('/resume.yml', cmResume.getValue());
-        await $typst.addSource('/resume.typ', getResumeTypSource());
-        await $typst.addSource('/config.yml', cmConfig.getValue());
-
-        const bibContent = cmBib.getValue().trim();
-        if (bibContent) {
-          await $typst.addSource('/publications.bib', bibContent);
-        }
+        await registerTypstSources();
 
         const mainContent = getMainContent();
         const pdfData = await $typst.pdf({ mainContent });
@@ -1046,7 +2366,7 @@ const DEFAULT_BIB = `@article{example2024,
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = deriveResumeFilename(cmResume.getValue(), cmConfig.getValue(), cmBib.getValue());
+        a.download = deriveResumeFilename(cmResume.getValue(), getSelectedMode());
         a.click();
         URL.revokeObjectURL(url);
         setStatus('Ready', 'ready');
@@ -1068,50 +2388,78 @@ const DEFAULT_BIB = `@article{example2024,
       URL.revokeObjectURL(url);
     });
 
-    btnReset.addEventListener('click', () => {
-      if (!confirm('Reset all editors to defaults? Your changes will be lost.')) return;
-      localStorage.removeItem(LS_RESUME);
-      localStorage.removeItem(LS_CONFIG);
-      localStorage.removeItem(LS_BIB);
-      localStorage.removeItem(LS_PAPER);
-      localStorage.removeItem(LS_OVERRIDE_VARIANT);
-      localStorage.removeItem(LS_OVERRIDE_LINKS);
-      localStorage.removeItem(LS_OVERRIDE_LINKS_DISABLED_BEHAVIOR);
-      localStorage.removeItem(LS_OVERRIDE_PUBNUMS);
-      localStorage.removeItem(LS_OVERRIDE_CONTACT);
-      localStorage.removeItem(LS_OVERRIDE_FONT);
-      localStorage.removeItem(LS_OVERRIDE_MONO_FONT);
+    btnReset.addEventListener('click', async () => {
+      const accepted = await openConfirmDialog({
+        title: 'Reset all editors?',
+        message: 'This will clear local edits in this browser and reload defaults.',
+        confirmText: 'Reset',
+        cancelText: 'Cancel',
+        destructive: true,
+      });
+      if (!accepted) return;
+      clearSavedState();
       location.reload();
     });
 
     paperSize.addEventListener('change', () => {
-      localStorage.setItem(LS_PAPER, paperSize.value);
+      persistPreferences();
       scheduleCompile();
     });
-    overrideVariant.addEventListener('change', scheduleCompile);
-    overrideLinks.addEventListener('change', scheduleCompile);
-    overrideLinksDisabledBehavior.addEventListener('change', scheduleCompile);
-    overridePubnums.addEventListener('change', scheduleCompile);
-    overrideContact.addEventListener('change', scheduleCompile);
-    overrideFont.addEventListener('change', scheduleCompile);
-    overrideMonoFont.addEventListener('change', scheduleCompile);
+    const onCompileModeChange = () => {
+      persistPreferences();
+      if (getCompileMode() === 'manual') {
+        if (compileTimeout) {
+          clearTimeout(compileTimeout);
+          compileTimeout = null;
+        }
+        updateCompileControlsUI();
+        if (ready) {
+          setStatus(
+            hasPendingManualChanges
+              ? 'Manual mode: changes pending. Click compile.'
+              : 'Manual mode enabled.',
+            hasPendingManualChanges ? 'pending' : '',
+          );
+        }
+        return;
+      }
+
+      if (hasPendingManualChanges) {
+        hasPendingManualChanges = false;
+        updateCompileControlsUI();
+        scheduleCompile();
+      } else {
+        updateCompileControlsUI();
+        if (ready) setStatus('Auto compile enabled.', '');
+      }
+    };
+    compileModeInputs.forEach((input) => input.addEventListener('change', onCompileModeChange));
+
+    const onModeControlChange = () => {
+      updateTabVisibility();
+      persistPreferences();
+      scheduleCompile();
+    };
+    overrideVariant.addEventListener('change', onModeControlChange);
+    overrideSource.addEventListener('change', onModeControlChange);
+    overrideLinkMode.addEventListener('change', onModeControlChange);
+    btnCompileNow.addEventListener('click', () => compile());
+    btnUndo.addEventListener('click', () => performEditorUndo());
+    btnRedo.addEventListener('click', () => performEditorRedo());
+    const onOverridePreferenceChange = () => {
+      persistPreferences();
+      scheduleCompile();
+    };
+    overrideLinksDisabledBehavior.addEventListener('change', onOverridePreferenceChange);
+    overridePubnums.addEventListener('change', onOverridePreferenceChange);
+    overrideContact.addEventListener('change', onOverridePreferenceChange);
+    overrideFont.addEventListener('change', onOverridePreferenceChange);
+    overrideMonoFont.addEventListener('change', onOverridePreferenceChange);
 
     async function fetchText(url) {
       const resp = await fetch(url);
       if (!resp.ok) throw new Error(`Failed to fetch ${url}: ${resp.status}`);
       return resp.text();
-    }
-
-    async function fetchTextAny(paths) {
-      let lastError = null;
-      for (const p of paths) {
-        try {
-          return await fetchText(p);
-        } catch (err) {
-          lastError = err;
-        }
-      }
-      throw lastError || new Error(`Failed to fetch any candidate path: ${paths.join(', ')}`);
     }
 
     function computeRepoBasePrefix() {
@@ -1122,53 +2470,40 @@ const DEFAULT_BIB = `@article{example2024,
       return '';
     }
 
+    function resolveRepoPath(filename) {
+      const basePrefix = computeRepoBasePrefix().replace(/\/+$/, '');
+      return `${basePrefix}/${filename}`.replace(/\/{2,}/g, '/');
+    }
+
     async function loadDefaults() {
       let resumeYaml = DEFAULT_RESUME_YAML;
       let configYaml = DEFAULT_CONFIG_YAML;
+      let configShortYaml = DEFAULT_SHORT_CONFIG_YAML;
       let bibContent = DEFAULT_BIB;
-      const basePrefix = computeRepoBasePrefix();
-      const abs = (suffix) => `${basePrefix}${suffix}`;
-      templateContent = await fetchTextAny([
-        './template.typ',
-        '../template.typ',
-        abs('/template.typ'),
-        abs('/web/template.typ'),
-        './web/template.typ',
-      ]);
+      templateContent = await fetchText(resolveRepoPath('template.typ'));
 
       try {
-        resumeYaml = await fetchTextAny([
-          './default-resume.yml',
-          '../resume.yml',
-          abs('/resume.yml'),
-          abs('/web/default-resume.yml'),
-          './web/default-resume.yml',
-        ]);
+        resumeYaml = await fetchText(resolveRepoPath('resume.yml'));
       } catch (e) { }
       try {
-        configYaml = await fetchTextAny([
-          './default-config.yml',
-          '../config.yml',
-          abs('/config.yml'),
-          abs('/web/default-config.yml'),
-          './web/default-config.yml',
-        ]);
+        configYaml = await fetchText(resolveRepoPath('config.yml'));
       } catch (e) { }
       try {
-        bibContent = await fetchTextAny([
-          './default-publications.bib',
-          '../publications.bib',
-          abs('/publications.bib'),
-          abs('/web/default-publications.bib'),
-          './web/default-publications.bib',
-        ]);
+        configShortYaml = await fetchText(resolveRepoPath('config-short.yml'));
+      } catch (e) { }
+      try {
+        bibContent = await fetchText(resolveRepoPath('publications.bib'));
       } catch (e) { }
 
-      return { resumeYaml, configYaml, bibContent };
+      return { resumeYaml, configYaml, configShortYaml, bibContent };
     }
 
     async function init() {
       setStatus('Loading defaults...', '');
+      if (localStorage.getItem(LS_CACHE_VERSION) !== CACHE_VERSION) {
+        clearSavedState();
+        localStorage.setItem(LS_CACHE_VERSION, CACHE_VERSION);
+      }
       let defaults = null;
       try {
         defaults = await loadDefaults();
@@ -1178,22 +2513,51 @@ const DEFAULT_BIB = `@article{example2024,
         return;
       }
 
+      suppressHistoryTracking = true;
       cmResume.setValue(localStorage.getItem(LS_RESUME) || defaults.resumeYaml);
       cmConfig.setValue(localStorage.getItem(LS_CONFIG) || defaults.configYaml);
+      cmConfigShort.setValue(localStorage.getItem(LS_CONFIG_SHORT) || defaults.configShortYaml);
       cmBib.setValue(localStorage.getItem(LS_BIB) || defaults.bibContent);
+      suppressHistoryTracking = false;
+
+      const legacyMode = localStorage.getItem(LS_OVERRIDE_MODE_LEGACY) || 'default';
+      const legacyControls = modeToControlValues(legacyMode);
+      setModeVariant(localStorage.getItem(LS_OVERRIDE_VARIANT) || legacyControls.variant);
+      setModeSource(localStorage.getItem(LS_OVERRIDE_SOURCE) || legacyControls.source);
+      setModeLinkMode(localStorage.getItem(LS_OVERRIDE_LINK_MODE) || legacyControls.linkMode);
+      setCompileMode(localStorage.getItem(LS_COMPILE_MODE) || 'auto');
+      setMobileView(localStorage.getItem(LS_MOBILE_VIEW) || 'editor');
+      const storedActiveTab = localStorage.getItem(LS_ACTIVE_TAB);
+      if (storedActiveTab && storedActiveTab in editors) {
+        activeTab = storedActiveTab;
+      }
+      hasPendingManualChanges = false;
+      if (getCompileMode() === 'manual' && compileTimeout) {
+        clearTimeout(compileTimeout);
+        compileTimeout = null;
+      }
+
       const storedPaper = localStorage.getItem(LS_PAPER);
       if (storedPaper === 'a4' || storedPaper === 'letter') {
         paperSize.value = storedPaper;
       } else {
-        paperSize.value = detectPaperSize(cmConfig.getValue());
+        const activeConfigForPaper = getModeVariant() === 'short' ? cmConfigShort.getValue() : cmConfig.getValue();
+        paperSize.value = detectPaperSize(activeConfigForPaper);
       }
-      overrideVariant.value = localStorage.getItem(LS_OVERRIDE_VARIANT) || 'config';
-      overrideLinks.value = localStorage.getItem(LS_OVERRIDE_LINKS) || 'config';
-      overrideLinksDisabledBehavior.value = localStorage.getItem(LS_OVERRIDE_LINKS_DISABLED_BEHAVIOR) || 'config';
-      overridePubnums.value = localStorage.getItem(LS_OVERRIDE_PUBNUMS) || 'config';
-      overrideContact.value = localStorage.getItem(LS_OVERRIDE_CONTACT) || 'config';
-      overrideFont.value = localStorage.getItem(LS_OVERRIDE_FONT) || 'config';
-      overrideMonoFont.value = localStorage.getItem(LS_OVERRIDE_MONO_FONT) || 'config';
+      setSelectValue(
+        overrideLinksDisabledBehavior,
+        localStorage.getItem(LS_OVERRIDE_LINKS_DISABLED_BEHAVIOR) || 'config',
+        'config',
+      );
+      setSelectValue(overridePubnums, localStorage.getItem(LS_OVERRIDE_PUBNUMS) || 'config', 'config');
+      setSelectValue(overrideContact, localStorage.getItem(LS_OVERRIDE_CONTACT) || 'config', 'config');
+      setSelectValue(overrideFont, localStorage.getItem(LS_OVERRIDE_FONT) || 'config', 'config');
+      setSelectValue(overrideMonoFont, localStorage.getItem(LS_OVERRIDE_MONO_FONT) || 'config', 'config');
+      refreshCustomSelects();
+      loadEditorHistoriesFromStorage();
+      updateTabVisibility();
+      updateCompileControlsUI();
+      persistPreferences();
 
       const typstScript = document.getElementById('typst');
 
@@ -1225,6 +2589,7 @@ const DEFAULT_BIB = `@article{example2024,
         ready = true;
         overlay.style.display = 'none';
         btnDownload.disabled = false;
+        updateCompileControlsUI();
         setStatus('Ready', 'ready');
         compile();
       } catch (err) {

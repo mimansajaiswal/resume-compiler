@@ -73,10 +73,10 @@ jobs:
       - name: Build resume PDFs
         run: |
           mkdir -p artifacts
-          typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume.typ "${{ steps.resume_meta.outputs.resume_path_main }}"
-          typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume-short.typ "${{ steps.resume_meta.outputs.resume_path_s }}"
-          typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume-with-bibtex.typ "${{ steps.resume_meta.outputs.resume_path_b }}"
-          typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume-no-js.typ "${{ steps.resume_meta.outputs.resume_path_n }}"
+          typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" --input "mode=default" resume.typ "${{ steps.resume_meta.outputs.resume_path_main }}"
+          typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" --input "mode=short" resume.typ "${{ steps.resume_meta.outputs.resume_path_s }}"
+          typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" --input "mode=bibtex" resume.typ "${{ steps.resume_meta.outputs.resume_path_b }}"
+          typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" --input "mode=no-js" resume.typ "${{ steps.resume_meta.outputs.resume_path_n }}"
 
       # ============================================================================
       # OPTION 1: Upload to AWS S3

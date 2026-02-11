@@ -83,16 +83,16 @@ jobs:
       - name: Build default resume (config long)
         run: |
           mkdir -p artifacts
-          typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume.typ "${{ steps.resume_meta.outputs.resume_path_main }}"
+          typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" --input "mode=default" resume.typ "${{ steps.resume_meta.outputs.resume_path_main }}"
 
       - name: Build short resume
-        run: typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume-short.typ "${{ steps.resume_meta.outputs.resume_path_s }}"
+        run: typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" --input "mode=short" resume.typ "${{ steps.resume_meta.outputs.resume_path_s }}"
 
       - name: Build BibTeX resume
-        run: typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume-with-bibtex.typ "${{ steps.resume_meta.outputs.resume_path_b }}"
+        run: typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" --input "mode=bibtex" resume.typ "${{ steps.resume_meta.outputs.resume_path_b }}"
 
       - name: Build no-JS resume
-        run: typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume-no-js.typ "${{ steps.resume_meta.outputs.resume_path_n }}"
+        run: typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" --input "mode=no-js" resume.typ "${{ steps.resume_meta.outputs.resume_path_n }}"
 
       - name: Upload resume PDFs (PR preview)
         if: github.event_name == 'pull_request'
@@ -184,10 +184,10 @@ jobs:
       - name: Build resume PDFs
         run: |
           mkdir -p artifacts
-          typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume.typ "${{ steps.resume_meta.outputs.resume_path_main }}"
-          typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume-short.typ "${{ steps.resume_meta.outputs.resume_path_s }}"
-          typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume-with-bibtex.typ "${{ steps.resume_meta.outputs.resume_path_b }}"
-          typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume-no-js.typ "${{ steps.resume_meta.outputs.resume_path_n }}"
+          typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" --input "mode=default" resume.typ "${{ steps.resume_meta.outputs.resume_path_main }}"
+          typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" --input "mode=short" resume.typ "${{ steps.resume_meta.outputs.resume_path_s }}"
+          typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" --input "mode=bibtex" resume.typ "${{ steps.resume_meta.outputs.resume_path_b }}"
+          typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" --input "mode=no-js" resume.typ "${{ steps.resume_meta.outputs.resume_path_n }}"
 
       - name: Create versioned release
         uses: softprops/action-gh-release@v2

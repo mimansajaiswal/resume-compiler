@@ -6,13 +6,17 @@ variant: short
 paper_size: letter # Options: "letter" or "a4"
 
 fonts:
-  font: "New Computer Modern"
+  font: "Libertinus Serif"
   mono_font: "DejaVu Sans Mono"
   font_size: 10.2pt
   name_font_size: 1.5em
   section_font_size: 1em
   publications_font_size: 9.6pt
   awards_font_size: 10pt
+  page_number_font_size: 0.8em
+  header_title_font_size: 0.84em
+  location_font_size: 0.74em
+  work_role_font_size: 0.96em
 
 layout:
   margin: 0.5in
@@ -47,13 +51,13 @@ styling:
   section_rule_enabled: false
   section_rule_gap: 0.1em
   section_heading_tracking: 0.01em
+  section_heading_sticky: true
   header_rule_color: "#9F9FA8"
   header_rule_thickness: 0.7pt
   publications_link_style: "compact"
   last_updated_font_size: 0.66em
   last_updated_label: "Last Updated on"
   contact_display_mode: "icon_label"
-  contact_icon_family: "lucide"
   contact_icon_spacing: 0.16em
 
 visibility:
