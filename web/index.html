@@ -1399,6 +1399,28 @@
       display: none;
     }
 
+    #cm-ai-output-container .CodeMirror-gutter-elt.ai-variant-line-changed {
+      color: var(--purple) !important;
+      font-weight: 700;
+    }
+
+    #cm-ai-output-container .CodeMirror-gutter.ai-diff-delete-gutter {
+      width: 0.52rem;
+      background: var(--linen-dark);
+      border-left: 1px solid rgba(184, 173, 154, 0.55);
+    }
+
+    #cm-ai-output-container .ai-diff-delete-marker {
+      display: block;
+      width: 0.36rem;
+      height: 2px;
+      border-radius: 999px;
+      background: var(--pink);
+      opacity: 0.95;
+      margin-top: 0.54em;
+      margin-left: 0.06rem;
+    }
+
     .ai-output-placeholder {
       position: absolute;
       inset: 0;
@@ -1418,37 +1440,54 @@
       position: absolute;
       inset: 0;
       margin: 0;
-      overflow: auto;
-      font-family: var(--mono);
-      font-size: 0.63rem;
-      line-height: 1.45;
-      letter-spacing: 0.01em;
-      color: #2f2c27;
-      padding: 0.48rem 0.95rem 0.48rem 0.54rem;
       background: #f4efe6;
-      white-space: pre;
     }
 
     #ai-output-diff.hidden {
       display: none;
     }
 
-    #ai-output-diff .diff-line {
-      display: block;
+    #ai-output-diff .CodeMirror {
+      height: 100% !important;
+      background: #f4efe6 !important;
+      font-family: var(--mono);
+      font-size: 0.63rem;
+      line-height: 1.45;
+      letter-spacing: 0.01em;
+      color: #2f2c27 !important;
     }
 
-    #ai-output-diff .diff-add {
-      background: #d9eee0;
+    #ai-output-diff .CodeMirror-gutters {
+      background: #ede7dc !important;
+      border-right: 1px solid var(--earth) !important;
+    }
+
+    #ai-output-diff .CodeMirror-linenumber {
+      color: #7a6f5f !important;
+    }
+
+    #ai-output-diff .CodeMirror-linewrap.diff-add {
       color: #28523b;
     }
 
-    #ai-output-diff .diff-del {
-      background: #f3dcdf;
+    #ai-output-diff .CodeMirror-linewrap.diff-del {
       color: #6e2e39;
     }
 
-    #ai-output-diff .diff-same {
+    #ai-output-diff .CodeMirror-linewrap.diff-same {
       color: #3c3832;
+    }
+
+    #ai-output-diff .CodeMirror-line {
+      cursor: pointer;
+    }
+
+    #ai-output-diff .CodeMirror-linebackground.diff-add {
+      background: #d9eee0;
+    }
+
+    #ai-output-diff .CodeMirror-linebackground.diff-del {
+      background: #f3dcdf;
     }
 
     .ai-diff-overview {
@@ -1474,16 +1513,18 @@
       right: 0;
       border-radius: 999px;
       min-height: 0.14rem;
-      opacity: 0.95;
+      opacity: 1;
+      border: 0;
+      box-shadow: none;
       cursor: pointer;
     }
 
     .ai-diff-overview-marker.add {
-      background: #4f8e63;
+      background: #d9eee0;
     }
 
     .ai-diff-overview-marker.del {
-      background: #a24f5f;
+      background: #f3dcdf;
     }
 
     .ai-output-toolbar {
@@ -1591,6 +1632,10 @@
       border: 1px solid #8e826f;
       background: #332f2a;
       color: #f4efe6;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.34rem;
       font-family: var(--mono);
       font-size: 0.58rem;
       letter-spacing: 0.045em;
@@ -1620,6 +1665,23 @@
       background: #e8dece;
     }
 
+    .ai-selection-popover-actions button.is-loading {
+      background: var(--purple);
+      border-color: var(--purple);
+      color: var(--linen);
+      opacity: 1;
+    }
+
+    .ai-selection-popover-actions button.is-loading::before {
+      content: '';
+      width: 0.62rem;
+      height: 0.62rem;
+      border: 2px solid rgba(244, 241, 236, 0.42);
+      border-top-color: var(--linen);
+      border-radius: 999px;
+      animation: ai-spin 0.8s linear infinite;
+    }
+
     .ai-status {
       border: 1px dashed #9f907b;
       background: #eee6d8;
@@ -1642,6 +1704,82 @@
       border-color: #7fa18d;
       background: #dce9e1;
       font-weight: 700;
+    }
+
+    .ai-status.working {
+      color: var(--charcoal);
+      border-color: rgba(196, 144, 154, 0.62);
+      background: linear-gradient(180deg, #f6f1ea 0%, var(--linen) 100%);
+      font-weight: 700;
+      position: relative;
+      overflow: hidden;
+      animation: ai-status-breathe 1.8s ease-in-out infinite;
+    }
+
+    .ai-status.working::after {
+      content: '';
+      position: absolute;
+      left: -34%;
+      bottom: 0;
+      width: 34%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent 0%, rgba(196, 144, 154, 0.95) 48%, transparent 100%);
+      animation: ai-status-track 1.6s ease-in-out infinite;
+    }
+
+    .resume-ai-workspace.is-generating {
+      border-top: 1px solid rgba(125, 107, 138, 0.45);
+      border-bottom-color: rgba(125, 107, 138, 0.65);
+      background: linear-gradient(180deg, rgba(125, 107, 138, 0.08) 0%, var(--linen-dark) 34%);
+    }
+
+    @keyframes ai-status-breathe {
+      0% {
+        border-color: rgba(196, 144, 154, 0.5);
+      }
+
+      50% {
+        border-color: rgba(125, 107, 138, 0.54);
+      }
+
+      100% {
+        border-color: rgba(196, 144, 154, 0.5);
+      }
+    }
+
+    @keyframes ai-status-track {
+      0% {
+        transform: translateX(0%);
+        opacity: 0.45;
+      }
+
+      50% {
+        transform: translateX(190%);
+        opacity: 1;
+      }
+
+      100% {
+        transform: translateX(380%);
+        opacity: 0.45;
+      }
+    }
+
+    @keyframes ai-spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      .ai-status.working,
+      .ai-status.working::after {
+        animation: none;
+      }
     }
 
     .resume-ai-gate {
@@ -2564,10 +2702,11 @@
                     <div class="helper-text">Generation always uses original <code>Resume (YAML)</code> as source.</div>
                   </div>
                   <div class="override-item span-2" id="ai-prompt-item">
-                    <label for="ai-user-prompt">Resume Rewrite Instructions</label>
+                    <label for="ai-user-prompt">Selected-Block Rewrite Instructions</label>
                     <textarea id="ai-user-prompt" spellcheck="false"
-                      placeholder="Optional: focus areas like impact quantification, ATS keywords, concise bullets..."></textarea>
-                    <div class="helper-text">Used when generating AI resume variants for <code>resume.yml</code>.</div>
+                      placeholder="Optional baseline guidance (used for each selected block): impact, ATS keywords, concise bullets..."></textarea>
+                    <div class="helper-text">Used as baseline guidance for each selected YAML rewrite in
+                      <code>resume.yml</code>. Popover prompt overrides this for that request.</div>
                   </div>
                 </div>
               </div>
@@ -2718,7 +2857,8 @@
         </div>
         <div id="resume-ai-gate" class="resume-ai-gate hidden">
           <strong>AI setup required</strong>
-          <div>AI is not verified yet. Verify provider/model/key to generate a tailored variant, compare Original vs AI diff, and enable AI output for compile/PDF.</div>
+          <div>AI is not verified yet. Verify provider/model/key to generate a tailored variant, compare Original vs AI
+            diff, and enable AI output for compile/PDF.</div>
           <button id="btn-open-ai-settings" type="button">Open AI Settings</button>
         </div>
         <div id="resume-ai-workflow" class="hidden">
@@ -2759,7 +2899,8 @@
             <div class="ai-selection-popover-title">Rewrite Selected Block</div>
             <label for="ai-selection-prompt" class="visually-hidden">Selected block rewrite prompt</label>
             <textarea id="ai-selection-prompt" name="ai-selection-prompt" aria-label="Selected block rewrite prompt"
-              spellcheck="false" placeholder="Optional instruction for this selected block..."></textarea>
+              spellcheck="false"
+              placeholder="Optional override for this selection (takes priority over baseline instructions)..."></textarea>
             <div class="ai-selection-popover-actions">
               <button id="btn-ai-selection-generate" type="button">Generate</button>
               <button id="btn-ai-selection-dismiss" class="secondary" type="button">Dismiss</button>
@@ -2775,7 +2916,7 @@
         <div class="cm-container hidden" id="cm-ai-output-container">
           <div id="cm-ai-output"></div>
         </div>
-        <pre id="ai-output-diff" class="hidden"></pre>
+        <div id="ai-output-diff" class="hidden"></div>
         <div id="ai-diff-overview" class="ai-diff-overview hidden"></div>
         <div class="ai-output-placeholder hidden" id="ai-output-placeholder">
           Select text in Variant view to rewrite it with AI.
@@ -3286,17 +3427,24 @@ section_order:
         defaultModel: 'claude-3-7-sonnet-latest',
       },
     };
-    const AI_DEFAULT_PROMPT = `Rewrite the provided resume YAML into a stronger, ATS-friendly variant while keeping it truthful and grounded in the original data.
+    const AI_DEFAULT_PROMPT = `Improve the selected YAML block for clarity, impact, and ATS alignment while staying truthful.
 
-Rules:
-- Keep valid YAML output only.
-- Preserve top-level schema shape and key names.
-- Maintain all factual details unless explicitly reworded for clarity.
-- Improve bullet impact with concise action + outcome phrasing.
-- Prioritize alignment to the provided job description.
-- Keep dates, organizations, and role chronology intact.
-- Avoid inventing experience or metrics.
-- Return only YAML, no explanations or markdown fences.`;
+Priorities:
+- Keep factual details intact; do not invent metrics or experience.
+- Preserve YAML keys and structure unless explicitly asked to change them.
+- Strengthen wording with concise action + outcome phrasing.
+- Keep chronology, organizations, and dates unchanged.
+- Return YAML only for the selected fragment.`;
+    const AI_SELECTION_SYSTEM_PROMPT = `You rewrite only a selected YAML fragment from a resume.
+
+Hard constraints:
+- Output must be valid YAML fragment text only (no markdown, no commentary).
+- Rewrite only the selected fragment; never produce full-document output.
+- Preserve indentation style and surrounding structure compatibility.
+- Keep the same key set and container shape unless user instructions explicitly require key changes.
+- Keep claims truthful and grounded in the input.
+- Do not add placeholder text or fabricated facts.`;
+    const AI_LEGACY_PROMPT_SENTINEL = 'Rewrite the provided resume YAML into a stronger, ATS-friendly variant while keeping it truthful and grounded in the original data.';
     const AI_STATUS_DEFAULT_TEXT = 'Set AI provider + key to generate resume variants from Resume YAML.';
     const AI_UNVERIFIED_TAB_MESSAGE = 'AI is not verified yet, so variant generation is locked. Verify settings to generate tailored variants, compare Original vs AI diff, and enable AI output for compile/PDF.';
     const EDITOR_EXTRA_KEYS = {
@@ -3351,7 +3499,14 @@ Rules:
     const cmAiOutput = CodeMirror(aiOutputEditorContainer, {
       ...EDITOR_BASE_OPTIONS,
       mode: 'yaml',
+      gutters: ['CodeMirror-linenumbers', 'ai-diff-delete-gutter'],
     });
+    const cmAiDiff = CodeMirror(aiOutputDiff, {
+      ...EDITOR_BASE_OPTIONS,
+      mode: 'yaml',
+      readOnly: 'nocursor',
+    });
+    cmAiDiff.setValue('');
 
     const codeMirrorInputObservers = [];
     function wireCodeMirrorInputAccessibility(editor, editorKey) {
@@ -3387,6 +3542,7 @@ Rules:
     wireCodeMirrorInputAccessibility(cmConfigShort, 'config-short');
     wireCodeMirrorInputAccessibility(cmBib, 'bib');
     wireCodeMirrorInputAccessibility(cmAiOutput, 'ai-output');
+    wireCodeMirrorInputAccessibility(cmAiDiff, 'ai-diff');
 
     let activeTab = 'resume';
     const editors = { resume: cmResume, config: cmConfig, "config-short": cmConfigShort, bib: cmBib };
@@ -3431,6 +3587,8 @@ Rules:
     let resumeCustomized = false;
     let remoteUploadSources = {};
     let pendingFileUploadTab = null;
+    let aiDiffLineToGeneratedLine = [];
+    let aiDiffScrollTop = 0;
 
     const TAB_SUPPORTED_KEYS_HTML = {
       resume: `
@@ -3531,6 +3689,14 @@ Rules:
 
     function isAiSettingsVerified() {
       return !!aiSettingsVerified;
+    }
+
+    function normalizeAiUserPrompt(rawPrompt) {
+      const text = typeof rawPrompt === 'string' ? rawPrompt : '';
+      const trimmed = text.trim();
+      if (!trimmed) return AI_DEFAULT_PROMPT;
+      if (trimmed.includes(AI_LEGACY_PROMPT_SENTINEL)) return AI_DEFAULT_PROMPT;
+      return text;
     }
 
     function setAiSettingsVerified(nextValue, options = {}) {
@@ -3834,7 +4000,11 @@ Rules:
       const hasOutput = hasGeneratedAiOutput() && isAiSettingsVerified();
       aiOutputPanel.classList.toggle('hidden', !hasOutput);
       if (!hasOutput) {
-        aiOutputDiff.textContent = '';
+        aiDiffLineToGeneratedLine = [];
+        aiDiffScrollTop = 0;
+        clearAiVariantDiffDecorations();
+        cmAiDiff.setValue('');
+        cmAiDiff.scrollTo(null, 0);
       }
       updateResumeEditorSurface();
     }
@@ -3866,46 +4036,180 @@ Rules:
       });
       updateResumeEditorSurface();
       if (normalized === 'variant' && hasGeneratedAiOutput()) cmAiOutput.refresh();
+      if (normalized === 'diff' && hasGeneratedAiOutput()) {
+        cmAiDiff.refresh();
+        restoreAiDiffScrollPosition();
+      }
       if (options.persist !== false) {
         persistPreferences();
       }
     }
 
+    function rememberAiDiffScrollPosition() {
+      const info = cmAiDiff.getScrollInfo();
+      if (info && Number.isFinite(info.top)) {
+        aiDiffScrollTop = Math.max(0, info.top);
+      }
+    }
+
+    function restoreAiDiffScrollPosition() {
+      const info = cmAiDiff.getScrollInfo();
+      const maxTop = Math.max(0, (info.height || 0) - (info.clientHeight || 0));
+      const nextTop = Math.max(0, Math.min(aiDiffScrollTop, maxTop));
+      cmAiDiff.scrollTo(null, nextTop);
+    }
+
+    function clearAiDiffLineClasses() {
+      const doc = cmAiDiff.getDoc();
+      doc.eachLine((lineHandle) => {
+        cmAiDiff.removeLineClass(lineHandle, 'wrap', 'diff-add');
+        cmAiDiff.removeLineClass(lineHandle, 'wrap', 'diff-del');
+        cmAiDiff.removeLineClass(lineHandle, 'wrap', 'diff-same');
+        cmAiDiff.removeLineClass(lineHandle, 'background', 'diff-add');
+        cmAiDiff.removeLineClass(lineHandle, 'background', 'diff-del');
+        cmAiDiff.removeLineClass(lineHandle, 'background', 'diff-same');
+      });
+    }
+
+    function clearAiVariantDiffDecorations() {
+      const doc = cmAiOutput.getDoc();
+      const totalLines = doc.lineCount();
+      for (let line = 0; line < totalLines; line += 1) {
+        cmAiOutput.removeLineClass(line, 'gutter', 'ai-variant-line-changed');
+        cmAiOutput.setGutterMarker(line, 'ai-diff-delete-gutter', null);
+      }
+    }
+
+    function applyAiVariantDiffDecorations(changedGeneratedLines, deletionAnchors) {
+      clearAiVariantDiffDecorations();
+      const doc = cmAiOutput.getDoc();
+      const totalLines = doc.lineCount();
+      if (!totalLines) return;
+
+      const changedSet = new Set();
+      (changedGeneratedLines || []).forEach((line) => {
+        const numeric = Number(line);
+        if (!Number.isFinite(numeric)) return;
+        const normalized = Math.max(0, Math.min(totalLines - 1, Math.floor(numeric)));
+        changedSet.add(normalized);
+      });
+      changedSet.forEach((line) => {
+        cmAiOutput.addLineClass(line, 'gutter', 'ai-variant-line-changed');
+      });
+
+      const markerLines = new Set();
+      (deletionAnchors || []).forEach((anchor) => {
+        const numeric = Number(anchor);
+        if (!Number.isFinite(numeric)) return;
+        const normalized = Math.max(0, Math.min(totalLines - 1, Math.floor(numeric)));
+        markerLines.add(normalized);
+      });
+      markerLines.forEach((line) => {
+        const marker = document.createElement('span');
+        marker.className = 'ai-diff-delete-marker';
+        marker.title = 'Original has deleted lines near this position.';
+        cmAiOutput.setGutterMarker(line, 'ai-diff-delete-gutter', marker);
+      });
+    }
+
     function scrollAiDiffToLine(startLine, options = {}) {
-      if (!aiOutputDiff) return;
+      if (!cmAiDiff) return;
       const numericLine = Number(startLine);
       if (!Number.isFinite(numericLine) || numericLine < 0) return;
-      const lineElements = aiOutputDiff.querySelectorAll('.diff-line');
-      if (!lineElements.length) return;
-      const clampedIndex = Math.max(0, Math.min(lineElements.length - 1, Math.floor(numericLine)));
-      const targetLine = lineElements[clampedIndex];
-      if (!targetLine) return;
-      const offset = Math.max(0, Math.round(aiOutputDiff.clientHeight * 0.18));
-      const nextTop = Math.max(0, targetLine.offsetTop - offset);
-      aiOutputDiff.scrollTo({
-        top: nextTop,
-        behavior: options.behavior === 'smooth' ? 'smooth' : 'auto',
+      const doc = cmAiDiff.getDoc();
+      const totalLines = doc.lineCount();
+      if (!totalLines) return;
+      const clampedIndex = Math.max(0, Math.min(totalLines - 1, Math.floor(numericLine)));
+      const coords = cmAiDiff.charCoords({ line: clampedIndex, ch: 0 }, 'local');
+      const scrollInfo = cmAiDiff.getScrollInfo();
+      const offset = Math.max(0, Math.round(scrollInfo.clientHeight * 0.18));
+      const nextTop = Math.max(0, coords.top - offset);
+      const behavior = options.behavior === 'smooth' ? 'smooth' : 'auto';
+      const scroller = cmAiDiff.getScrollerElement();
+      if (behavior === 'smooth' && scroller && typeof scroller.scrollTo === 'function') {
+        scroller.scrollTo({ top: nextTop, behavior: 'smooth' });
+      } else {
+        cmAiDiff.scrollTo(null, nextTop);
+      }
+      aiDiffScrollTop = nextTop;
+    }
+
+    function resolveGeneratedLineFromDiffLine(diffLineNumber) {
+      const mapping = Array.isArray(aiDiffLineToGeneratedLine) ? aiDiffLineToGeneratedLine : [];
+      if (!mapping.length) return 0;
+      const clampedIndex = Math.max(0, Math.min(mapping.length - 1, Math.floor(diffLineNumber)));
+      const direct = mapping[clampedIndex];
+      if (Number.isFinite(direct)) return Math.max(0, Math.floor(direct));
+
+      for (let distance = 1; distance < mapping.length; distance += 1) {
+        const forward = clampedIndex + distance;
+        if (forward < mapping.length && Number.isFinite(mapping[forward])) {
+          return Math.max(0, Math.floor(mapping[forward]));
+        }
+        const backward = clampedIndex - distance;
+        if (backward >= 0 && Number.isFinite(mapping[backward])) {
+          return Math.max(0, Math.floor(mapping[backward]));
+        }
+      }
+      return 0;
+    }
+
+    function jumpFromDiffToVariantAt(diffLineNumber) {
+      rememberAiDiffScrollPosition();
+      const targetGeneratedLine = resolveGeneratedLineFromDiffLine(diffLineNumber);
+      setAiOutputViewMode('variant');
+      window.requestAnimationFrame(() => {
+        cmAiOutput.refresh();
+        const doc = cmAiOutput.getDoc();
+        const maxLine = Math.max(0, doc.lineCount() - 1);
+        const targetLine = Math.max(0, Math.min(maxLine, targetGeneratedLine));
+        const pos = { line: targetLine, ch: 0 };
+        cmAiOutput.setCursor(pos);
+        cmAiOutput.scrollIntoView(pos, 120);
+        cmAiOutput.focus();
+        updateAiActionButtons();
       });
     }
 
     function renderAiDiffView() {
       const original = String(cmResume.getValue() || '');
       const generated = String(getAiOutputValue() || '');
+      const shouldPreserveDiffScroll = activeTab === 'resume'
+        && getResumeEditorView() === 'ai'
+        && getAiOutputViewMode() === 'diff';
+      if (shouldPreserveDiffScroll) {
+        rememberAiDiffScrollPosition();
+      }
       if (!generated.trim()) {
-        aiOutputDiff.textContent = '';
+        aiDiffLineToGeneratedLine = [];
+        clearAiDiffLineClasses();
+        clearAiVariantDiffDecorations();
+        cmAiDiff.setValue('');
         if (aiDiffOverview) aiDiffOverview.innerHTML = '';
+        restoreAiDiffScrollPosition();
         return;
       }
       if (generated === original) {
-        aiOutputDiff.textContent = generated;
+        clearAiDiffLineClasses();
+        clearAiVariantDiffDecorations();
+        cmAiDiff.setValue(generated);
+        aiDiffLineToGeneratedLine = Array.from(
+          { length: cmAiDiff.getDoc().lineCount() },
+          (_value, index) => index,
+        );
         if (aiDiffOverview) aiDiffOverview.innerHTML = '';
+        restoreAiDiffScrollPosition();
         return;
       }
       if (window.Diff && typeof window.Diff.diffLines === 'function') {
+        // Keep using Diff's vanilla API for line-based diffing.
         const pieces = window.Diff.diffLines(original, generated);
         const lines = [];
         const overviewMarkers = [];
+        const changedGeneratedLines = [];
+        const deletionAnchors = [];
         let lineCursor = 0;
+        let generatedLineCursor = 0;
         pieces.forEach((piece) => {
           const cls = piece.added
             ? 'diff-add'
@@ -3913,16 +4217,28 @@ Rules:
               ? 'diff-del'
               : 'diff-same';
           const prefix = piece.added ? '+' : (piece.removed ? '-' : ' ');
+          const contributesToGenerated = !piece.removed;
           const rawLines = splitYamlLines(piece.value);
           const startLine = lineCursor;
+          let pieceLineCount = 0;
           rawLines.forEach((line, index) => {
             if (index === rawLines.length - 1 && line === '') return;
+            pieceLineCount += 1;
+            const generatedLine = contributesToGenerated ? generatedLineCursor : null;
             lines.push({
               cls,
               text: `${prefix}${line}`,
+              generatedLine,
             });
             lineCursor += 1;
+            if (contributesToGenerated) generatedLineCursor += 1;
+            if (piece.added && Number.isFinite(generatedLine)) {
+              changedGeneratedLines.push(generatedLine);
+            }
           });
+          if (piece.removed && pieceLineCount > 0) {
+            deletionAnchors.push(generatedLineCursor);
+          }
           if ((piece.added || piece.removed) && lineCursor > startLine) {
             overviewMarkers.push({
               type: piece.added ? 'add' : 'del',
@@ -3931,13 +4247,14 @@ Rules:
             });
           }
         });
-        aiOutputDiff.innerHTML = lines.map(({ cls, text }) => {
-          const escaped = text
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;');
-          return `<span class="diff-line ${cls}">${escaped}</span>`;
-        }).join('');
+        clearAiDiffLineClasses();
+        cmAiDiff.setValue(lines.map((line) => line.text).join('\n'));
+        aiDiffLineToGeneratedLine = lines.map((line) => line.generatedLine);
+        lines.forEach((line, index) => {
+          cmAiDiff.addLineClass(index, 'wrap', line.cls);
+          cmAiDiff.addLineClass(index, 'background', line.cls);
+        });
+        applyAiVariantDiffDecorations(changedGeneratedLines, deletionAnchors);
         if (aiDiffOverview) {
           const totalLines = Math.max(1, lines.length);
           aiDiffOverview.innerHTML = overviewMarkers.map((marker) => {
@@ -3947,10 +4264,20 @@ Rules:
             return `<span class="ai-diff-overview-marker ${marker.type}" data-start-line="${marker.startLine}" style="top:${top.toFixed(4)}%;height:${height.toFixed(4)}%"></span>`;
           }).join('');
         }
+        cmAiDiff.refresh();
+        restoreAiDiffScrollPosition();
         return;
       }
-      aiOutputDiff.textContent = generated;
+      clearAiDiffLineClasses();
+      clearAiVariantDiffDecorations();
+      cmAiDiff.setValue(generated);
+      aiDiffLineToGeneratedLine = Array.from(
+        { length: cmAiDiff.getDoc().lineCount() },
+        (_value, index) => index,
+      );
       if (aiDiffOverview) aiDiffOverview.innerHTML = '';
+      cmAiDiff.refresh();
+      restoreAiDiffScrollPosition();
     }
 
     function setDetailsOpen(detailsEl, shouldOpen) {
@@ -4888,10 +5215,14 @@ Rules:
       const verified = isAiSettingsVerified();
       const selectionContext = getAiSelectionContext();
       const hasSelection = !!selectionContext;
+      const aiGenerating = aiInFlight && verified;
       updateAiOutputPanelVisibility();
       updateAiOutputViewAvailability();
       ensureValidResumeCompileSource({ triggerCompile: true });
       btnAiCopy.disabled = aiInFlight || aiVerifyInFlight || !hasOutput || !verified;
+      if (resumeAiWorkspace) {
+        resumeAiWorkspace.classList.toggle('is-generating', aiGenerating);
+      }
       if (resumeUseGeneratedRow) {
         resumeUseGeneratedRow.classList.toggle('hidden', !hasOutput || !verified);
       }
@@ -4903,6 +5234,8 @@ Rules:
       }
       if (btnAiSelectionGenerate) {
         btnAiSelectionGenerate.disabled = aiInFlight || aiVerifyInFlight || !hasSelection || !verified;
+        btnAiSelectionGenerate.classList.toggle('is-loading', aiGenerating);
+        btnAiSelectionGenerate.textContent = aiGenerating ? 'Generating...' : 'Generate';
       }
       syncAiSelectionPopover({ context: selectionContext });
       updateResumeEditorSurface();
@@ -5124,7 +5457,7 @@ Rules:
       aiModel.value = typeof ai.model === 'string' ? ai.model : defaultModel;
       aiApiKey.value = typeof ai.apiKey === 'string' ? ai.apiKey : '';
       aiWebSearch.checked = ai.webSearch !== false;
-      aiUserPrompt.value = typeof ai.prompt === 'string' ? ai.prompt : AI_DEFAULT_PROMPT;
+      aiUserPrompt.value = normalizeAiUserPrompt(ai.prompt);
       aiJobDescription.value = typeof ai.jobDescription === 'string' ? ai.jobDescription : '';
       if (aiSelectionPrompt) {
         aiSelectionPrompt.value = typeof ai.selectionPrompt === 'string' ? ai.selectionPrompt : '';
@@ -5279,11 +5612,16 @@ Rules:
       if (showAiEditor) {
         cmAiOutput.refresh();
       }
+      if (showAiDiff) {
+        cmAiDiff.refresh();
+        restoreAiDiffScrollPosition();
+      }
     }
 
     function refreshAllEditors() {
       Object.values(editors).forEach((editor) => editor.refresh());
       cmAiOutput.refresh();
+      cmAiDiff.refresh();
       updateAiActionButtons();
     }
 
@@ -6190,43 +6528,142 @@ Rules:
       return payload;
     }
 
+    function getYamlLineRangeForOffsets(yamlText, startOffset, endOffset) {
+      const source = String(yamlText || '');
+      const lines = splitYamlLines(source);
+      if (!lines.length) {
+        return {
+          lines: [''],
+          startLine: 0,
+          endLine: 0,
+        };
+      }
+      const safeStart = Math.max(0, Math.min(source.length, Number(startOffset) || 0));
+      const safeEnd = Math.max(safeStart, Math.min(source.length, Number(endOffset) || safeStart));
+      const endInclusive = source.length > 0
+        ? Math.max(0, Math.min(source.length - 1, Math.max(safeStart, safeEnd - 1)))
+        : 0;
+
+      let cursor = 0;
+      let startLine = 0;
+      let endLine = lines.length - 1;
+      for (let i = 0; i < lines.length; i += 1) {
+        const lineLength = lines[i].length;
+        const lineStart = cursor;
+        const lineEnd = cursor + lineLength;
+        if (safeStart >= lineStart && safeStart <= lineEnd) {
+          startLine = i;
+        }
+        if (endInclusive >= lineStart && endInclusive <= lineEnd) {
+          endLine = i;
+          break;
+        }
+        cursor = lineEnd + 1;
+      }
+
+      return {
+        lines,
+        startLine,
+        endLine: Math.max(startLine, endLine),
+      };
+    }
+
+    function findTopLevelYamlSectionForLine(lines, lineIndex) {
+      const topLevelPattern = /^([A-Za-z0-9_-]+)\s*:\s*(?:#.*)?$/;
+      for (let i = Math.max(0, lineIndex); i >= 0; i -= 1) {
+        const candidate = String(lines[i] || '').trim();
+        if (!candidate) continue;
+        const match = candidate.match(topLevelPattern);
+        if (match && match[1]) return match[1];
+      }
+      return '';
+    }
+
+    function extractYamlKeysFromFragment(fragmentText, limit = 18) {
+      const seen = new Set();
+      const keys = [];
+      splitYamlLines(fragmentText).forEach((line) => {
+        const match = String(line || '').match(/^\s*(?:-\s*)?(?:"([^"]+)"|'([^']+)'|([A-Za-z0-9_-]+))\s*:/);
+        if (!match) return;
+        const key = String(match[1] || match[2] || match[3] || '').trim();
+        if (!key || seen.has(key)) return;
+        seen.add(key);
+        keys.push(key);
+      });
+      return keys.slice(0, Math.max(1, limit));
+    }
+
+    function formatYamlContextWindow(lines, startLine, endLine, before = 8, after = 10) {
+      const from = Math.max(0, startLine - before);
+      const to = Math.min(lines.length - 1, endLine + after);
+      const rendered = [];
+      for (let i = from; i <= to; i += 1) {
+        const marker = (i >= startLine && i <= endLine) ? '>>' : '  ';
+        const lineNo = String(i + 1).padStart(4, ' ');
+        rendered.push(`${marker} L${lineNo} | ${lines[i]}`);
+      }
+      return rendered.join('\n');
+    }
+
     function buildAiSelectionPromptRequest(selectionContext, options = {}) {
       const context = selectionContext && typeof selectionContext === 'object' ? selectionContext : null;
       if (!context || !Number.isFinite(context.start) || !Number.isFinite(context.end) || context.end <= context.start) {
         throw new Error('Select a valid YAML segment in Variant view first.');
       }
       const workingYaml = String(context.workingYaml || getAiWorkingYaml());
-      const selectedText = String(context.selectedText || '');
+      const safeStart = Math.max(0, Math.min(workingYaml.length, context.start));
+      const safeEnd = Math.max(safeStart, Math.min(workingYaml.length, context.end));
+      if (safeEnd <= safeStart) {
+        throw new Error('Selection is empty.');
+      }
+      const selectedText = String(context.selectedText || workingYaml.slice(safeStart, safeEnd));
       if (!selectedText.trim()) {
         throw new Error('Selection is empty.');
       }
+
       const explicit = String(options.promptOverride || '').trim();
       const inline = String(aiSelectionPrompt && aiSelectionPrompt.value || '').trim();
-      const global = String(aiUserPrompt.value || '').trim();
-      const focus = explicit || inline || global;
+      const selectionOverride = explicit || inline;
+      const baselineInstructions = String(aiUserPrompt.value || '').trim() || AI_DEFAULT_PROMPT;
       const jobDescription = String(aiJobDescription.value || '').trim();
+      const { lines, startLine, endLine } = getYamlLineRangeForOffsets(workingYaml, safeStart, safeEnd);
+      const sectionGuess = findTopLevelYamlSectionForLine(lines, startLine) || '(unknown)';
+      const observedKeys = extractYamlKeysFromFragment(selectedText);
+      const contextWindow = formatYamlContextWindow(lines, startLine, endLine, 8, 10);
+
       return {
         mode: 'selection',
         selection: context,
-        systemPrompt: AI_DEFAULT_PROMPT,
-        userPrompt: `Prompt focus (user):
-${focus || '(none provided)'}
+        systemPrompt: AI_SELECTION_SYSTEM_PROMPT,
+        userPrompt: `Task:
+Rewrite ONLY the selected YAML fragment and return the replacement fragment text.
 
-Target job description:
+Selection metadata:
+- Top-level section guess: ${sectionGuess}
+- Selected lines in working YAML: ${startLine + 1}-${endLine + 1}
+- Observed keys in selection: ${observedKeys.length ? observedKeys.join(', ') : '(none detected)'}
+
+Instruction precedence:
+1) Selection override (highest priority for this request):
+${selectionOverride || '(none)'}
+
+2) Baseline rewrite instructions:
+${baselineInstructions}
+
+Target job description context:
 ${jobDescription || '(none provided)'}
 
-Rewrite scope:
-- Rewrite ONLY the selected YAML fragment.
-- Keep intent and structure compatible with surrounding YAML.
-- Return ONLY the replacement YAML fragment text (no markdown fences, no explanations).
+Nearby YAML context window (for compatibility only; do not rewrite outside selected lines):
+${contextWindow}
 
-Current working AI output YAML:
-${workingYaml}
-
-Selected YAML fragment:
+Selected YAML fragment to rewrite:
 ${selectedText}
 
-Return only the rewritten replacement fragment.`,
+Output contract:
+- Return ONLY the rewritten replacement YAML fragment.
+- Preserve indentation depth and list/object shape compatibility.
+- Preserve existing keys unless override explicitly asks to add/remove keys.
+- Keep factual claims unchanged unless user instruction explicitly requests reframing.`,
       };
     }
 
@@ -6251,7 +6688,7 @@ Return only the rewritten replacement fragment.`,
       const model = getAiModelValue();
       const apiKey = getAiApiKeyValue();
       const wantsWebSearch = !!aiWebSearch.checked;
-      const systemPrompt = String(promptRequest?.systemPrompt || AI_DEFAULT_PROMPT);
+      const systemPrompt = String(promptRequest?.systemPrompt || AI_SELECTION_SYSTEM_PROMPT);
       const userPrompt = String(promptRequest?.userPrompt || '');
 
       if (provider === 'openai') {
@@ -6601,7 +7038,7 @@ Return only the rewritten replacement fragment.`,
       const requestId = ++aiRequestId;
       aiInFlight = true;
       updateAiActionButtons();
-      setAiStatus('Generating rewrite for selected block...');
+      setAiStatus('Generating rewrite for selected block...', 'working');
       persistPreferences();
 
       try {
@@ -7154,12 +7591,31 @@ Return only the rewritten replacement fragment.`,
         syncAiSelectionPopover();
       }
     });
+    cmAiDiff.on('scroll', () => {
+      rememberAiDiffScrollPosition();
+    });
     const aiOutputWrapper = cmAiOutput.getWrapperElement();
     if (aiOutputWrapper) {
       ['mouseup', 'keyup'].forEach((eventName) => {
         aiOutputWrapper.addEventListener(eventName, () => {
           window.setTimeout(() => updateAiActionButtons(), 0);
         });
+      });
+    }
+    const aiDiffWrapper = cmAiDiff.getWrapperElement();
+    if (aiDiffWrapper) {
+      aiDiffWrapper.addEventListener('click', (event) => {
+        const aiDiffActive = activeTab === 'resume'
+          && getResumeEditorView() === 'ai'
+          && getAiOutputViewMode() === 'diff'
+          && hasGeneratedAiOutput();
+        if (!aiDiffActive) return;
+        if (!(event.target instanceof Element)) return;
+        if (event.target.closest('.CodeMirror-gutters')) return;
+        const pos = cmAiDiff.coordsChar({ left: event.clientX, top: event.clientY }, 'window');
+        if (!pos || !Number.isFinite(pos.line)) return;
+        event.preventDefault();
+        jumpFromDiffToVariantAt(pos.line);
       });
     }
     document.addEventListener('selectionchange', () => {
@@ -7964,7 +8420,9 @@ Return only the rewritten replacement fragment.`,
       setAiSettingsVerified(storedAiVerified === '1' && isAiConfigured(), { persist: false });
       setAiVerifyStatus(isAiSettingsVerified() ? 'AI settings verified.' : 'Not verified.', isAiSettingsVerified() ? 'success' : '');
       aiWebSearch.checked = localStorage.getItem(LS_AI_WEB_SEARCH) !== '0';
-      aiUserPrompt.value = localStorage.getItem(LS_AI_USER_PROMPT) || AI_DEFAULT_PROMPT;
+      const normalizedStoredAiPrompt = normalizeAiUserPrompt(localStorage.getItem(LS_AI_USER_PROMPT));
+      aiUserPrompt.value = normalizedStoredAiPrompt;
+      localStorage.setItem(LS_AI_USER_PROMPT, normalizedStoredAiPrompt);
       aiJobDescription.value = localStorage.getItem(LS_AI_JOB_DESCRIPTION) || '';
       if (aiSelectionPrompt) {
         aiSelectionPrompt.value = localStorage.getItem(LS_AI_SELECTION_PROMPT) || '';
