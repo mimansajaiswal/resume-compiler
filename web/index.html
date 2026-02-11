@@ -2718,7 +2718,7 @@
         </div>
         <div id="resume-ai-gate" class="resume-ai-gate hidden">
           <strong>AI setup required</strong>
-          <div>You need to configure and verify AI settings before generating a resume variant.</div>
+          <div>AI is not verified yet. Verify provider/model/key to generate a tailored variant, compare Original vs AI diff, and enable AI output for compile/PDF.</div>
           <button id="btn-open-ai-settings" type="button">Open AI Settings</button>
         </div>
         <div id="resume-ai-workflow" class="hidden">
@@ -3298,6 +3298,7 @@ Rules:
 - Avoid inventing experience or metrics.
 - Return only YAML, no explanations or markdown fences.`;
     const AI_STATUS_DEFAULT_TEXT = 'Set AI provider + key to generate resume variants from Resume YAML.';
+    const AI_UNVERIFIED_TAB_MESSAGE = 'AI is not verified yet, so variant generation is locked. Verify settings to generate tailored variants, compare Original vs AI diff, and enable AI output for compile/PDF.';
     const EDITOR_EXTRA_KEYS = {
       'Cmd-Z': () => performEditorUndo(),
       'Ctrl-Z': () => performEditorUndo(),
@@ -3850,7 +3851,6 @@ Rules:
       }
       if (!verified) {
         setResumeCompileSource('original', { persist: false, triggerCompile: true });
-        setResumeEditorView('original', { persist: false });
         setAiOutputViewMode('variant', { persist: false });
         hideAiSelectionPopover();
       }
@@ -5249,13 +5249,11 @@ Rules:
 
     function updateResumeViewToggleUI() {
       const isOriginal = getResumeEditorView() === 'original';
-      const verified = isAiSettingsVerified();
       btnResumeViewOriginal.classList.toggle('active', isOriginal);
       btnResumeViewOriginal.setAttribute('aria-pressed', isOriginal ? 'true' : 'false');
       btnResumeViewAi.classList.toggle('active', !isOriginal);
       btnResumeViewAi.setAttribute('aria-pressed', isOriginal ? 'false' : 'true');
-      btnResumeViewAi.disabled = !verified;
-      btnResumeViewAi.setAttribute('aria-disabled', verified ? 'false' : 'true');
+      btnResumeViewAi.setAttribute('aria-disabled', 'false');
     }
 
     function updateResumeEditorSurface() {
@@ -7687,11 +7685,12 @@ Return only the rewritten replacement fragment.`,
       refreshAllEditors();
     });
     btnResumeViewAi.addEventListener('click', () => {
+      setResumeEditorView('ai');
       if (!isAiSettingsVerified()) {
-        setAiStatus('Verify AI settings first to use AI variant view.', 'error');
+        setAiStatus(AI_UNVERIFIED_TAB_MESSAGE, 'error');
+        refreshAllEditors();
         return;
       }
-      setResumeEditorView('ai');
       if (!hasGeneratedAiOutput()) {
         setAiStatus('Set up and verify AI settings to generate resume variants.', 'error');
       }
