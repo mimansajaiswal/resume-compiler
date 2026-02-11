@@ -1237,59 +1237,65 @@
     } else {
       (:)
     }
-    let title_override = first_present(pub, ("name",))
-    let title_from_bib = if type(bib_entry) == dictionary { bib_entry.at("title", default: none) } else { none }
-    let title = if non_empty(title_override) { title_override } else if non_empty(title_from_bib) {
-      title_from_bib
-    } else { "Untitled" }
-    let authors_override = first_present(pub, ("authors",))
-    let authors_from_bib = if type(bib_entry) == dictionary { bib_entry.at("authors", default: none) } else { none }
-    let authors = if non_empty(authors_override) { authors_override } else { authors_from_bib }
-    let content_text = pub.at("content", default: none)
-    let venue_override = pub.at("publisher", default: none)
-    let venue_from_bib = if type(bib_entry) == dictionary { bib_entry.at("venue", default: none) } else { none }
-    let venue = if non_empty(venue_override) { venue_override } else { venue_from_bib }
-    let year_override = pub.at("year", default: none)
-    let year_from_bib = if type(bib_entry) == dictionary { bib_entry.at("year", default: none) } else { none }
-    let year = if non_empty(year_override) { year_override } else { year_from_bib }
-    let venue_has_year = non_empty(venue) and non_empty(year) and lower(str(venue)).contains(lower(str(year)))
-    let url_override = pub.at("url", default: none)
-    let url_from_bib = if type(bib_entry) == dictionary { bib_entry.at("url", default: none) } else { none }
-    let entry_url = if non_empty(url_override) { url_override } else { url_from_bib }
-    let extra_links = publication_links(pub, config)
-    let author_highlight_name = choose_author_highlight_name(authors, author_highlight_candidates)
-    [
-      #{
-        if non_empty(entry_url) {
-          maybe_link(entry_url, publication_title_content(title, config, trailing_period: true), config)
-        } else {
-          publication_title_content(title, config, trailing_period: true)
+    if type(bib_entry) != dictionary or bib_entry.len() == 0 {
+      []
+    } else {
+      let title_override = first_present(pub, ("name",))
+      let title_from_bib = bib_entry.at("title", default: none)
+      let title = if non_empty(title_override) { title_override } else if non_empty(title_from_bib) {
+        title_from_bib
+      } else { "Untitled" }
+      let authors_override = first_present(pub, ("authors",))
+      let authors_from_bib = bib_entry.at("authors", default: none)
+      let authors = if non_empty(authors_override) { authors_override } else { authors_from_bib }
+      let content_text = pub.at("content", default: none)
+      let venue_override = pub.at("publisher", default: none)
+      let venue_from_bib = bib_entry.at("venue", default: none)
+      let venue = if non_empty(venue_override) { venue_override } else { venue_from_bib }
+      let year_override = pub.at("year", default: none)
+      let year_from_bib = bib_entry.at("year", default: none)
+      let year = if non_empty(year_override) { year_override } else { year_from_bib }
+      let venue_has_year = non_empty(venue) and non_empty(year) and lower(str(venue)).contains(lower(str(year)))
+      let url_override = pub.at("url", default: none)
+      let url_from_bib = bib_entry.at("url", default: none)
+      let entry_url = if non_empty(url_override) { url_override } else { url_from_bib }
+      let extra_links = publication_links(pub, config)
+      let author_highlight_name = choose_author_highlight_name(authors, author_highlight_candidates)
+      [
+        #{
+          if non_empty(entry_url) {
+            maybe_link(entry_url, publication_title_content(title, config, trailing_period: true), config)
+          } else {
+            publication_title_content(title, config, trailing_period: true)
+          }
         }
-      }
-      #if non_empty(authors) {
-        [ #render_rich(highlight_author_name(authors, author_highlight_name), config).]
-      }
-      #if non_empty(venue) {
-        [
-          #emph(render_rich(venue, config))
-          #if non_empty(year) and not venue_has_year { [ #render_rich(year, config)] }
-          .
-        ]
-      } else if non_empty(year) {
-        [ #render_rich(year, config).]
-      }
-      #if non_empty(content_text) {
-        [ #render_rich(content_text, config)]
-      }
-      #if extra_links.len() > 0 {
-        if pub_link_style == "newline" {
-          [\ ]
-          [[#extra_links.join([ | ])]]
-        } else {
-          [ [#extra_links.join([ | ])]]
+        #if non_empty(authors) {
+          [ #render_rich(highlight_author_name(authors, author_highlight_name), config).]
         }
-      }
-    ]
+        #if non_empty(venue) {
+          [
+            #emph(render_rich(venue, config))
+            #if non_empty(year) and not venue_has_year { [ #render_rich(year, config)] }
+            .
+          ]
+        } else if non_empty(year) {
+          [ #render_rich(year, config).]
+        } else {
+          []
+        }
+        #if non_empty(content_text) {
+          [ #render_rich(content_text, config)]
+        }
+        #if extra_links.len() > 0 {
+          if pub_link_style == "newline" {
+            [\ ]
+            [[#extra_links.join([ | ])]]
+          } else {
+            [ [#extra_links.join([ | ])]]
+          }
+        }
+      ]
+    }
   } else {
     [
       #{

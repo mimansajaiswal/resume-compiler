@@ -26,6 +26,10 @@
       box-sizing: border-box;
     }
 
+    .hidden {
+      display: none !important;
+    }
+
     body {
       font-family: var(--mono);
       height: 100vh;
@@ -65,6 +69,9 @@
       display: flex;
       gap: 0.5rem;
       align-items: center;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+      min-width: 0;
     }
 
     .paper-size-wrap {
@@ -76,6 +83,141 @@
       letter-spacing: 0.06em;
       text-transform: uppercase;
       font-weight: 700;
+    }
+
+    .share-menu {
+      position: relative;
+    }
+
+    #btn-share {
+      background: transparent;
+      color: var(--earth);
+    }
+
+    #btn-share:hover {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--linen);
+    }
+
+    .share-menu-panel {
+      position: absolute;
+      top: calc(100% + 0.28rem);
+      right: 0;
+      min-width: 13.4rem;
+      background: #353535;
+      border: 1px solid #696252;
+      box-shadow: 0 10px 22px rgba(26, 23, 18, 0.28);
+      z-index: 70;
+      display: none;
+      flex-direction: column;
+      gap: 0.26rem;
+      padding: 0.3rem;
+    }
+
+    .share-menu.open .share-menu-panel {
+      display: flex;
+    }
+
+    .share-menu-panel button {
+      border: 1px solid #6e6558;
+      background: transparent;
+      color: var(--linen);
+      font-family: var(--mono);
+      font-size: 0.61rem;
+      letter-spacing: 0.045em;
+      text-transform: uppercase;
+      text-align: left;
+      padding: 0.36rem 0.44rem;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .share-menu-panel button:hover {
+      background: rgba(255, 255, 255, 0.09);
+      border-color: #8b806f;
+    }
+
+    .share-menu-panel button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .share-menu-panel button.hidden {
+      display: none;
+    }
+
+    .upload-menu {
+      position: relative;
+    }
+
+    .upload-menu-panel {
+      position: absolute;
+      top: calc(100% + 0.28rem);
+      left: 0;
+      min-width: 16.2rem;
+      background: #f5eee3;
+      border: 1px solid #b8ad99;
+      box-shadow: 0 10px 22px rgba(26, 23, 18, 0.2);
+      z-index: 70;
+      display: none;
+      flex-direction: column;
+      gap: 0.38rem;
+      padding: 0.42rem;
+    }
+
+    .upload-menu.open .upload-menu-panel {
+      display: flex;
+    }
+
+    .upload-menu-panel button {
+      border: 1px solid #8e826f;
+      background: #332f2a;
+      color: #f4efe6;
+      font-family: var(--mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.045em;
+      text-transform: uppercase;
+      font-weight: 700;
+      padding: 0.33rem 0.5rem;
+      cursor: pointer;
+      min-height: 1.62rem;
+      text-align: left;
+    }
+
+    .upload-menu-panel button:hover {
+      background: #45403a;
+    }
+
+    .upload-url-block {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0.24rem;
+    }
+
+    .upload-url-block label {
+      font-size: 0.57rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #514a3f;
+    }
+
+    .upload-url-block input {
+      border: 1px solid var(--earth);
+      background: #fffaf2;
+      color: var(--charcoal);
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      padding: 0.34rem 0.42rem;
+      min-width: 0;
+      height: 1.8rem;
+    }
+
+    .upload-url-block .helper {
+      font-size: 0.54rem;
+      color: #6a6052;
+      letter-spacing: 0.02em;
+      line-height: 1.35;
     }
 
     .native-select-hidden {
@@ -246,6 +388,24 @@
       transition: all 0.15s;
     }
 
+    .btn-with-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.34rem;
+    }
+
+    .btn-with-icon svg {
+      width: 0.78rem;
+      height: 0.78rem;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.9;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex: 0 0 auto;
+    }
+
     #btn-download {
       background: var(--pink);
       color: var(--charcoal);
@@ -269,16 +429,6 @@
     }
 
     #btn-download-typ:hover {
-      background: rgba(255, 255, 255, 0.06);
-      color: var(--linen);
-    }
-
-    #btn-reset {
-      background: transparent;
-      color: var(--earth);
-    }
-
-    #btn-reset:hover {
       background: rgba(255, 255, 255, 0.06);
       color: var(--linen);
     }
@@ -326,6 +476,227 @@
       border-right: 1px solid var(--earth);
       background: var(--linen);
       overflow: hidden;
+      position: relative;
+    }
+
+    .settings-launch {
+      border: 1px solid #8e826f;
+      background: #332f2a;
+      color: #f4efe6;
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      font-weight: 700;
+      padding: 0.32rem 0.54rem;
+      cursor: pointer;
+      min-height: 1.8rem;
+    }
+
+    .settings-launch:hover {
+      background: #45403a;
+    }
+
+    .settings-launch[aria-expanded="true"] {
+      background: #4e483f;
+    }
+
+    .settings-scrim {
+      position: absolute;
+      inset: 0;
+      background: rgba(24, 21, 17, 0.35);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.16s ease;
+      z-index: 34;
+    }
+
+    .settings-scrim.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .settings-flyout {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: min(31rem, 96%);
+      background: #ece5d9;
+      border-right: 1px solid #b7ab98;
+      transform: translateX(-102%);
+      transition: transform 0.18s ease;
+      z-index: 35;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 10px 0 26px rgba(34, 30, 24, 0.18);
+    }
+
+    .settings-flyout.open {
+      transform: translateX(0);
+    }
+
+    .settings-flyout-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.45rem;
+      padding: 0.52rem 0.72rem;
+      border-bottom: 1px solid #cdbfae;
+      background: #e3d9ca;
+      flex-shrink: 0;
+    }
+
+    .settings-flyout-header strong {
+      font-size: 0.66rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #3e382f;
+    }
+
+    .settings-flyout-header button {
+      border: 1px solid #9e927f;
+      background: #f6efe3;
+      color: #393329;
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 0.28rem 0.44rem;
+      cursor: pointer;
+    }
+
+    .settings-flyout-header button:hover {
+      background: #ece2d3;
+    }
+
+    .settings-flyout-body {
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+    }
+
+    .settings-quick-actions {
+      display: grid;
+      gap: 0.3rem;
+      padding: 0.56rem 0.72rem 0.6rem;
+      border-bottom: 1px solid #cfc2b1;
+      background: #e7dece;
+    }
+
+    .settings-paper-control {
+      display: grid;
+      gap: 0.24rem;
+      max-width: 12rem;
+    }
+
+    .settings-paper-control label {
+      font-size: 0.6rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: #443d33;
+    }
+
+    .settings-paper-control .custom-select {
+      min-width: 0;
+      width: 100%;
+    }
+
+    .settings-danger-zone {
+      border-top: 1px solid #c6b7a5;
+      background: #e7ddd0;
+      padding: 0.64rem 0.72rem 0.72rem;
+      display: grid;
+      gap: 0.34rem;
+    }
+
+    .settings-danger-zone .danger-title {
+      font-size: 0.61rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: #5b3b40;
+    }
+
+    .settings-danger-zone .danger-copy {
+      font-size: 0.58rem;
+      line-height: 1.45;
+      color: #6a504d;
+      letter-spacing: 0.025em;
+      max-width: 26rem;
+    }
+
+    .settings-danger-zone #btn-reset {
+      justify-self: start;
+      border: 1px solid #a7747d;
+      background: #c4909a;
+      color: #2f1f23;
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      font-weight: 700;
+      min-height: 1.8rem;
+      padding: 0.3rem 0.56rem;
+      cursor: pointer;
+    }
+
+    .settings-danger-zone #btn-reset:hover {
+      background: #b8818b;
+    }
+
+    .settings-accordion {
+      border-bottom: 1px solid var(--earth);
+      background: #ece5d9;
+    }
+
+    .settings-toggle {
+      border-bottom: 1px solid #d0c5b3;
+    }
+
+    .settings-toggle:last-child {
+      border-bottom: 0;
+    }
+
+    .settings-toggle summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 0.42rem 0.72rem;
+      font-size: 0.64rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #3e382f;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #e9e1d5;
+    }
+
+    .settings-toggle summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .settings-toggle summary::after {
+      content: "Open";
+      font-size: 0.57rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: #6e6456;
+    }
+
+    .settings-toggle[open] summary::after {
+      content: "Close";
+    }
+
+    .settings-toggle[open] summary {
+      background: #e3d9ca;
+    }
+
+    .settings-body {
+      padding: 0.52rem 0.7rem 0.58rem;
+      background: #efebe3;
     }
 
     .pane-resizer {
@@ -409,6 +780,18 @@
       display: none;
     }
 
+    .tab.disabled {
+      opacity: 0.48;
+      cursor: not-allowed;
+      border-style: dashed;
+    }
+
+    .tab.disabled:hover {
+      color: #776d5e;
+      border-color: transparent;
+      background: #ece6dd;
+    }
+
     .tab-actions {
       display: flex;
       gap: 0.28rem;
@@ -418,13 +801,13 @@
     }
 
     .tab-actions button {
-      height: 2.05rem;
-      padding: 0 0.54rem;
+      height: 1.38rem;
+      padding: 0 0.46rem;
       border: 1px solid var(--earth);
       border-radius: 2px;
       background: var(--linen);
       font-family: var(--mono);
-      font-size: 0.62rem;
+      font-size: 0.56rem;
       font-weight: 600;
       cursor: pointer;
       color: var(--charcoal);
@@ -451,6 +834,62 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
+    }
+
+    .resume-view-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.22rem;
+      border: 1px solid #b8ac98;
+      background: #ebe3d6;
+      padding: 0.12rem;
+      margin-left: 0.08rem;
+    }
+
+    .resume-view-toggle button {
+      min-width: 4rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.3rem;
+      border-color: transparent;
+      background: transparent;
+      color: #655c4e;
+      font-size: 0.54rem;
+      font-weight: 700;
+      padding: 0 0.44rem;
+    }
+
+    .resume-view-toggle button svg {
+      width: 0.7rem;
+      height: 0.7rem;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.85;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      opacity: 0.72;
+      transition: opacity 0.15s ease, stroke 0.15s ease;
+    }
+
+    .resume-view-toggle button:hover {
+      background: #f4eee5;
+      border-color: #c5b7a4;
+    }
+
+    .resume-view-toggle button.active {
+      background: #2f2d2a;
+      color: #f7f2ea;
+      border-color: #2f2d2a;
+    }
+
+    .resume-view-toggle button.active svg {
+      opacity: 1;
+    }
+
+    .resume-view-toggle button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
     }
 
     .schema-help {
@@ -554,9 +993,8 @@
     }
 
     .override-panel {
-      border-bottom: 1px solid var(--earth);
-      background: #efebe3;
-      padding: 0.45rem 0.7rem 0.55rem;
+      background: transparent;
+      padding: 0;
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 0.45rem 0.55rem;
@@ -566,6 +1004,10 @@
       display: flex;
       flex-direction: column;
       gap: 0.16rem;
+    }
+
+    .override-item.hidden {
+      display: none;
     }
 
     .override-item label {
@@ -582,6 +1024,56 @@
 
     .override-panel .custom-select {
       min-width: 0;
+    }
+
+    .override-panel input[type="text"],
+    .override-panel input[type="password"] {
+      border: 1px solid var(--earth);
+      background: #f6f1e8;
+      color: var(--charcoal);
+      font-family: var(--mono);
+      font-size: 0.63rem;
+      padding: 0.38rem 0.44rem;
+      min-width: 0;
+      height: 2.05rem;
+    }
+
+    .override-panel textarea {
+      border: 1px solid var(--earth);
+      background: #f6f1e8;
+      color: var(--charcoal);
+      font-family: var(--mono);
+      font-size: 0.63rem;
+      padding: 0.38rem 0.44rem;
+      min-width: 0;
+      min-height: 5rem;
+      resize: vertical;
+    }
+
+    .toggle-inline {
+      display: inline-flex;
+      gap: 0.42rem;
+      align-items: center;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.035em;
+      text-transform: none;
+      color: #514a3f;
+      cursor: pointer;
+    }
+
+    .toggle-inline input {
+      width: 0.9rem;
+      height: 0.9rem;
+      accent-color: #39342d;
+    }
+
+    .override-item .helper-text {
+      font-size: 0.57rem;
+      color: #685f50;
+      line-height: 1.35;
+      letter-spacing: 0.02em;
+      margin-top: 0.05rem;
     }
 
     .mode-segmented {
@@ -625,6 +1117,12 @@
       color: #f7f2ea;
       border-color: #2f2d2a;
       font-weight: 700;
+    }
+
+    .mode-segmented input:disabled+span {
+      opacity: 0.46;
+      cursor: not-allowed;
+      filter: saturate(0.4);
     }
 
     .compile-controls {
@@ -701,6 +1199,322 @@
 
     .editor-wrapper .cm-container.hidden {
       display: none;
+    }
+
+    .resume-ai-workspace {
+      border-bottom: 1px solid var(--earth);
+      background: #e9e2d5;
+      padding: 0.52rem 0.68rem 0.6rem;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0.48rem;
+      max-height: 42vh;
+      overflow: auto;
+      min-height: 0;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .resume-ai-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 0.45rem;
+      flex-wrap: wrap;
+    }
+
+    .resume-ai-header.hidden {
+      display: none;
+    }
+
+    .resume-ai-title {
+      font-size: 0.66rem;
+      font-weight: 700;
+      letter-spacing: 0.055em;
+      text-transform: uppercase;
+      color: #3f372e;
+    }
+
+    .resume-ai-subtitle {
+      font-size: 0.57rem;
+      color: #62584b;
+      letter-spacing: 0.02em;
+    }
+
+    .ai-panel-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .ai-panel-row.hidden {
+      display: none;
+    }
+
+    .ai-panel-row label {
+      font-size: 0.61rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #5a5449;
+    }
+
+    .ai-panel-row textarea {
+      min-height: 6rem;
+      resize: vertical;
+      border: 1px solid var(--earth);
+      background: #f8f3eb;
+      color: #2f2c27;
+      padding: 0.48rem 0.54rem;
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      line-height: 1.5;
+      letter-spacing: 0.015em;
+    }
+
+    .ai-jd-panel {
+      border: 1px solid #cfbfac;
+      background: #efe8dc;
+    }
+
+    .ai-jd-panel summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 0.4rem 0.5rem;
+      font-size: 0.61rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #554d40;
+      border-bottom: 1px solid #d7c9b7;
+      background: #e8dfd1;
+    }
+
+    .ai-jd-panel summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .ai-jd-panel .ai-panel-row {
+      padding: 0.46rem;
+    }
+
+    .ai-view-segmented {
+      max-width: 12rem;
+    }
+
+    .ai-output-shell {
+      border: 1px solid var(--earth);
+      background: #f4efe6;
+      min-height: 10rem;
+      max-height: 22rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #cm-ai-output-container {
+      position: absolute;
+      inset: 0;
+    }
+
+    #cm-ai-output {
+      height: 100%;
+    }
+
+    #cm-ai-output.hidden {
+      display: none;
+    }
+
+    .ai-output-placeholder {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 0.9rem;
+      font-size: 0.64rem;
+      color: #665d50;
+      text-align: center;
+      letter-spacing: 0.02em;
+      line-height: 1.5;
+      background: #f4efe6;
+      border-top: 1px solid var(--earth);
+    }
+
+    #ai-output-diff {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      font-family: var(--mono);
+      font-size: 0.63rem;
+      line-height: 1.45;
+      letter-spacing: 0.01em;
+      color: #2f2c27;
+      padding: 0.48rem 0.54rem;
+      background: #f4efe6;
+      white-space: pre;
+    }
+
+    #ai-output-diff.hidden {
+      display: none;
+    }
+
+    #ai-output-diff .diff-add {
+      background: #d9eee0;
+      color: #28523b;
+      display: block;
+    }
+
+    #ai-output-diff .diff-del {
+      background: #f3dcdf;
+      color: #6e2e39;
+      display: block;
+    }
+
+    #ai-output-diff .diff-meta {
+      color: #6c6152;
+      display: block;
+    }
+
+    .ai-panel-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.34rem;
+    }
+
+    .ai-panel-actions button {
+      border: 1px solid #8e826f;
+      background: #332f2a;
+      color: #f4efe6;
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.045em;
+      text-transform: uppercase;
+      font-weight: 700;
+      padding: 0.44rem 0.6rem;
+      cursor: pointer;
+      min-height: 2.05rem;
+    }
+
+    .ai-panel-actions button:hover {
+      background: #45403a;
+    }
+
+    .ai-panel-actions button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .ai-panel-actions button.hidden {
+      display: none;
+    }
+
+    .ai-status {
+      border: 1px dashed #9f907b;
+      background: #eee6d8;
+      color: #62594c;
+      font-size: 0.6rem;
+      line-height: 1.45;
+      padding: 0.4rem 0.48rem;
+      letter-spacing: 0.02em;
+    }
+
+    .ai-status.error {
+      color: #7a3340;
+      border-color: #b87c86;
+      background: #f0dde1;
+      font-weight: 700;
+    }
+
+    .ai-status.success {
+      color: #2f5a3f;
+      border-color: #7fa18d;
+      background: #dce9e1;
+      font-weight: 700;
+    }
+
+    .resume-ai-gate {
+      border: 1px dashed #a4937d;
+      background: #efe7db;
+      color: #574e40;
+      font-size: 0.62rem;
+      line-height: 1.5;
+      letter-spacing: 0.02em;
+      padding: 0.5rem 0.56rem;
+    }
+
+    .resume-ai-gate strong {
+      display: block;
+      font-size: 0.63rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #3e372d;
+      margin-bottom: 0.2rem;
+    }
+
+    .resume-ai-gate button {
+      margin-top: 0.4rem;
+      border: 1px solid #8e826f;
+      background: #332f2a;
+      color: #f4efe6;
+      font-family: var(--mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.045em;
+      text-transform: uppercase;
+      font-weight: 700;
+      padding: 0.3rem 0.52rem;
+      cursor: pointer;
+      min-height: 1.65rem;
+    }
+
+    .resume-ai-gate button:hover {
+      background: #45403a;
+    }
+
+    .ai-settings-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      align-items: flex-start;
+    }
+
+    .ai-settings-actions button {
+      border: 1px solid #8e826f;
+      background: #332f2a;
+      color: #f4efe6;
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.045em;
+      text-transform: uppercase;
+      font-weight: 700;
+      padding: 0.34rem 0.56rem;
+      cursor: pointer;
+      min-height: 1.8rem;
+    }
+
+    .ai-settings-actions button:hover {
+      background: #45403a;
+    }
+
+    .ai-settings-actions button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .ai-verify-status {
+      font-size: 0.58rem;
+      line-height: 1.4;
+      letter-spacing: 0.02em;
+      color: #62594c;
+    }
+
+    .ai-verify-status.error {
+      color: #7a3340;
+      font-weight: 700;
+    }
+
+    .ai-verify-status.success {
+      color: #2f5a3f;
+      font-weight: 700;
     }
 
     .CodeMirror {
@@ -1041,6 +1855,17 @@
     }
 
     @media (max-width: 1024px) {
+      header {
+        gap: 0.4rem;
+        flex-wrap: wrap;
+      }
+
+      .header-actions {
+        width: 100%;
+        justify-content: flex-start;
+        gap: 0.4rem;
+      }
+
       .mobile-view-toggle {
         display: flex;
       }
@@ -1076,9 +1901,89 @@
       .main-container.mobile-preview .editor-panel {
         display: none;
       }
+
+      .main-container.mobile-editor,
+      .main-container.mobile-preview {
+        flex: 1;
+        min-height: 0;
+      }
+
+      .main-container.mobile-editor .editor-panel,
+      .main-container.mobile-preview .preview-panel {
+        display: flex;
+        flex: 1 1 auto;
+        min-height: 0;
+      }
+
+      .main-container.mobile-editor .editor-wrapper,
+      .main-container.mobile-preview .preview-scroll {
+        flex: 1 1 auto;
+        min-height: 0;
+      }
     }
 
     @media (max-width: 768px) {
+      header {
+        padding: 0.5rem 0.7rem;
+      }
+
+      header h1 {
+        font-size: 0.76rem;
+      }
+
+      header .subtitle {
+        font-size: 0.58rem;
+      }
+
+      .header-actions {
+        width: 100%;
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        gap: 0.26rem;
+        padding-bottom: 0.06rem;
+      }
+
+      .header-actions button,
+      .header-actions .share-menu,
+      .header-actions .paper-size-wrap {
+        width: auto;
+        flex: 0 0 auto;
+      }
+
+      .paper-size-wrap {
+        justify-content: flex-start;
+        padding: 0.18rem 0.24rem;
+        border: 1px solid #6a5f4f;
+        background: rgba(255, 255, 255, 0.04);
+        gap: 0.24rem;
+      }
+
+      .paper-size-wrap .custom-select {
+        min-width: 0;
+        width: auto;
+      }
+
+      .share-menu-panel {
+        left: auto;
+        right: 0;
+        min-width: 12rem;
+      }
+
+      .header-actions .btn-with-icon span {
+        display: none;
+      }
+
+      .header-actions button {
+        min-width: 2rem;
+        padding: 0.28rem 0.34rem;
+      }
+
+      .paper-size-wrap .custom-select-trigger {
+        font-size: 0.58rem;
+        padding: 0.2rem 0.24rem;
+      }
+
       .main-container {
         flex-direction: column;
       }
@@ -1087,6 +1992,10 @@
         width: 100%;
         min-width: 0;
         border-right: none;
+      }
+
+      .settings-flyout {
+        width: min(34rem, 100%);
       }
 
       .pane-resizer {
@@ -1112,10 +2021,51 @@
 
       .tab-actions {
         justify-content: flex-start;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: 0.04rem;
       }
 
       .tab-actions button {
         flex: 0 0 auto;
+      }
+
+      #btn-undo,
+      #btn-redo,
+      #btn-upload,
+      #btn-upload-refresh,
+      #btn-upload-gist {
+        min-width: 2rem;
+        padding: 0 0.34rem;
+      }
+
+      #btn-undo span,
+      #btn-redo span,
+      #btn-upload span,
+      #btn-upload-refresh span,
+      #btn-upload-gist span,
+      #btn-resume-view-original span,
+      #btn-resume-view-ai span {
+        display: none;
+      }
+
+      .resume-view-toggle {
+        margin-left: 0;
+      }
+
+      .resume-view-toggle button {
+        min-width: 2rem;
+        padding: 0 0.32rem;
+      }
+
+      .resume-ai-workspace {
+        max-height: 48vh;
+        padding: 0.46rem 0.56rem 0.54rem;
+      }
+
+      .upload-menu-panel {
+        min-width: 14.1rem;
+        left: 0;
       }
 
       .override-item.span-2 {
@@ -1149,8 +2099,31 @@
         padding: 0.26rem 0.3rem 0.32rem;
       }
 
-      .paper-size-wrap span {
+      .paper-size-wrap>span {
+        display: inline;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .header-actions .paper-size-wrap>span {
         display: none;
+      }
+
+      .header-actions button {
+        padding: 0.26rem 0.3rem;
+      }
+
+      .settings-flyout {
+        width: 100%;
+      }
+
+      .resume-ai-workspace {
+        max-height: 52vh;
+      }
+
+      .upload-menu-panel {
+        left: 0;
+        right: auto;
       }
     }
   </style>
@@ -1169,96 +2142,231 @@
       <div class="subtitle">yaml + typst // pdf generator</div>
     </div>
     <div class="header-actions">
-      <label class="paper-size-wrap">
-        <span>Paper</span>
-        <select id="paper-size">
-          <option value="letter">Letter</option>
-          <option value="a4">A4</option>
-        </select>
-      </label>
-      <button id="btn-download" disabled>Download PDF</button>
-      <button id="btn-download-typ">Download resume.typ</button>
-      <button id="btn-reset">Reset to Defaults</button>
+      <button id="btn-settings" class="settings-launch btn-with-icon" type="button" aria-expanded="false"
+        aria-controls="settings-flyout">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 21v-7"></path>
+          <path d="M4 10V3"></path>
+          <path d="M12 21v-9"></path>
+          <path d="M12 8V3"></path>
+          <path d="M20 21v-5"></path>
+          <path d="M20 12V3"></path>
+          <path d="M2 14h4"></path>
+          <path d="M10 8h4"></path>
+          <path d="M18 16h4"></path>
+        </svg>
+        <span>Settings</span>
+      </button>
+      <button id="btn-download-typ" class="btn-with-icon">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M8 7h8M8 11h8M8 15h5"></path>
+          <path d="M5 4h14v16H5z"></path>
+        </svg>
+        <span>Download resume.typ</span>
+      </button>
+      <div class="share-menu" id="share-menu">
+        <button id="btn-share" class="btn-with-icon" type="button" aria-haspopup="menu" aria-expanded="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M10 13.5l4-3"></path>
+            <path d="M10 10.5l4 3"></path>
+            <circle cx="7" cy="12" r="2.2"></circle>
+            <circle cx="17" cy="8" r="2.2"></circle>
+            <circle cx="17" cy="16" r="2.2"></circle>
+          </svg>
+          <span>Share</span>
+        </button>
+        <div class="share-menu-panel" id="share-menu-panel" role="menu" aria-label="Share URL options">
+          <button id="btn-share-without-key" type="button" role="menuitem">Copy URL (No API Key)</button>
+          <button id="btn-share-with-key" type="button" role="menuitem">Copy URL (With API Key)</button>
+        </div>
+      </div>
+      <button id="btn-download" class="btn-with-icon" disabled>
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 4v10"></path>
+          <path d="M8.5 10.5L12 14l3.5-3.5"></path>
+          <path d="M4 18h16"></path>
+        </svg>
+        <span>Download PDF</span>
+      </button>
     </div>
   </header>
 
   <div class="mobile-view-toggle" id="mobile-view-toggle">
-    <button type="button" data-mobile-view="editor" class="active">Editor + Overrides</button>
+    <button type="button" data-mobile-view="editor" class="active">Editor</button>
     <button type="button" data-mobile-view="preview">Preview PDF</button>
   </div>
 
   <div class="main-container mobile-editor">
     <div class="editor-panel">
-      <div class="override-panel">
-        <div class="override-item">
-          <label>Length</label>
-          <select id="override-variant">
-            <option value="default">default</option>
-            <option value="short">short</option>
-          </select>
+      <div class="settings-scrim" id="settings-scrim"></div>
+      <aside class="settings-flyout" id="settings-flyout" aria-hidden="true">
+        <div class="settings-flyout-header">
+          <strong>Settings</strong>
+          <button id="btn-settings-close" type="button">Close</button>
         </div>
-        <div class="override-item">
-          <label for="override-source">Source</label>
-          <select id="override-source">
-            <option value="resume">resume yaml</option>
-            <option value="bibtex">bibtex</option>
-          </select>
+        <div class="settings-flyout-body">
+          <div class="settings-quick-actions">
+            <div class="settings-paper-control">
+              <label for="paper-size">Paper Size</label>
+              <select id="paper-size">
+                <option value="letter">Letter</option>
+                <option value="a4">A4</option>
+              </select>
+            </div>
+          </div>
+          <div class="settings-accordion">
+            <details class="settings-toggle" id="panel-overrides" open>
+              <summary>Compile Overrides</summary>
+              <div class="settings-body">
+                <div class="override-panel">
+                  <div class="override-item">
+                    <label>Length</label>
+                    <select id="override-variant">
+                      <option value="default">default</option>
+                      <option value="short">short</option>
+                    </select>
+                  </div>
+                  <div class="override-item">
+                    <label for="override-source">Source</label>
+                    <select id="override-source">
+                      <option value="resume">resume yaml</option>
+                      <option value="bibtex">bibtex</option>
+                    </select>
+                  </div>
+                  <div class="override-item">
+                    <label for="override-link-mode">Link Mode</label>
+                    <select id="override-link-mode">
+                      <option value="links">links on</option>
+                      <option value="no-js">no-js</option>
+                    </select>
+                  </div>
+                  <div class="override-item">
+                    <label for="override-links-disabled-behavior">Link-Off Rendering</label>
+                    <select id="override-links-disabled-behavior">
+                      <option value="label">Keep Label Only</option>
+                      <option value="label_with_url">Label + [url]</option>
+                    </select>
+                  </div>
+                  <div class="override-item">
+                    <label for="override-pubnums">Publication Numbers</label>
+                    <select id="override-pubnums">
+                      <option value="on">Show [n]</option>
+                      <option value="off">Hide [n]</option>
+                    </select>
+                  </div>
+                  <div class="override-item">
+                    <label for="override-contact">Contact Style</label>
+                    <select id="override-contact">
+                      <option value="label">Label</option>
+                      <option value="icon_label">Icon + Label</option>
+                    </select>
+                  </div>
+                  <div class="override-item">
+                    <label for="override-font">General Font</label>
+                    <select id="override-font">
+                      <option value="New Computer Modern">New Computer Modern</option>
+                      <option value="Libertinus Serif">Libertinus Serif</option>
+                      <option value="TeX Gyre Termes">TeX Gyre Termes</option>
+                      <option value="TeX Gyre Pagella">TeX Gyre Pagella</option>
+                      <option value="DejaVu Serif">DejaVu Serif</option>
+                    </select>
+                  </div>
+                  <div class="override-item">
+                    <label for="override-mono-font">Monospace Font</label>
+                    <select id="override-mono-font">
+                      <option value="DejaVu Sans Mono">DejaVu Sans Mono</option>
+                      <option value="Libertinus Mono">Libertinus Mono</option>
+                      <option value="New Computer Modern Mono">New Computer Modern Mono</option>
+                      <option value="Fira Code">Fira Code</option>
+                      <option value="JetBrains Mono">JetBrains Mono</option>
+                      <option value="Cascadia Mono">Cascadia Mono</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </details>
+            <details class="settings-toggle" id="panel-ai-settings">
+              <summary>AI Settings</summary>
+              <div class="settings-body">
+                <div class="override-panel">
+                  <div class="override-item">
+                    <label for="ai-provider">AI Provider</label>
+                    <select id="ai-provider">
+                      <option value="disabled">Disabled</option>
+                      <option value="openai">OpenAI</option>
+                      <option value="gemini">Gemini</option>
+                      <option value="openrouter">OpenRouter</option>
+                      <option value="groq">Groq</option>
+                      <option value="claude">Claude</option>
+                    </select>
+                  </div>
+                  <div class="override-item">
+                    <label for="ai-model">AI Model</label>
+                    <input id="ai-model" type="text" placeholder="Provider model id">
+                  </div>
+                  <div class="override-item span-2 ai-key-item">
+                    <label for="ai-api-key">AI API Key (for generation + optional secure sharing)</label>
+                    <input id="ai-api-key" type="password" placeholder="Paste API key (stored in this browser)">
+                    <div class="helper-text">When set, Share shows an extra option to copy URL including this key.</div>
+                  </div>
+                  <div class="override-item span-2">
+                    <div class="ai-settings-actions">
+                      <button id="btn-ai-verify" type="button">Verify AI Settings</button>
+                      <div id="ai-verify-status" class="ai-verify-status">Not verified.</div>
+                    </div>
+                  </div>
+                  <div class="override-item span-2 ai-search-item" id="ai-search-item">
+                    <label class="toggle-inline" for="ai-web-search">
+                      <input id="ai-web-search" type="checkbox" checked>
+                      <span>Allow provider web-search tools (if supported)</span>
+                    </label>
+                    <div class="helper-text">Generation always uses original <code>Resume (YAML)</code> as source.</div>
+                  </div>
+                  <div class="override-item span-2" id="ai-prompt-item">
+                    <label for="ai-user-prompt">Resume Rewrite Instructions</label>
+                    <textarea id="ai-user-prompt" spellcheck="false"
+                      placeholder="Optional: focus areas like impact quantification, ATS keywords, concise bullets..."></textarea>
+                    <div class="helper-text">Used when generating AI resume variants for <code>resume.yml</code>.</div>
+                  </div>
+                </div>
+              </div>
+            </details>
+            <details class="settings-toggle" id="panel-integrations">
+              <summary>Integrations</summary>
+              <div class="settings-body">
+                <div class="override-panel">
+                  <div class="override-item span-2">
+                    <label for="github-token">GitHub Token (Gist Sync)</label>
+                    <input id="github-token" type="password" placeholder="github_pat_...">
+                    <div class="helper-text">Stored only in this browser. Verify this token to enable private GitHub URL
+                      loading and gist updates.</div>
+                  </div>
+                  <div class="override-item span-2">
+                    <div class="ai-settings-actions">
+                      <button id="btn-github-verify" type="button">Verify GitHub Token</button>
+                      <div id="github-verify-status" class="ai-verify-status">Not verified.</div>
+                    </div>
+                    <div class="helper-text">Token should include <code>gist</code> scope and access to any private
+                      repos you load from URL.</div>
+                  </div>
+                </div>
+              </div>
+            </details>
+          </div>
+          <div class="settings-danger-zone">
+            <div class="danger-title">Danger Zone</div>
+            <div class="danger-copy">Reset clears local settings, editor content, AI data, and saved URL sources in this
+              browser.</div>
+            <button id="btn-reset" class="btn-with-icon" type="button">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 12a8 8 0 1 0 2.3-5.7"></path>
+                <path d="M4 4v5h5"></path>
+              </svg>
+              <span>Reset to Defaults</span>
+            </button>
+          </div>
         </div>
-        <div class="override-item">
-          <label for="override-link-mode">Link Mode</label>
-          <select id="override-link-mode">
-            <option value="links">links on</option>
-            <option value="no-js">no-js</option>
-          </select>
-        </div>
-        <div class="override-item">
-          <label for="override-links-disabled-behavior">Link-Off Rendering</label>
-          <select id="override-links-disabled-behavior">
-            <option value="config">Use config.yml</option>
-            <option value="label">Keep Label Only</option>
-            <option value="label_with_url">Label + [url]</option>
-          </select>
-        </div>
-        <div class="override-item">
-          <label for="override-pubnums">Pub Numbers Override</label>
-          <select id="override-pubnums">
-            <option value="config">Use config.yml</option>
-            <option value="on">Show [n]</option>
-            <option value="off">Hide [n]</option>
-          </select>
-        </div>
-        <div class="override-item">
-          <label for="override-contact">Contact Style Override</label>
-          <select id="override-contact">
-            <option value="config">Use config.yml</option>
-            <option value="label">Label</option>
-            <option value="icon_label">Icon + Label</option>
-          </select>
-        </div>
-        <div class="override-item">
-          <label for="override-font">General Font Override</label>
-          <select id="override-font">
-            <option value="config">Use config.yml</option>
-            <option value="New Computer Modern">New Computer Modern</option>
-            <option value="Libertinus Serif">Libertinus Serif</option>
-            <option value="TeX Gyre Termes">TeX Gyre Termes</option>
-            <option value="TeX Gyre Pagella">TeX Gyre Pagella</option>
-            <option value="DejaVu Serif">DejaVu Serif</option>
-          </select>
-        </div>
-        <div class="override-item">
-          <label for="override-mono-font">Monospace Font Override</label>
-          <select id="override-mono-font">
-            <option value="config">Use config.yml</option>
-            <option value="DejaVu Sans Mono">DejaVu Sans Mono</option>
-            <option value="Libertinus Mono">Libertinus Mono</option>
-            <option value="New Computer Modern Mono">New Computer Modern Mono</option>
-            <option value="Fira Code">Fira Code</option>
-            <option value="JetBrains Mono">JetBrains Mono</option>
-            <option value="Cascadia Mono">Cascadia Mono</option>
-          </select>
-        </div>
-      </div>
+      </aside>
       <div class="tabs">
         <div class="tab-list">
           <div class="tab active" data-tab="resume">Resume (YAML)</div>
@@ -1267,13 +2375,78 @@
           <div class="tab" data-tab="bib">Publications (BibTeX)</div>
         </div>
         <div class="tab-actions">
-          <button id="btn-undo" aria-label="Undo (Cmd/Ctrl+Z)">Undo</button>
-          <button id="btn-redo" aria-label="Redo (Cmd/Ctrl+Shift+Z or Ctrl+Y)">Redo</button>
+          <button id="btn-undo" class="btn-with-icon" aria-label="Undo (Cmd/Ctrl+Z)">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m9 14-5-5 5-5"></path>
+              <path d="M4 9h10a5 5 0 1 1 0 10h-4"></path>
+            </svg>
+            <span>Undo</span>
+          </button>
+          <button id="btn-redo" class="btn-with-icon" aria-label="Redo (Cmd/Ctrl+Shift+Z or Ctrl+Y)">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m15 14 5-5-5-5"></path>
+              <path d="M20 9H10a5 5 0 1 0 0 10h4"></path>
+            </svg>
+            <span>Redo</span>
+          </button>
           <button id="btn-bib-clean" class="tab-bib-only" aria-label="Clean BibTeX (when BibTeX tab is active)">Clean
             .bib</button>
           <button id="btn-bib-download" class="tab-bib-only"
             aria-label="Download BibTeX (when BibTeX tab is active)">Download .bib</button>
-          <button id="btn-upload" aria-label="Upload file">Upload</button>
+          <div class="upload-menu" id="upload-menu">
+            <button id="btn-upload" class="btn-with-icon" aria-label="Upload options" aria-haspopup="menu"
+              aria-expanded="false" type="button">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 16V4"></path>
+                <path d="m7 9 5-5 5 5"></path>
+                <path d="M4 20h16"></path>
+              </svg>
+              <span>Upload</span>
+            </button>
+            <div class="upload-menu-panel" id="upload-menu-panel" role="menu" aria-label="Upload source options">
+              <button id="btn-upload-file" type="button" role="menuitem">Choose from Files</button>
+              <div class="upload-url-block">
+                <label for="upload-url-input">Public URL</label>
+                <input id="upload-url-input" type="url" spellcheck="false" placeholder="https://example.com/resume.yml">
+                <button id="btn-upload-url" type="button">Load from URL</button>
+                <div class="helper">Loads into the current tab. Supports public URLs and GitHub gist links.</div>
+              </div>
+            </div>
+          </div>
+          <button id="btn-upload-refresh" class="btn-with-icon" aria-label="Refresh from saved URL" type="button"
+            disabled>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M21 12a9 9 0 1 1-2.64-6.36"></path>
+              <path d="M21 3v6h-6"></path>
+            </svg>
+            <span>Refresh URL</span>
+          </button>
+          <button id="btn-upload-gist" class="btn-with-icon hidden" aria-label="Update source gist" type="button"
+            disabled>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M10 14 7 17a4 4 0 1 1-6-6l3-3a4 4 0 0 1 6 6l-1 1"></path>
+              <path d="m14 10 3-3a4 4 0 1 1 6 6l-3 3a4 4 0 0 1-6-6l1-1"></path>
+              <path d="m8 16 8-8"></path>
+            </svg>
+            <span>Update Gist</span>
+          </button>
+          <div class="resume-view-toggle hidden" id="resume-view-toggle" role="group" aria-label="Resume view mode">
+            <button id="btn-resume-view-original" type="button" class="active" aria-pressed="true">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+                <path d="M14 3v6h6"></path>
+              </svg>
+              <span>Original</span>
+            </button>
+            <button id="btn-resume-view-ai" type="button" aria-pressed="false">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m12 3 1.55 3.95L17.5 8.5l-3.95 1.55L12 14l-1.55-3.95L6.5 8.5l3.95-1.55L12 3z"></path>
+                <path d="m18.5 14.5.8 2.05 2.05.8-2.05.8-.8 2.05-.8-2.05-2.05-.8 2.05-.8.8-2.05z"></path>
+                <path d="m5.5 14.5.6 1.55 1.55.6-1.55.6-.6 1.55-.6-1.55-1.55-.6 1.55-.6.6-1.55z"></path>
+              </svg>
+              <span>AI</span>
+            </button>
+          </div>
           <input type="file" id="file-input" accept=".yml,.yaml,.bib,.txt" style="display:none">
         </div>
       </div>
@@ -1298,11 +2471,65 @@
           <div>Loading tab-specific key hints...</div>
         </div>
       </details>
+      <div class="resume-ai-workspace hidden" id="resume-ai-workspace">
+        <div class="resume-ai-header" id="resume-ai-header">
+          <div class="resume-ai-title">Resume AI Variant (Resume YAML Only)</div>
+          <div class="resume-ai-subtitle">Original <code>resume.yml</code> remains unchanged.</div>
+        </div>
+        <div id="resume-ai-gate" class="resume-ai-gate hidden">
+          <strong>AI setup required</strong>
+          <div>You need to configure and verify AI settings before generating a resume variant.</div>
+          <button id="btn-open-ai-settings" type="button">Open AI Settings</button>
+        </div>
+        <div id="resume-ai-workflow" class="hidden">
+          <div class="override-item hidden" id="resume-use-generated-row">
+            <label class="toggle-inline" for="resume-use-generated">
+              <input id="resume-use-generated" type="checkbox">
+              <span>Use Generated Resume for Compile/PDF</span>
+            </label>
+          </div>
+          <details class="ai-jd-panel" id="ai-jd-panel" open>
+            <summary>Target Job Description</summary>
+            <div class="ai-panel-row">
+              <textarea id="ai-job-description" spellcheck="false"
+                placeholder="Paste the JD here to tailor a variant toward this role."></textarea>
+            </div>
+          </details>
+          <div class="ai-panel-actions">
+            <button id="btn-ai-generate" type="button">Generate Variant</button>
+            <button id="btn-ai-copy" type="button" disabled>Copy Variant</button>
+          </div>
+          <div id="ai-status" class="ai-status">Set AI provider + key to generate resume variants from Resume YAML.
+          </div>
+          <div class="ai-panel-row hidden" id="ai-output-panel">
+            <label>Generated Resume Variant View</label>
+            <div class="mode-segmented ai-view-segmented" role="radiogroup" aria-label="Generated view mode">
+              <label>
+                <input type="radio" name="ai-output-view" value="variant" checked>
+                <span>Variant</span>
+              </label>
+              <label>
+                <input type="radio" name="ai-output-view" value="diff">
+                <span>Diff</span>
+              </label>
+            </div>
+            <div class="ai-output-shell">
+              <pre id="ai-output-diff" class="hidden"></pre>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="editor-wrapper">
         <div class="cm-container" id="cm-resume"></div>
         <div class="cm-container hidden" id="cm-config"></div>
         <div class="cm-container hidden" id="cm-config-short"></div>
         <div class="cm-container hidden" id="cm-bib"></div>
+        <div class="cm-container hidden" id="cm-ai-output-container">
+          <div id="cm-ai-output"></div>
+        </div>
+        <div class="ai-output-placeholder hidden" id="ai-output-placeholder">
+          Generate an AI variant to edit it here.
+        </div>
       </div>
     </div>
     <div class="pane-resizer" id="pane-resizer" role="separator" aria-orientation="vertical"
@@ -1361,6 +2588,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/codemirror.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/mode/yaml/yaml.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/mode/stex/stex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/diff@5.2.0/dist/diff.min.js"></script>
   <script type="module"
     src="https://cdn.jsdelivr.net/npm/@myriaddreamin/typst.ts@0.7.0-rc2/dist/esm/contrib/all-in-one-lite.bundle.js"
     id="typst">
@@ -1584,7 +2812,7 @@ section_order:
     const APP_STORAGE_PREFIX = `resume_compiler__${APP_STORAGE_SCOPE}__`;
     const lsKey = (name) => `${APP_STORAGE_PREFIX}${name}`;
 
-    const CACHE_VERSION = '2026-02-11-mode-v1';
+    const CACHE_VERSION = '2026-02-11-ai-subtab-v3';
     const LS_CACHE_VERSION = lsKey('cache_version');
     const LS_RESUME = lsKey('resume_yaml');
     const LS_CONFIG = lsKey('config_yaml');
@@ -1605,6 +2833,27 @@ section_order:
     const LS_OVERRIDE_FONT = lsKey('override_font');
     const LS_OVERRIDE_MONO_FONT = lsKey('override_mono_font');
     const LS_EDITOR_PANE_WIDTH = lsKey('editor_pane_width');
+    const LS_RESUME_CUSTOMIZED = lsKey('resume_customized');
+    const LS_AI_PROVIDER = lsKey('ai_provider');
+    const LS_AI_MODEL = lsKey('ai_model');
+    const LS_AI_API_KEY = lsKey('ai_api_key');
+    const LS_GITHUB_TOKEN = lsKey('github_token');
+    const LS_GITHUB_VERIFIED = lsKey('github_verified');
+    const LS_AI_WEB_SEARCH = lsKey('ai_web_search');
+    const LS_AI_USER_PROMPT = lsKey('ai_user_prompt');
+    const LS_AI_JOB_DESCRIPTION = lsKey('ai_job_description');
+    const LS_AI_OUTPUT = lsKey('ai_output_yaml');
+    const LS_AI_VERIFIED = lsKey('ai_verified');
+    const LS_RESUME_VIEW = lsKey('resume_view');
+    const LS_RESUME_COMPILE_SOURCE = lsKey('resume_compile_source');
+    const LS_REMOTE_UPLOAD_SOURCES = lsKey('remote_upload_sources');
+    const LS_RESUME_AI_PANEL_HEIGHT_LEGACY = lsKey('resume_ai_panel_height');
+    const LS_PANEL_RESUME_AI_OPEN_LEGACY = lsKey('panel_resume_ai_open');
+    const LS_PANEL_OVERRIDES_OPEN = lsKey('panel_overrides_open');
+    const LS_PANEL_AI_SETTINGS_OPEN = lsKey('panel_ai_settings_open');
+    const LS_PANEL_INTEGRATIONS_OPEN = lsKey('panel_integrations_open');
+    const LS_PANEL_AI_JD_OPEN = lsKey('panel_ai_jd_open');
+    const URL_STATE_PARAM = 'state';
     const LS_KEYS = [
       LS_CACHE_VERSION,
       LS_RESUME,
@@ -1626,6 +2875,26 @@ section_order:
       LS_OVERRIDE_FONT,
       LS_OVERRIDE_MONO_FONT,
       LS_EDITOR_PANE_WIDTH,
+      LS_RESUME_CUSTOMIZED,
+      LS_AI_PROVIDER,
+      LS_AI_MODEL,
+      LS_AI_API_KEY,
+      LS_GITHUB_TOKEN,
+      LS_GITHUB_VERIFIED,
+      LS_AI_WEB_SEARCH,
+      LS_AI_USER_PROMPT,
+      LS_AI_JOB_DESCRIPTION,
+      LS_AI_OUTPUT,
+      LS_AI_VERIFIED,
+      LS_RESUME_VIEW,
+      LS_RESUME_COMPILE_SOURCE,
+      LS_REMOTE_UPLOAD_SOURCES,
+      LS_RESUME_AI_PANEL_HEIGHT_LEGACY,
+      LS_PANEL_RESUME_AI_OPEN_LEGACY,
+      LS_PANEL_OVERRIDES_OPEN,
+      LS_PANEL_AI_SETTINGS_OPEN,
+      LS_PANEL_INTEGRATIONS_OPEN,
+      LS_PANEL_AI_JD_OPEN,
     ];
     const EDITOR_CONTENT_KEYS = {
       resume: LS_RESUME,
@@ -1649,10 +2918,30 @@ section_order:
     const statusBar = document.getElementById('status-bar');
     const btnDownload = document.getElementById('btn-download');
     const btnDownloadTyp = document.getElementById('btn-download-typ');
+    const shareMenu = document.getElementById('share-menu');
+    const btnShare = document.getElementById('btn-share');
+    const btnShareWithoutKey = document.getElementById('btn-share-without-key');
+    const btnShareWithKey = document.getElementById('btn-share-with-key');
+    const btnSettings = document.getElementById('btn-settings');
+    const btnSettingsClose = document.getElementById('btn-settings-close');
+    const settingsFlyout = document.getElementById('settings-flyout');
+    const settingsScrim = document.getElementById('settings-scrim');
     const btnUndo = document.getElementById('btn-undo');
     const btnRedo = document.getElementById('btn-redo');
     const btnBibClean = document.getElementById('btn-bib-clean');
     const btnBibDownload = document.getElementById('btn-bib-download');
+    const uploadMenu = document.getElementById('upload-menu');
+    const btnUpload = document.getElementById('btn-upload');
+    const uploadMenuPanel = document.getElementById('upload-menu-panel');
+    const btnUploadFile = document.getElementById('btn-upload-file');
+    const uploadUrlInput = document.getElementById('upload-url-input');
+    const btnUploadUrl = document.getElementById('btn-upload-url');
+    const btnUploadRefresh = document.getElementById('btn-upload-refresh');
+    const btnUploadGist = document.getElementById('btn-upload-gist');
+    const resumeViewToggle = document.getElementById('resume-view-toggle');
+    const btnResumeViewOriginal = document.getElementById('btn-resume-view-original');
+    const btnResumeViewAi = document.getElementById('btn-resume-view-ai');
+    const fileInput = document.getElementById('file-input');
     const btnCompileNow = document.getElementById('btn-compile-now');
     const btnReset = document.getElementById('btn-reset');
     const compileModeHint = document.getElementById('compile-mode-hint');
@@ -1666,6 +2955,31 @@ section_order:
     const overrideContact = document.getElementById('override-contact');
     const overrideFont = document.getElementById('override-font');
     const overrideMonoFont = document.getElementById('override-mono-font');
+    const panelOverrides = document.getElementById('panel-overrides');
+    const panelAiSettings = document.getElementById('panel-ai-settings');
+    const panelIntegrations = document.getElementById('panel-integrations');
+    const resumeAiWorkspace = document.getElementById('resume-ai-workspace');
+    const aiJdPanel = document.getElementById('ai-jd-panel');
+    const resumeAiHeader = document.getElementById('resume-ai-header');
+    const resumeAiGate = document.getElementById('resume-ai-gate');
+    const resumeAiWorkflow = document.getElementById('resume-ai-workflow');
+    const resumeUseGeneratedRow = document.getElementById('resume-use-generated-row');
+    const resumeUseGenerated = document.getElementById('resume-use-generated');
+    const aiOutputViewInputs = Array.from(document.querySelectorAll('input[name="ai-output-view"]'));
+    const aiOutputDiffInput = aiOutputViewInputs.find((input) => input.value === 'diff') || null;
+    const aiOutputDiff = document.getElementById('ai-output-diff');
+    const aiOutputContainer = document.getElementById('cm-ai-output-container');
+    const aiOutputEditorContainer = document.getElementById('cm-ai-output');
+    const aiOutputPlaceholder = document.getElementById('ai-output-placeholder');
+    const aiProvider = document.getElementById('ai-provider');
+    const aiModel = document.getElementById('ai-model');
+    const aiApiKey = document.getElementById('ai-api-key');
+    const githubToken = document.getElementById('github-token');
+    const btnGithubVerify = document.getElementById('btn-github-verify');
+    const githubVerifyStatus = document.getElementById('github-verify-status');
+    const aiWebSearch = document.getElementById('ai-web-search');
+    const aiSearchItem = document.getElementById('ai-search-item');
+    const aiPromptItem = document.getElementById('ai-prompt-item');
     const bibImportPanel = document.getElementById('bib-import-panel');
     const bibImportProvider = document.getElementById('bib-import-provider');
     const bibImportId = document.getElementById('bib-import-id');
@@ -1679,6 +2993,49 @@ section_order:
     const confirmMessage = document.getElementById('confirm-message');
     const confirmCancel = document.getElementById('confirm-cancel');
     const confirmAccept = document.getElementById('confirm-accept');
+    const aiUserPrompt = document.getElementById('ai-user-prompt');
+    const aiJobDescription = document.getElementById('ai-job-description');
+    const aiOutputPanel = document.getElementById('ai-output-panel');
+    const aiStatus = document.getElementById('ai-status');
+    const aiVerifyStatus = document.getElementById('ai-verify-status');
+    const btnOpenAiSettings = document.getElementById('btn-open-ai-settings');
+    const btnAiGenerate = document.getElementById('btn-ai-generate');
+    const btnAiCopy = document.getElementById('btn-ai-copy');
+    const btnAiVerify = document.getElementById('btn-ai-verify');
+
+    const AI_PROVIDER_CONFIG = {
+      openai: {
+        label: 'OpenAI',
+        defaultModel: 'gpt-4.1-mini',
+      },
+      gemini: {
+        label: 'Gemini',
+        defaultModel: 'gemini-2.0-flash',
+      },
+      openrouter: {
+        label: 'OpenRouter',
+        defaultModel: 'openai/gpt-4o-mini',
+      },
+      groq: {
+        label: 'Groq',
+        defaultModel: 'llama-3.3-70b-versatile',
+      },
+      claude: {
+        label: 'Claude',
+        defaultModel: 'claude-3-7-sonnet-latest',
+      },
+    };
+    const AI_DEFAULT_PROMPT = `Rewrite the provided resume YAML into a stronger, ATS-friendly variant while keeping it truthful and grounded in the original data.
+
+Rules:
+- Keep valid YAML output only.
+- Preserve top-level schema shape and key names.
+- Maintain all factual details unless explicitly reworded for clarity.
+- Improve bullet impact with concise action + outcome phrasing.
+- Prioritize alignment to the provided job description.
+- Keep dates, organizations, and role chronology intact.
+- Avoid inventing experience or metrics.
+- Return only YAML, no explanations or markdown fences.`;
 
     const EDITOR_EXTRA_KEYS = {
       'Cmd-Z': () => performEditorUndo(),
@@ -1728,6 +3085,16 @@ section_order:
       extraKeys: EDITOR_EXTRA_KEYS,
     });
 
+    const cmAiOutput = CodeMirror(aiOutputEditorContainer, {
+      mode: 'yaml',
+      lineNumbers: true,
+      tabSize: 2,
+      indentWithTabs: false,
+      lineWrapping: true,
+      viewportMargin: 20,
+      extraKeys: EDITOR_EXTRA_KEYS,
+    });
+
     let activeTab = 'resume';
     const editors = { resume: cmResume, config: cmConfig, "config-short": cmConfigShort, bib: cmBib };
     const containers = {
@@ -1756,36 +3123,60 @@ section_order:
     const MAX_EDITOR_WIDTH = 72;
     const GOOGLE_PROXY_PREFIX = 'https://r.jina.ai/http://';
     let bibtexTidyModulePromise = null;
+    let aiRequestId = 0;
+    let aiInFlight = false;
+    let aiVerifyRequestId = 0;
+    let aiVerifyInFlight = false;
+    let aiSettingsVerified = false;
+    let githubVerifyRequestId = 0;
+    let githubVerifyInFlight = false;
+    let githubTokenVerified = false;
+    let resumeEditorView = 'original';
+    let defaultResumeBySource = { resume: DEFAULT_RESUME_YAML, bibtex: DEFAULT_RESUME_YAML };
+    let resumeCustomized = false;
+    let remoteUploadSources = {};
+    let pendingFileUploadTab = null;
 
     const TAB_SUPPORTED_KEYS_HTML = {
       resume: `
-        <div>Schema style is standardized (no legacy aliases): use the keys below directly.</div>
-        <div>Work: <code>work[].name</code>, <code>work[].positions[].name</code>, <code>work[].positions[].content[]</code></div>
-        <div>Education: <code>education[].name</code>, optional <code>content[]</code>, <code>honors[]</code>, <code>courses[]</code>, <code>thesis</code></div>
-        <div>Publications in YAML mode: <code>publications[].name</code>, optional <code>authors</code>, <code>publisher</code>, <code>year</code>, <code>links[]</code>, <code>section</code></div>
-        <div>Generic sections: any extra top-level array (example <code>community_service</code>) auto-renders, even if omitted from <code>section_order</code>.</div>
+        <div><strong>Top level arrays:</strong> <code>work[]</code>, <code>education[]</code>, <code>skills[]</code>, optional <code>publications[]</code>, <code>projects[]</code>, <code>awards[]</code>, plus custom sections.</div>
+        <div><strong><code>personal</code> object:</strong> required <code>name</code>; common optional fields <code>email</code>, <code>phone</code>, <code>url</code>, <code>location</code>, <code>titles[]</code>, <code>summary</code>.</div>
+        <div><strong><code>work[]</code> structure:</strong> each entry has org <code>name</code>/<code>url</code> and <code>positions[]</code>; each position supports <code>name</code>, <code>startDate</code>, <code>endDate</code>, <code>location</code>, <code>summary</code>, <code>content[]</code>.</div>
+        <div><strong><code>education[]</code> structure:</strong> <code>name</code>, <code>studyType</code>, <code>area</code>, <code>location</code>, <code>startDate</code>, <code>endDate</code>, <code>content[]</code>, <code>honors[]</code>, <code>courses[]</code>, <code>thesis</code>.</div>
+        <div><strong><code>skills[]</code> structure:</strong> objects with <code>category</code> and <code>skills[]</code>; keep skill values as plain text strings.</div>
+        <div><strong>Publications with BibTeX mode:</strong> use <code>bib_key</code> per publication item. In YAML-only mode, include explicit text fields like <code>title</code>, <code>authors</code>, <code>venue</code>, <code>year</code>, <code>url</code>.</div>
+        <div><strong>Dates:</strong> preferred ISO-like values (<code>YYYY-MM-DD</code> or <code>YYYY-MM</code>) and <code>present</code> for ongoing roles.</div>
       `,
       config: `
-        <div>Main groups: <code>fonts</code>, <code>layout</code>, <code>styling</code>, <code>visibility</code>, <code>section_titles</code>, <code>section_order</code>.</div>
-        <div>Publication defaults: <code>styling.publication_title_bold</code>, <code>styling.publication_autobold_authors</code>, <code>styling.publication_bold_author_names[]</code>.</div>
-        <div>Link-off behavior: <code>visibility.links_disabled_behavior</code> = <code>label</code> or <code>label_with_url</code>.</div>
-        <div>Contact style: <code>styling.contact_display_mode</code> = <code>label</code> or <code>icon_label</code>.</div>
+        <div><strong>Main groups:</strong> <code>variant</code>, <code>paper_size</code>, <code>fonts</code>, <code>layout</code>, <code>styling</code>, <code>visibility</code>, <code>section_titles</code>, <code>section_order[]</code>.</div>
+        <div><strong><code>fonts.*</code> keys:</strong> <code>font</code>, <code>mono_font</code>, <code>font_size</code>, <code>name_font_size</code>, <code>section_font_size</code>, plus section-specific size overrides.</div>
+        <div><strong><code>layout.*</code> keys:</strong> <code>margin</code>, <code>line_spacing</code>, <code>entry_spacing</code>, <code>entry_inner_spacing</code>, <code>section_spacing</code>, <code>pub_spacing</code>, header spacing controls.</div>
+        <div><strong><code>styling.*</code> keys:</strong> colors, heading behavior, publication emphasis, and <code>contact_display_mode</code> (<code>icon_label</code> or <code>label</code>).</div>
+        <div><strong><code>visibility.*</code> keys:</strong> section toggles, link toggles, <code>links_disabled_behavior</code> (<code>label</code> or <code>label_with_url</code>), and publication numbering.</div>
+        <div><strong><code>section_order[]</code>:</strong> ordered list of section ids (for example <code>work</code>, <code>publications</code>, <code>education</code>, <code>projects</code>, <code>skills</code>).</div>
       `,
       'config-short': `
-        <div>Same key set as <code>config.yml</code>, but tuned for one-page/condensed output.</div>
-        <div>Typical edits: tighter <code>layout.*</code> spacing, reduced <code>fonts.*</code> sizes, and shorter <code>section_order</code>.</div>
-        <div>Publication settings stay available: <code>styling.publication_title_bold</code>, <code>styling.publication_autobold_authors</code>, <code>styling.publication_bold_author_names[]</code>.</div>
+        <div><strong>Same schema as config.yml:</strong> every key supported in <code>config</code> also works here.</div>
+        <div><strong>Typical short edits:</strong> reduce <code>fonts.*</code> sizes, tighten <code>layout.*</code> spacing, and shorten <code>section_order[]</code>.</div>
+        <div><strong>Variant selection:</strong> Length override controls whether <code>config.yml</code> or <code>config-short.yml</code> is used at compile time.</div>
       `,
       bib: `
-        <div>Use standard BibTeX entries: <code>@article</code>, <code>@inproceedings</code>, <code>@misc</code>, etc.</div>
-        <div>Required in this app: citation key plus useful fields like <code>title</code>, <code>author</code>, <code>year</code>, and optional <code>url</code>.</div>
-        <div>Use <code>Clean .bib</code> for formatting/normalization and <code>Download .bib</code> to export current editor contents.</div>
+        <div><strong>Supported entry types:</strong> <code>@article</code>, <code>@inproceedings</code>, <code>@book</code>, <code>@misc</code>, and other standard BibTeX types.</div>
+        <div><strong>Recommended fields:</strong> citation key, <code>title</code>, <code>author</code>, <code>year</code>, and venue field (<code>journal</code> or <code>booktitle</code>), plus <code>url</code>/<code>doi</code> when available.</div>
+        <div><strong>Import tools:</strong> DBLP / Semantic Scholar / Google Scholar IDs can merge into current entries or replace all entries.</div>
+        <div><strong>Cleanup:</strong> <code>Clean .bib</code> normalizes formatting and helps detect duplicates by key/title.</div>
       `,
     };
     const BIB_IMPORT_PLACEHOLDERS = {
       dblp: 'Example: j/Geffner:Blai or https://dblp.org/pid/j/Geffner:Blai.html',
       semantic: 'Example: 1741102 or https://www.semanticscholar.org/author/.../1741102',
       google: 'Example: cLzCYMIAAAAJ or https://scholar.google.com/citations?user=cLzCYMIAAAAJ',
+    };
+    const GIST_DEFAULT_FILE_BY_TAB = {
+      resume: 'resume.yml',
+      config: 'config.yml',
+      'config-short': 'config-short.yml',
+      bib: 'publications.bib',
     };
 
     function setStatus(text, level) {
@@ -1796,6 +3187,1355 @@ section_order:
     function setBibImportStatus(text, level = '') {
       bibImportStatus.textContent = text;
       bibImportStatus.classList.toggle('warning', level === 'warning');
+    }
+
+    function setAiStatus(text, level = '') {
+      aiStatus.textContent = text;
+      aiStatus.className = 'ai-status' + (level ? ` ${level}` : '');
+    }
+
+    function setAiVerifyStatus(text, level = '') {
+      aiVerifyStatus.textContent = text;
+      aiVerifyStatus.className = 'ai-verify-status' + (level ? ` ${level}` : '');
+    }
+
+    function setGithubVerifyStatus(text, level = '') {
+      githubVerifyStatus.textContent = text;
+      githubVerifyStatus.className = 'ai-verify-status' + (level ? ` ${level}` : '');
+    }
+
+    function isAiSettingsVerified() {
+      return !!aiSettingsVerified;
+    }
+
+    function setAiSettingsVerified(nextValue, options = {}) {
+      const shouldPersist = options.persist !== false;
+      aiSettingsVerified = !!nextValue;
+      if (shouldPersist) {
+        localStorage.setItem(LS_AI_VERIFIED, aiSettingsVerified ? '1' : '0');
+      }
+      updateAiVerificationVisibility();
+    }
+
+    function getAiProvider() {
+      return normalizeAiProviderValue(aiProvider.value);
+    }
+
+    function getAiModelValue() {
+      return String(aiModel.value || '').trim();
+    }
+
+    function getAiApiKeyValue() {
+      return String(aiApiKey.value || '').trim();
+    }
+
+    function getGithubTokenValue() {
+      return String(githubToken.value || '').trim();
+    }
+
+    function isGithubTokenVerified() {
+      return !!githubTokenVerified && !!getGithubTokenValue();
+    }
+
+    function setGithubTokenVerified(nextValue, options = {}) {
+      const shouldPersist = options.persist !== false;
+      githubTokenVerified = !!nextValue && !!getGithubTokenValue();
+      if (shouldPersist) {
+        localStorage.setItem(LS_GITHUB_VERIFIED, githubTokenVerified ? '1' : '0');
+      }
+      if (githubTokenVerified) {
+        setGithubVerifyStatus('GitHub token verified.', 'success');
+      } else {
+        setGithubVerifyStatus('Not verified.');
+      }
+      updateUploadGistButtonState();
+    }
+
+    function getAiOutputValue() {
+      return String(cmAiOutput.getValue() || '');
+    }
+
+    function hasGeneratedAiOutput() {
+      return !!String(getAiOutputValue() || '').trim();
+    }
+
+    function setAiOutputValue(value) {
+      cmAiOutput.setValue(String(value || ''));
+      renderAiDiffView();
+      updateAiActionButtons();
+    }
+
+    function getAiOutputViewMode() {
+      const selected = aiOutputViewInputs.find((input) => input.checked);
+      return selected && selected.value === 'diff' ? 'diff' : 'variant';
+    }
+
+    function updateAiOutputViewAvailability() {
+      const hasOutput = hasGeneratedAiOutput();
+      if (aiOutputDiffInput) {
+        aiOutputDiffInput.disabled = !hasOutput;
+      }
+      if (!hasOutput && getAiOutputViewMode() === 'diff') {
+        setAiOutputViewMode('variant');
+      }
+    }
+
+    function updateAiOutputPanelVisibility() {
+      const hasOutput = hasGeneratedAiOutput() && isAiSettingsVerified();
+      aiOutputPanel.classList.toggle('hidden', !hasOutput);
+      if (!hasOutput) {
+        aiOutputDiff.textContent = '';
+      }
+      updateResumeEditorSurface();
+    }
+
+    function updateAiVerificationVisibility() {
+      const verified = isAiSettingsVerified();
+      if (resumeAiHeader) resumeAiHeader.classList.toggle('hidden', !verified);
+      if (resumeAiGate) resumeAiGate.classList.toggle('hidden', verified);
+      if (resumeAiWorkflow) resumeAiWorkflow.classList.toggle('hidden', !verified);
+      if (aiSearchItem) aiSearchItem.classList.toggle('hidden', !verified);
+      if (aiPromptItem) aiPromptItem.classList.toggle('hidden', !verified);
+      if (!verified && resumeUseGenerated && resumeUseGenerated.checked) {
+        setResumeCompileSource('original', { persist: false });
+      }
+      updateAiOutputPanelVisibility();
+      updateResumeEditorSurface();
+    }
+
+    function setAiOutputViewMode(mode) {
+      const normalized = mode === 'diff' && hasGeneratedAiOutput() ? 'diff' : 'variant';
+      aiOutputViewInputs.forEach((input) => {
+        input.checked = input.value === normalized;
+      });
+      const showDiff = normalized === 'diff';
+      aiOutputDiff.classList.toggle('hidden', !showDiff);
+      updateResumeEditorSurface();
+      if (!showDiff && hasGeneratedAiOutput()) cmAiOutput.refresh();
+    }
+
+    function renderAiDiffView() {
+      const original = String(cmResume.getValue() || '');
+      const generated = String(getAiOutputValue() || '');
+      if (!generated.trim()) {
+        aiOutputDiff.textContent = '';
+        return;
+      }
+      // Current path uses synchronous jsdiff; switch to a worker-pool diff engine if huge YAML diffs cause UI jank.
+      if (window.Diff && typeof window.Diff.structuredPatch === 'function') {
+        const patch = window.Diff.structuredPatch('resume.yml', 'ai-variant.yml', original, generated, '', '', { context: 2 });
+        const lines = [];
+        patch.hunks.forEach((hunk) => {
+          lines.push(`@@ ${hunk.oldStart},${hunk.oldLines} ${hunk.newStart},${hunk.newLines} @@`);
+          hunk.lines.forEach((line) => {
+            lines.push(line);
+          });
+        });
+        aiOutputDiff.innerHTML = lines.map((line) => {
+          const cls = line.startsWith('+')
+            ? 'diff-add'
+            : line.startsWith('-')
+              ? 'diff-del'
+              : line.startsWith('@@')
+                ? 'diff-meta'
+                : '';
+          const escaped = line
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+          return `<span class="${cls}">${escaped}</span>`;
+        }).join('');
+        return;
+      }
+      aiOutputDiff.textContent = generated;
+    }
+
+    function setDetailsOpen(detailsEl, shouldOpen) {
+      if (!detailsEl) return;
+      detailsEl.open = !!shouldOpen;
+    }
+
+    function readStoredOpenState(storageKey, fallbackOpen) {
+      const stored = localStorage.getItem(storageKey);
+      if (stored === '1') return true;
+      if (stored === '0') return false;
+      return !!fallbackOpen;
+    }
+
+    function normalizeResumeCompileSource(value) {
+      return value === 'generated' ? 'generated' : 'original';
+    }
+
+    function getResumeCompileSource() {
+      return normalizeResumeCompileSource(resumeUseGenerated && resumeUseGenerated.checked ? 'generated' : 'original');
+    }
+
+    function setResumeCompileSource(value, options = {}) {
+      const normalized = normalizeResumeCompileSource(value);
+      if (resumeUseGenerated) resumeUseGenerated.checked = normalized === 'generated';
+      if (options.persist !== false) {
+        persistPreferences();
+      }
+    }
+
+    function getResumeContentForCompile() {
+      const generated = String(getAiOutputValue() || '').trim();
+      if (getResumeCompileSource() === 'generated' && generated) {
+        return generated;
+      }
+      return cmResume.getValue();
+    }
+
+    function ensureValidResumeCompileSource() {
+      const hasOutput = !!String(getAiOutputValue() || '').trim();
+      if (!hasOutput && getResumeCompileSource() === 'generated') {
+        setResumeCompileSource('original', { persist: false });
+      }
+    }
+
+    function setSettingsFlyoutOpen(nextOpen) {
+      const shouldOpen = !!nextOpen;
+      settingsFlyout.classList.toggle('open', shouldOpen);
+      settingsFlyout.setAttribute('aria-hidden', shouldOpen ? 'false' : 'true');
+      settingsScrim.classList.toggle('open', shouldOpen);
+      btnSettings.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+    }
+
+    function hasAiKeyForShareMenu() {
+      return !!getAiApiKeyValue();
+    }
+
+    function updateShareMenuVisibility() {
+      const hasKey = hasAiKeyForShareMenu();
+      btnShareWithKey.classList.toggle('hidden', !hasKey);
+      btnShareWithoutKey.textContent = hasKey ? 'Copy URL (No API Key)' : 'Copy URL';
+      btnShare.setAttribute('aria-haspopup', hasKey ? 'menu' : 'false');
+      if (!hasKey) closeShareMenu();
+    }
+
+    function setShareMenuOpen(nextOpen) {
+      const shouldOpen = !!nextOpen;
+      if (shouldOpen && !hasAiKeyForShareMenu()) {
+        shareMenu.classList.remove('open');
+        btnShare.setAttribute('aria-expanded', 'false');
+        return;
+      }
+      shareMenu.classList.toggle('open', shouldOpen);
+      btnShare.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+    }
+
+    function closeShareMenu() {
+      setShareMenuOpen(false);
+    }
+
+    async function copyShareFromMenu(includeAiKey) {
+      const includeKey = includeAiKey === true && hasAiKeyForShareMenu();
+      const controls = [btnShare, btnShareWithoutKey, btnShareWithKey];
+      controls.forEach((control) => {
+        control.disabled = true;
+      });
+      try {
+        await copyShareUrlToClipboard({ includeAiKey: includeKey });
+        if (includeKey) {
+          setStatus('Share URL copied (with AI key).', 'ready');
+        } else if (hasAiKeyForShareMenu()) {
+          setStatus('Share URL copied (without AI key; AI prompts/output included).', 'ready');
+        } else {
+          setStatus('Share URL copied.', 'ready');
+        }
+      } catch (err) {
+        setStatus('Share URL copy failed: ' + (err.message || err), 'error');
+      } finally {
+        controls.forEach((control) => {
+          control.disabled = false;
+        });
+        closeShareMenu();
+      }
+    }
+
+    function normalizeEditorKey(value) {
+      if (value === 'resume' || value === 'config' || value === 'config-short' || value === 'bib') return value;
+      return '';
+    }
+
+    function getEditorLabel(editorKey = activeTab) {
+      const key = normalizeEditorKey(editorKey);
+      if (key === 'resume') return 'Resume (YAML)';
+      if (key === 'config') return 'Config (YAML)';
+      if (key === 'config-short') return 'Config Short (YAML)';
+      if (key === 'bib') return 'Publications (BibTeX)';
+      return 'current tab';
+    }
+
+    function isLikelyGistId(value) {
+      return /^[a-f0-9]{6,}$/i.test(String(value || '').trim());
+    }
+
+    function isLikelyGitSha(value) {
+      return /^[a-f0-9]{20,}$/i.test(String(value || '').trim());
+    }
+
+    function parseGistSource(rawUrl) {
+      const value = String(rawUrl || '').trim();
+      if (!value) return null;
+      let parsed = null;
+      try {
+        parsed = new URL(value);
+      } catch (err) {
+        return null;
+      }
+
+      const host = parsed.hostname.toLowerCase();
+      const segments = parsed.pathname.split('/').filter(Boolean);
+      let gistId = '';
+      let fileName = '';
+
+      if (host === 'gist.github.com') {
+        if (segments.length >= 2 && isLikelyGistId(segments[1])) {
+          gistId = segments[1];
+        }
+        const queryFile = String(parsed.searchParams.get('file') || '').trim();
+        if (queryFile) fileName = decodeURIComponent(queryFile);
+        if (!fileName) {
+          const hash = String(parsed.hash || '').replace(/^#/, '').trim();
+          const hashMatch = hash.match(/^file-(.+)$/i);
+          if (hashMatch) {
+            fileName = decodeURIComponent(hashMatch[1]).replace(/-/g, '.');
+          }
+        }
+      } else if (host === 'gist.githubusercontent.com') {
+        if (segments.length >= 2 && isLikelyGistId(segments[1])) {
+          gistId = segments[1];
+        }
+        const rawIndex = segments.indexOf('raw');
+        if (rawIndex >= 0) {
+          if (segments.length >= rawIndex + 3) {
+            fileName = decodeURIComponent(segments.slice(rawIndex + 2).join('/'));
+          } else if (segments.length === rawIndex + 2) {
+            const maybeFile = decodeURIComponent(String(segments[rawIndex + 1] || ''));
+            if (maybeFile && !isLikelyGitSha(maybeFile)) fileName = maybeFile;
+          }
+        }
+      } else if (host === 'api.github.com') {
+        if (segments[0] === 'gists' && isLikelyGistId(segments[1])) {
+          gistId = segments[1];
+        }
+      }
+
+      if (!gistId) return null;
+      return {
+        gistId,
+        fileName: String(fileName || '').replace(/^\/+/, ''),
+        apiUrl: `https://api.github.com/gists/${gistId}`,
+      };
+    }
+
+    function encodeGithubPath(pathValue) {
+      return String(pathValue || '')
+        .split('/')
+        .filter((segment) => segment.length > 0)
+        .map((segment) => encodeURIComponent(segment))
+        .join('/');
+    }
+
+    function parseGithubRepoFileSource(rawUrl) {
+      const value = String(rawUrl || '').trim();
+      if (!value) return null;
+      let parsed = null;
+      try {
+        parsed = new URL(value);
+      } catch (err) {
+        return null;
+      }
+
+      const host = parsed.hostname.toLowerCase();
+      const segments = parsed.pathname.split('/').filter(Boolean);
+      let owner = '';
+      let repo = '';
+      let ref = '';
+      let filePath = '';
+
+      if (host === 'github.com') {
+        if (segments.length >= 5 && segments[2] === 'blob') {
+          owner = segments[0];
+          repo = segments[1];
+          ref = decodeURIComponent(segments[3] || '');
+          filePath = decodeURIComponent(segments.slice(4).join('/'));
+        } else {
+          return null;
+        }
+      } else if (host === 'raw.githubusercontent.com') {
+        if (segments.length >= 4) {
+          owner = segments[0];
+          repo = segments[1];
+          ref = decodeURIComponent(segments[2] || '');
+          filePath = decodeURIComponent(segments.slice(3).join('/'));
+        } else {
+          return null;
+        }
+      } else if (host === 'api.github.com') {
+        if (segments.length >= 5 && segments[0] === 'repos' && segments[3] === 'contents') {
+          owner = decodeURIComponent(segments[1] || '');
+          repo = decodeURIComponent(segments[2] || '');
+          filePath = decodeURIComponent(segments.slice(4).join('/'));
+          ref = decodeURIComponent(parsed.searchParams.get('ref') || '');
+        } else {
+          return null;
+        }
+      } else {
+        return null;
+      }
+
+      if (!owner || !repo || !filePath) return null;
+      return {
+        owner,
+        repo,
+        ref,
+        filePath,
+        apiUrl: `https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/contents/${encodeGithubPath(filePath)}`,
+      };
+    }
+
+    function resolveGistFileName(filesMap, source, editorKey) {
+      const files = filesMap && typeof filesMap === 'object' ? filesMap : {};
+      const names = Object.keys(files);
+      if (!names.length) {
+        throw new Error('This gist has no files.');
+      }
+
+      const sourceFile = String(source?.fileName || '').trim();
+      if (sourceFile) {
+        if (Object.prototype.hasOwnProperty.call(files, sourceFile)) return sourceFile;
+        const caseMatch = names.find((name) => name.toLowerCase() === sourceFile.toLowerCase());
+        if (caseMatch) return caseMatch;
+        throw new Error(`Gist file "${sourceFile}" was not found.`);
+      }
+
+      const preferred = GIST_DEFAULT_FILE_BY_TAB[editorKey];
+      if (preferred) {
+        const preferredMatch = names.find((name) => name.toLowerCase() === preferred.toLowerCase());
+        if (preferredMatch) return preferredMatch;
+      }
+
+      if (names.length === 1) return names[0];
+
+      if (editorKey === 'bib') {
+        const bibMatches = names.filter((name) => /\.bib$/i.test(name));
+        if (bibMatches.length === 1) return bibMatches[0];
+      } else {
+        const yamlMatches = names.filter((name) => /\.(yml|yaml)$/i.test(name));
+        if (yamlMatches.length === 1) return yamlMatches[0];
+      }
+
+      throw new Error('Gist has multiple files. Use a raw gist file URL or append ?file=<name>.');
+    }
+
+    async function extractGithubErrorMessage(response) {
+      try {
+        const payload = await response.json();
+        if (payload && typeof payload.message === 'string' && payload.message.trim()) {
+          return payload.message.trim();
+        }
+      } catch (err) {
+        // ignore parse failures; fallback to status text
+      }
+      return response.statusText || '';
+    }
+
+    function getGithubHeaders(token = '', includeJsonContentType = false) {
+      const headers = {
+        Accept: 'application/vnd.github+json',
+      };
+      const normalizedToken = String(token || '').trim();
+      if (normalizedToken) {
+        headers.Authorization = `Bearer ${normalizedToken}`;
+      }
+      if (includeJsonContentType) {
+        headers['Content-Type'] = 'application/json';
+      }
+      return headers;
+    }
+
+    async function fetchGistData(source, token = '') {
+      const response = await fetch(source.apiUrl, {
+        headers: getGithubHeaders(token, false),
+        cache: 'no-store',
+      });
+      if (!response.ok) {
+        const detail = await extractGithubErrorMessage(response);
+        const error = new Error(detail ? `GitHub gist read failed: ${detail}` : `GitHub gist read failed (${response.status}).`);
+        error.githubStatus = response.status;
+        throw error;
+      }
+      const payload = await response.json();
+      if (!payload || typeof payload !== 'object' || !payload.files || typeof payload.files !== 'object') {
+        throw new Error('Unexpected GitHub gist response.');
+      }
+      return payload;
+    }
+
+    function decodeBase64ToText(base64Value) {
+      const normalized = String(base64Value || '').replace(/\s+/g, '');
+      if (!normalized) return '';
+      const binary = atob(normalized);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i += 1) {
+        bytes[i] = binary.charCodeAt(i);
+      }
+      return new TextDecoder().decode(bytes);
+    }
+
+    async function fetchGithubRepoFileText(source, token = '') {
+      const apiUrl = new URL(source.apiUrl);
+      if (source.ref) {
+        apiUrl.searchParams.set('ref', source.ref);
+      }
+
+      const response = await fetch(apiUrl.toString(), {
+        headers: getGithubHeaders(token, false),
+        cache: 'no-store',
+      });
+      if (!response.ok) {
+        const detail = await extractGithubErrorMessage(response);
+        const error = new Error(detail ? `GitHub file read failed: ${detail}` : `GitHub file read failed (${response.status}).`);
+        error.githubStatus = response.status;
+        throw error;
+      }
+
+      const payload = await response.json();
+      if (!payload || typeof payload !== 'object') {
+        throw new Error('Unexpected GitHub file response.');
+      }
+      if (payload.type !== 'file') {
+        throw new Error('GitHub URL does not point to a file.');
+      }
+      if (typeof payload.content === 'string' && payload.encoding === 'base64') {
+        return decodeBase64ToText(payload.content);
+      }
+      if (typeof payload.content === 'string') {
+        return payload.content;
+      }
+      if (typeof payload.download_url === 'string' && payload.download_url) {
+        const rawResponse = await fetch(payload.download_url, {
+          headers: getGithubHeaders(token, false),
+          cache: 'no-store',
+        });
+        if (!rawResponse.ok) {
+          throw new Error(`GitHub raw file fetch failed (${rawResponse.status}).`);
+        }
+        return await rawResponse.text();
+      }
+      throw new Error('GitHub file response is missing content.');
+    }
+
+    async function verifyGithubToken() {
+      const token = getGithubTokenValue();
+      if (!token) {
+        setGithubTokenVerified(false, { persist: false });
+        setGithubVerifyStatus('Set a GitHub token first.', 'error');
+        setStatus('GitHub token verification failed: missing token.', 'error');
+        persistPreferences();
+        return false;
+      }
+
+      const requestId = ++githubVerifyRequestId;
+      githubVerifyInFlight = true;
+      if (btnGithubVerify) btnGithubVerify.disabled = true;
+      setGithubVerifyStatus('Verifying token...');
+      updateUploadGistButtonState();
+
+      try {
+        const response = await fetch('https://api.github.com/user', {
+          headers: getGithubHeaders(token, false),
+          cache: 'no-store',
+        });
+        if (!response.ok) {
+          const detail = await extractGithubErrorMessage(response);
+          throw new Error(detail || `HTTP ${response.status}`);
+        }
+        const payload = await response.json();
+        if (requestId !== githubVerifyRequestId) return false;
+        const login = payload && typeof payload.login === 'string' ? payload.login : '';
+        setGithubTokenVerified(true, { persist: false });
+        setGithubVerifyStatus(login ? `Verified for @${login}.` : 'GitHub token verified.', 'success');
+        setStatus(login ? `GitHub token verified (@${login}). Private GitHub URLs enabled.` : 'GitHub token verified. Private GitHub URLs enabled.', 'ready');
+        persistPreferences();
+        return true;
+      } catch (err) {
+        if (requestId !== githubVerifyRequestId) return false;
+        setGithubTokenVerified(false, { persist: false });
+        setGithubVerifyStatus('Verification failed.', 'error');
+        setStatus(`GitHub token verification failed: ${err.message || err}`, 'error');
+        persistPreferences();
+        return false;
+      } finally {
+        if (requestId === githubVerifyRequestId) {
+          githubVerifyInFlight = false;
+          if (btnGithubVerify) btnGithubVerify.disabled = false;
+          updateUploadGistButtonState();
+        }
+      }
+    }
+
+    function normalizeRemoteUploadSources(raw) {
+      const result = {};
+      if (!raw || typeof raw !== 'object') return result;
+      Object.entries(raw).forEach(([key, value]) => {
+        const normalizedKey = normalizeEditorKey(key);
+        if (!normalizedKey) return;
+        const url = String(value || '').trim();
+        if (!url) return;
+        result[normalizedKey] = url;
+      });
+      return result;
+    }
+
+    function loadRemoteUploadSources() {
+      let parsed = {};
+      try {
+        parsed = JSON.parse(localStorage.getItem(LS_REMOTE_UPLOAD_SOURCES) || '{}') || {};
+      } catch (err) {
+        parsed = {};
+      }
+      remoteUploadSources = normalizeRemoteUploadSources(parsed);
+    }
+
+    function persistRemoteUploadSources() {
+      localStorage.setItem(LS_REMOTE_UPLOAD_SOURCES, JSON.stringify(remoteUploadSources));
+    }
+
+    function getRemoteUploadSource(editorKey = activeTab) {
+      const key = normalizeEditorKey(editorKey);
+      if (!key) return '';
+      return String(remoteUploadSources[key] || '').trim();
+    }
+
+    function setRemoteUploadSource(editorKey, url) {
+      const key = normalizeEditorKey(editorKey);
+      if (!key) return;
+      const normalizedUrl = String(url || '').trim();
+      if (!normalizedUrl) {
+        delete remoteUploadSources[key];
+      } else {
+        remoteUploadSources[key] = normalizedUrl;
+      }
+      persistRemoteUploadSources();
+      updateUploadRefreshButtonState();
+    }
+
+    function updateUploadGistButtonState() {
+      const savedUrl = getRemoteUploadSource(activeTab);
+      const gistSource = parseGistSource(savedUrl);
+      const hasToken = !!getGithubTokenValue();
+      const verified = isGithubTokenVerified();
+      const hasGistSource = !!gistSource;
+      btnUploadGist.classList.toggle('hidden', !hasGistSource);
+
+      if (!hasGistSource) {
+        btnUploadGist.disabled = true;
+        btnUploadGist.title = 'Load this tab from a GitHub gist URL first.';
+        return;
+      }
+
+      btnUploadGist.disabled = false;
+      btnUploadGist.title = !hasToken
+        ? 'Set a GitHub token in Settings > Integrations to update this gist.'
+        : (verified
+          ? `Update gist ${gistSource.gistId} from ${getEditorLabel(activeTab)}`
+          : 'Verify your GitHub token in Settings > Integrations to update this gist.');
+    }
+
+    function updateUploadRefreshButtonState() {
+      const savedUrl = getRemoteUploadSource(activeTab);
+      const hasSavedUrl = !!savedUrl;
+      btnUploadRefresh.disabled = !hasSavedUrl;
+      btnUploadRefresh.title = hasSavedUrl
+        ? `Refresh ${getEditorLabel(activeTab)} from saved URL`
+        : 'No saved URL for this tab yet';
+      updateUploadGistButtonState();
+    }
+
+    function setUploadMenuOpen(nextOpen) {
+      const shouldOpen = !!nextOpen;
+      if (shouldOpen) {
+        uploadUrlInput.value = getRemoteUploadSource(activeTab);
+      }
+      uploadMenu.classList.toggle('open', shouldOpen);
+      btnUpload.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+    }
+
+    function closeUploadMenu() {
+      setUploadMenuOpen(false);
+    }
+
+    async function fetchPublicText(url, options = {}) {
+      const trimmed = String(url || '').trim();
+      if (!trimmed) throw new Error('Enter a public URL first.');
+      let parsedUrl = null;
+      try {
+        parsedUrl = new URL(trimmed);
+      } catch (err) {
+        throw new Error('Invalid URL.');
+      }
+      if (!/^https?:$/.test(parsedUrl.protocol)) {
+        throw new Error('Only http:// or https:// URLs are supported.');
+      }
+      const targetTab = normalizeEditorKey(options.tab || activeTab) || activeTab;
+      const githubToken = isGithubTokenVerified() ? getGithubTokenValue() : '';
+
+      const gistSource = parseGistSource(parsedUrl.toString());
+      if (gistSource) {
+        let gistPayload = null;
+        try {
+          gistPayload = await fetchGistData(gistSource, githubToken);
+        } catch (err) {
+          const likelyPrivate = (err && (err.githubStatus === 401 || err.githubStatus === 403 || err.githubStatus === 404));
+          if (likelyPrivate && !isGithubTokenVerified()) {
+            throw new Error('Private GitHub gist URLs require a verified GitHub token (Settings > Integrations).');
+          }
+          throw err;
+        }
+        const fileName = resolveGistFileName(gistPayload.files, gistSource, targetTab);
+        const gistFile = gistPayload.files[fileName];
+        if (!gistFile) {
+          throw new Error(`Gist file "${fileName}" is unavailable.`);
+        }
+        if (typeof gistFile.content === 'string') {
+          return gistFile.content;
+        }
+        if (gistFile.raw_url) {
+          const rawResponse = await fetch(gistFile.raw_url, {
+            cache: 'no-store',
+            headers: getGithubHeaders(githubToken, false),
+          });
+          if (!rawResponse.ok) {
+            throw new Error(`Gist raw file fetch failed (${rawResponse.status}).`);
+          }
+          return await rawResponse.text();
+        }
+        throw new Error(`Gist file "${fileName}" has no text content.`);
+      }
+
+      const githubRepoSource = parseGithubRepoFileSource(parsedUrl.toString());
+      if (githubRepoSource) {
+        try {
+          return await fetchGithubRepoFileText(githubRepoSource, githubToken);
+        } catch (err) {
+          const likelyPrivate = (err && (err.githubStatus === 401 || err.githubStatus === 403 || err.githubStatus === 404));
+          if (likelyPrivate && !isGithubTokenVerified()) {
+            throw new Error('Private GitHub repo URLs require a verified GitHub token (Settings > Integrations).');
+          }
+          throw err;
+        }
+      }
+
+      const fetchText = async (target) => {
+        const resp = await fetch(target, { cache: 'no-store' });
+        if (!resp.ok) {
+          throw new Error(`Request failed (${resp.status}).`);
+        }
+        return await resp.text();
+      };
+
+      try {
+        return await fetchText(parsedUrl.toString());
+      } catch (primaryErr) {
+        const proxied = `${GOOGLE_PROXY_PREFIX}${parsedUrl.toString().replace(/^https?:\/\//, '')}`;
+        try {
+          return await fetchText(proxied);
+        } catch (proxyErr) {
+          throw new Error(
+            `Could not fetch URL directly or via proxy. Check public access/CORS. (${primaryErr.message || primaryErr})`,
+          );
+        }
+      }
+    }
+
+    async function loadEditorFromPublicUrl(url, options = {}) {
+      const targetTab = normalizeEditorKey(options.tab || activeTab);
+      if (!targetTab || !editors[targetTab]) {
+        throw new Error('No editable tab selected.');
+      }
+      const normalizedUrl = String(url || '').trim();
+      if (!normalizedUrl) throw new Error('Enter a public URL first.');
+
+      setStatus(`Fetching ${getEditorLabel(targetTab)} from URL...`, 'compiling');
+      const text = await fetchPublicText(normalizedUrl, { tab: targetTab });
+      setEditorContent(targetTab, text);
+      if (targetTab === 'resume') markResumeCustomized(true);
+      setRemoteUploadSource(targetTab, normalizedUrl);
+      setStatus(`Loaded ${getEditorLabel(targetTab)} from URL.`, 'ready');
+    }
+
+    async function updateGistFromEditorSource(editorKey = activeTab) {
+      const targetTab = normalizeEditorKey(editorKey);
+      if (!targetTab || !editors[targetTab]) {
+        throw new Error('No editable tab selected.');
+      }
+
+      const sourceUrl = getRemoteUploadSource(targetTab);
+      const gistSource = parseGistSource(sourceUrl);
+      if (!gistSource) {
+        throw new Error(`No GitHub gist source saved for ${getEditorLabel(targetTab)}.`);
+      }
+
+      const token = getGithubTokenValue();
+      if (!token) {
+        throw new Error('Set a GitHub token in Settings > Integrations first.');
+      }
+      if (!isGithubTokenVerified()) {
+        throw new Error('Verify your GitHub token in Settings > Integrations first.');
+      }
+
+      const gistPayload = await fetchGistData(gistSource, token);
+      const fileName = resolveGistFileName(gistPayload.files, gistSource, targetTab);
+      const currentContent = editors[targetTab].getValue();
+
+      const response = await fetch(gistSource.apiUrl, {
+        method: 'PATCH',
+        headers: getGithubHeaders(token, true),
+        body: JSON.stringify({
+          files: {
+            [fileName]: { content: currentContent },
+          },
+        }),
+      });
+      if (!response.ok) {
+        const detail = await extractGithubErrorMessage(response);
+        throw new Error(detail ? `GitHub gist update failed: ${detail}` : `GitHub gist update failed (${response.status}).`);
+      }
+      return { fileName, gistId: gistSource.gistId };
+    }
+
+    function getDefaultAiModel(provider = getAiProvider()) {
+      if (!provider || provider === 'disabled') return '';
+      return AI_PROVIDER_CONFIG[provider]?.defaultModel || '';
+    }
+
+    function ensureAiModelForProvider(force = false) {
+      const provider = getAiProvider();
+      if (provider === 'disabled') {
+        if (force) aiModel.value = '';
+        return;
+      }
+      if (force || !getAiModelValue()) {
+        aiModel.value = getDefaultAiModel(provider);
+      }
+    }
+
+    function normalizeAiProviderValue(raw) {
+      const value = String(raw || '').trim().toLowerCase();
+      if (Object.prototype.hasOwnProperty.call(AI_PROVIDER_CONFIG, value)) return value;
+      return 'disabled';
+    }
+
+    function getActiveConfigEditorKey() {
+      return getModeVariant() === 'short' ? 'config-short' : 'config';
+    }
+
+    function getActiveConfigEditor() {
+      return editors[getActiveConfigEditorKey()];
+    }
+
+    function splitYamlLines(source) {
+      return String(source || '').split(/\r?\n/);
+    }
+
+    function findTopLevelSectionBounds(lines, sectionName) {
+      const sectionPattern = new RegExp(`^${sectionName}\\s*:\\s*(?:#.*)?$`);
+      const topLevelPattern = /^[A-Za-z0-9_-]+\s*:\s*(?:#.*)?$/;
+      let start = -1;
+      for (let i = 0; i < lines.length; i += 1) {
+        if (sectionPattern.test(lines[i].trim())) {
+          start = i;
+          break;
+        }
+      }
+      if (start < 0) return { start: -1, end: lines.length };
+      let end = lines.length;
+      for (let i = start + 1; i < lines.length; i += 1) {
+        if (topLevelPattern.test(lines[i].trim())) {
+          end = i;
+          break;
+        }
+      }
+      return { start, end };
+    }
+
+    function stripInlineYamlComment(value) {
+      const input = String(value || '');
+      let output = '';
+      let inSingle = false;
+      let inDouble = false;
+      for (let i = 0; i < input.length; i += 1) {
+        const ch = input[i];
+        if (ch === "'" && !inDouble) {
+          inSingle = !inSingle;
+          output += ch;
+          continue;
+        }
+        if (ch === '"' && !inSingle) {
+          inDouble = !inDouble;
+          output += ch;
+          continue;
+        }
+        if (ch === '#' && !inSingle && !inDouble) break;
+        output += ch;
+      }
+      return output.trim();
+    }
+
+    function unquoteYamlScalar(value) {
+      const text = stripInlineYamlComment(value);
+      if ((text.startsWith('"') && text.endsWith('"')) || (text.startsWith("'") && text.endsWith("'"))) {
+        return text.slice(1, -1);
+      }
+      return text;
+    }
+
+    function escapeForRegex(raw) {
+      return String(raw).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    function getYamlSectionFieldRaw(yamlText, sectionName, keyName) {
+      const lines = splitYamlLines(yamlText);
+      const { start, end } = findTopLevelSectionBounds(lines, sectionName);
+      if (start < 0) return null;
+      const fieldPattern = new RegExp(`^\\s{2}${escapeForRegex(keyName)}\\s*:\\s*(.*)$`);
+      for (let i = start + 1; i < end; i += 1) {
+        const match = lines[i].match(fieldPattern);
+        if (match) return stripInlineYamlComment(match[1]);
+      }
+      return null;
+    }
+
+    function setYamlSectionFieldValue(yamlText, sectionName, keyName, valueLiteral) {
+      const lines = splitYamlLines(yamlText);
+      const sectionHeader = `${sectionName}:`;
+      const { start, end } = findTopLevelSectionBounds(lines, sectionName);
+      const nextLine = `  ${keyName}: ${valueLiteral}`;
+
+      if (start < 0) {
+        if (lines.length > 0 && lines[lines.length - 1].trim() !== '') lines.push('');
+        lines.push(sectionHeader);
+        lines.push(nextLine);
+        return lines.join('\n');
+      }
+
+      const fieldPattern = new RegExp(`^\\s{2}${escapeForRegex(keyName)}\\s*:\\s*(.*)$`);
+      for (let i = start + 1; i < end; i += 1) {
+        if (fieldPattern.test(lines[i])) {
+          lines[i] = nextLine;
+          return lines.join('\n');
+        }
+      }
+
+      lines.splice(end, 0, nextLine);
+      return lines.join('\n');
+    }
+
+    function yamlQuotedString(value) {
+      return `"${String(value || '').replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`;
+    }
+
+    function parseYamlBoolean(rawValue) {
+      if (rawValue == null) return null;
+      const normalized = stripInlineYamlComment(rawValue).toLowerCase();
+      if (normalized === 'true') return true;
+      if (normalized === 'false') return false;
+      return null;
+    }
+
+    function syncConfigControlsFromActiveConfig() {
+      const configEditor = getActiveConfigEditor();
+      if (!configEditor) return;
+      const configText = configEditor.getValue();
+
+      const linkBehavior = unquoteYamlScalar(getYamlSectionFieldRaw(configText, 'visibility', 'links_disabled_behavior'));
+      if (linkBehavior === 'label' || linkBehavior === 'label_with_url') {
+        setSelectValue(overrideLinksDisabledBehavior, linkBehavior, 'label');
+      }
+
+      const showPubNumbers = parseYamlBoolean(getYamlSectionFieldRaw(configText, 'visibility', 'show_publication_numbers'));
+      if (showPubNumbers === true || showPubNumbers === false) {
+        setSelectValue(overridePubnums, showPubNumbers ? 'on' : 'off', 'off');
+      }
+
+      const contactMode = unquoteYamlScalar(getYamlSectionFieldRaw(configText, 'styling', 'contact_display_mode'));
+      if (contactMode === 'label' || contactMode === 'icon_label') {
+        setSelectValue(overrideContact, contactMode, 'icon_label');
+      }
+
+      const fontValue = unquoteYamlScalar(getYamlSectionFieldRaw(configText, 'fonts', 'font'));
+      if (fontValue && Array.from(overrideFont.options).some((option) => option.value === fontValue)) {
+        setSelectValue(overrideFont, fontValue, overrideFont.options[0]?.value || '');
+      }
+
+      const monoFontValue = unquoteYamlScalar(getYamlSectionFieldRaw(configText, 'fonts', 'mono_font'));
+      if (monoFontValue && Array.from(overrideMonoFont.options).some((option) => option.value === monoFontValue)) {
+        setSelectValue(overrideMonoFont, monoFontValue, overrideMonoFont.options[0]?.value || '');
+      }
+
+      refreshCustomSelects();
+    }
+
+    function updateActiveConfigFromControls(controlName) {
+      const editorKey = getActiveConfigEditorKey();
+      const configEditor = editors[editorKey];
+      if (!configEditor) return;
+
+      let section = '';
+      let key = '';
+      let valueLiteral = '';
+
+      if (controlName === 'links_disabled_behavior') {
+        section = 'visibility';
+        key = 'links_disabled_behavior';
+        valueLiteral = yamlQuotedString(overrideLinksDisabledBehavior.value);
+      } else if (controlName === 'show_publication_numbers') {
+        section = 'visibility';
+        key = 'show_publication_numbers';
+        valueLiteral = overridePubnums.value === 'on' ? 'true' : 'false';
+      } else if (controlName === 'contact_display_mode') {
+        section = 'styling';
+        key = 'contact_display_mode';
+        valueLiteral = yamlQuotedString(overrideContact.value);
+      } else if (controlName === 'font') {
+        section = 'fonts';
+        key = 'font';
+        valueLiteral = yamlQuotedString(overrideFont.value);
+      } else if (controlName === 'mono_font') {
+        section = 'fonts';
+        key = 'mono_font';
+        valueLiteral = yamlQuotedString(overrideMonoFont.value);
+      } else {
+        return;
+      }
+
+      const current = configEditor.getValue();
+      const next = setYamlSectionFieldValue(current, section, key, valueLiteral);
+      if (next === current) return;
+      setEditorContent(editorKey, next);
+      syncConfigControlsFromActiveConfig();
+    }
+
+    function isDefaultResumeContent(text) {
+      const normalized = String(text || '').trim();
+      return normalized === String(defaultResumeBySource.resume || '').trim()
+        || normalized === String(defaultResumeBySource.bibtex || '').trim();
+    }
+
+    function markResumeCustomized(nextValue = true) {
+      resumeCustomized = !!nextValue;
+      localStorage.setItem(LS_RESUME_CUSTOMIZED, resumeCustomized ? '1' : '0');
+    }
+
+    function maybeApplyDefaultResumeForSource(nextSource) {
+      if (resumeCustomized) return false;
+      const modeSource = nextSource === 'bibtex' ? 'bibtex' : 'resume';
+      const nextDefault = defaultResumeBySource[modeSource] || '';
+      if (!nextDefault) return false;
+      if (String(cmResume.getValue() || '').trim() === String(nextDefault).trim()) return false;
+      setEditorContent('resume', nextDefault);
+      markResumeCustomized(false);
+      return true;
+    }
+
+    function resumeHasBibtexLinkedEntries(resumeYamlText) {
+      return /^\s*bib_key\s*:/m.test(String(resumeYamlText || ''));
+    }
+
+    function isAiConfigured() {
+      return getAiProvider() !== 'disabled' && !!getAiModelValue() && !!getAiApiKeyValue();
+    }
+
+    function updateAiActionButtons() {
+      const hasOutput = hasGeneratedAiOutput();
+      const verified = isAiSettingsVerified();
+      updateAiOutputPanelVisibility();
+      updateAiOutputViewAvailability();
+      ensureValidResumeCompileSource();
+      btnAiGenerate.disabled = aiInFlight || aiVerifyInFlight || !isAiConfigured() || !verified;
+      btnAiCopy.disabled = aiInFlight || aiVerifyInFlight || !hasOutput || !verified;
+      btnAiCopy.classList.toggle('hidden', !hasOutput || !verified);
+      if (resumeUseGeneratedRow) {
+        resumeUseGeneratedRow.classList.toggle('hidden', !hasOutput || !verified);
+      }
+      if (btnAiVerify) {
+        btnAiVerify.disabled = aiInFlight || aiVerifyInFlight;
+      }
+      if (resumeUseGenerated) {
+        resumeUseGenerated.disabled = aiInFlight || aiVerifyInFlight || !hasOutput || !verified;
+      }
+      updateResumeEditorSurface();
+    }
+
+    function bytesToBase64Url(bytes) {
+      let binary = '';
+      const chunkSize = 0x8000;
+      for (let i = 0; i < bytes.length; i += chunkSize) {
+        const chunk = bytes.subarray(i, i + chunkSize);
+        binary += String.fromCharCode(...chunk);
+      }
+      return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
+    }
+
+    function base64UrlToBytes(base64Url) {
+      const normalized = String(base64Url || '').replace(/-/g, '+').replace(/_/g, '/');
+      const padded = normalized + '==='.slice((normalized.length + 3) % 4);
+      const binary = atob(padded);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i += 1) {
+        bytes[i] = binary.charCodeAt(i);
+      }
+      return bytes;
+    }
+
+    async function encodeSharePayload(statePayload) {
+      const rawJson = JSON.stringify({ version: 1, state: statePayload });
+      const rawBytes = new TextEncoder().encode(rawJson);
+      if (typeof CompressionStream === 'function') {
+        const compressedStream = new Blob([rawBytes]).stream().pipeThrough(new CompressionStream('gzip'));
+        const compressedArrayBuffer = await new Response(compressedStream).arrayBuffer();
+        return `gz.${bytesToBase64Url(new Uint8Array(compressedArrayBuffer))}`;
+      }
+      return `raw.${bytesToBase64Url(rawBytes)}`;
+    }
+
+    async function decodeSharePayload(token) {
+      const rawToken = String(token || '').trim();
+      if (!rawToken) throw new Error('Missing share state token.');
+      const [encoding, encoded] = rawToken.split('.', 2);
+      if (!encoding || !encoded) throw new Error('Malformed share token.');
+      const bytes = base64UrlToBytes(encoded);
+      let jsonText = '';
+      if (encoding === 'gz') {
+        if (typeof DecompressionStream !== 'function') {
+          throw new Error('This browser cannot read compressed share links.');
+        }
+        const decompressed = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
+        const arrayBuffer = await new Response(decompressed).arrayBuffer();
+        jsonText = new TextDecoder().decode(arrayBuffer);
+      } else if (encoding === 'raw') {
+        jsonText = new TextDecoder().decode(bytes);
+      } else {
+        throw new Error('Unsupported share token format.');
+      }
+      const parsed = JSON.parse(jsonText);
+      if (!parsed || typeof parsed !== 'object' || !parsed.state) {
+        throw new Error('Invalid share state payload.');
+      }
+      return parsed.state;
+    }
+
+    function extractShareTokenFromUrl(urlObject, depth = 0) {
+      if (!(urlObject instanceof URL)) return '';
+      if (depth > 3) return '';
+
+      const resolveCandidate = (rawValue) => {
+        const candidate = String(rawValue || '').trim();
+        if (!candidate) return '';
+        if (/^(gz|raw)\.[A-Za-z0-9_-]+$/.test(candidate)) {
+          return candidate;
+        }
+        if (depth >= 3) return '';
+        try {
+          const nestedUrl = new URL(candidate, window.location.href);
+          return extractShareTokenFromUrl(nestedUrl, depth + 1);
+        } catch (err) {
+          return '';
+        }
+      };
+
+      const queryKeys = [URL_STATE_PARAM, 'content', 'query', 'q'];
+      for (const key of queryKeys) {
+        const token = resolveCandidate(urlObject.searchParams.get(key));
+        if (token) return token;
+      }
+
+      const hash = String(urlObject.hash || '').replace(/^#/, '').trim();
+      if (!hash) return '';
+
+      const hashParams = new URLSearchParams(hash);
+      for (const key of queryKeys) {
+        const token = resolveCandidate(hashParams.get(key));
+        if (token) return token;
+      }
+      if (hash.startsWith('s=')) return resolveCandidate(hash.slice(2));
+      if (hash.startsWith(`${URL_STATE_PARAM}=`)) return resolveCandidate(hash.slice(URL_STATE_PARAM.length + 1));
+      return resolveCandidate(hash);
+    }
+
+    function buildShareStateObject(options = {}) {
+      const includeAiKey = options.includeAiKey === true;
+      return {
+        editors: {
+          resume: cmResume.getValue(),
+          config: cmConfig.getValue(),
+          configShort: cmConfigShort.getValue(),
+          bib: cmBib.getValue(),
+        },
+        preferences: {
+          paper: paperSize.value,
+          variant: getModeVariant(),
+          source: getModeSource(),
+          linkMode: getModeLinkMode(),
+          compileMode: getCompileMode(),
+          resumeCompileSource: getResumeCompileSource(),
+          resumeView: getResumeEditorView(),
+          activeTab,
+          mobileView: getMobileView(),
+          linksDisabledBehavior: overrideLinksDisabledBehavior.value,
+          pubnums: overridePubnums.value,
+          contact: overrideContact.value,
+          font: overrideFont.value,
+          monoFont: overrideMonoFont.value,
+          paneWidth: getComputedStyle(mainContainer).getPropertyValue('--editor-pane-width').trim(),
+          panelOverridesOpen: !!panelOverrides.open,
+          panelAiSettingsOpen: !!panelAiSettings.open,
+          panelIntegrationsOpen: !!panelIntegrations.open,
+          panelAiJdOpen: !!aiJdPanel.open,
+        },
+        ai: {
+          provider: getAiProvider(),
+          model: getAiModelValue(),
+          apiKey: includeAiKey ? getAiApiKeyValue() : '',
+          verified: isAiSettingsVerified(),
+          webSearch: !!aiWebSearch.checked,
+          prompt: String(aiUserPrompt.value || ''),
+          jobDescription: String(aiJobDescription.value || ''),
+          output: String(getAiOutputValue() || ''),
+        },
+      };
+    }
+
+    function setEditorsFromState(editorsState) {
+      const normalized = editorsState && typeof editorsState === 'object' ? editorsState : {};
+      suppressHistoryTracking = true;
+      cmResume.setValue(typeof normalized.resume === 'string' ? normalized.resume : cmResume.getValue());
+      cmConfig.setValue(typeof normalized.config === 'string' ? normalized.config : cmConfig.getValue());
+      cmConfigShort.setValue(
+        typeof normalized.configShort === 'string' ? normalized.configShort : cmConfigShort.getValue(),
+      );
+      cmBib.setValue(typeof normalized.bib === 'string' ? normalized.bib : cmBib.getValue());
+      suppressHistoryTracking = false;
+
+      editorHistories.resume = createDefaultHistory(cmResume.getValue());
+      editorHistories.config = createDefaultHistory(cmConfig.getValue());
+      editorHistories['config-short'] = createDefaultHistory(cmConfigShort.getValue());
+      editorHistories.bib = createDefaultHistory(cmBib.getValue());
+
+      localStorage.setItem(LS_RESUME, cmResume.getValue());
+      localStorage.setItem(LS_CONFIG, cmConfig.getValue());
+      localStorage.setItem(LS_CONFIG_SHORT, cmConfigShort.getValue());
+      localStorage.setItem(LS_BIB, cmBib.getValue());
+      queuePersistHistories();
+    }
+
+    function applyPreferencesFromState(preferencesState) {
+      const prefs = preferencesState && typeof preferencesState === 'object' ? preferencesState : {};
+      setModeVariant(prefs.variant || getModeVariant());
+      setModeSource(prefs.source || getModeSource());
+      setModeLinkMode(prefs.linkMode || getModeLinkMode());
+      setCompileMode(prefs.compileMode || getCompileMode());
+      setResumeCompileSource(prefs.resumeCompileSource || getResumeCompileSource(), { persist: false });
+      setResumeEditorView(prefs.resumeView || getResumeEditorView(), { persist: false });
+      const requestedMobileView = prefs.mobileView || getMobileView();
+      setMobileView(window.innerWidth <= DESKTOP_SPLIT_BREAKPOINT ? 'editor' : requestedMobileView);
+      if (prefs.paper === 'a4' || prefs.paper === 'letter') {
+        paperSize.value = prefs.paper;
+      }
+      const paneWidthRaw = typeof prefs.paneWidth === 'string' ? prefs.paneWidth.trim() : '';
+      if (paneWidthRaw.endsWith('%')) {
+        applyEditorPaneWidth(paneWidthRaw.slice(0, -1), false);
+      } else if (paneWidthRaw) {
+        applyEditorPaneWidth(paneWidthRaw, false);
+      }
+      if (typeof prefs.panelOverridesOpen === 'boolean' || prefs.panelOverridesOpen === '1' || prefs.panelOverridesOpen === '0') {
+        setDetailsOpen(panelOverrides, prefs.panelOverridesOpen === true || prefs.panelOverridesOpen === '1');
+      }
+      if (typeof prefs.panelAiSettingsOpen === 'boolean' || prefs.panelAiSettingsOpen === '1' || prefs.panelAiSettingsOpen === '0') {
+        setDetailsOpen(panelAiSettings, prefs.panelAiSettingsOpen === true || prefs.panelAiSettingsOpen === '1');
+      }
+      if (typeof prefs.panelIntegrationsOpen === 'boolean' || prefs.panelIntegrationsOpen === '1' || prefs.panelIntegrationsOpen === '0') {
+        setDetailsOpen(panelIntegrations, prefs.panelIntegrationsOpen === true || prefs.panelIntegrationsOpen === '1');
+      }
+      if (typeof prefs.panelAiJdOpen === 'boolean' || prefs.panelAiJdOpen === '1' || prefs.panelAiJdOpen === '0') {
+        setDetailsOpen(aiJdPanel, prefs.panelAiJdOpen === true || prefs.panelAiJdOpen === '1');
+      }
+      if (typeof prefs.activeTab === 'string' && Object.prototype.hasOwnProperty.call(containers, prefs.activeTab)) {
+        activeTab = prefs.activeTab;
+      }
+    }
+
+    function applyAiState(aiState) {
+      const ai = aiState && typeof aiState === 'object' ? aiState : {};
+      const provider = normalizeAiProviderValue(ai.provider);
+      setSelectValue(aiProvider, provider, 'disabled');
+      const defaultModel = getDefaultAiModel(getAiProvider());
+      aiModel.value = typeof ai.model === 'string' ? ai.model : defaultModel;
+      aiApiKey.value = typeof ai.apiKey === 'string' ? ai.apiKey : '';
+      aiWebSearch.checked = ai.webSearch !== false;
+      aiUserPrompt.value = typeof ai.prompt === 'string' ? ai.prompt : AI_DEFAULT_PROMPT;
+      aiJobDescription.value = typeof ai.jobDescription === 'string' ? ai.jobDescription : '';
+      setAiOutputValue(typeof ai.output === 'string' ? ai.output : '');
+      const isVerified = ai.verified === true || ai.verified === '1';
+      setAiSettingsVerified(isVerified && isAiConfigured(), { persist: false });
+      setAiVerifyStatus(isAiSettingsVerified() ? 'AI settings verified.' : 'Not verified.', isAiSettingsVerified() ? 'success' : '');
+      updateShareMenuVisibility();
+      updateAiActionButtons();
+    }
+
+    function applyShareState(statePayload, options = {}) {
+      const state = statePayload && typeof statePayload === 'object' ? statePayload : {};
+      const shouldScheduleCompile = options.scheduleCompile !== false;
+      setEditorsFromState(state.editors);
+      applyPreferencesFromState(state.preferences);
+      applyAiState(state.ai);
+      refreshCustomSelects();
+      updateTabVisibility();
+      syncConfigControlsFromActiveConfig();
+      markResumeCustomized(!isDefaultResumeContent(cmResume.getValue()));
+      lastSourceSelection = getModeSource();
+      updateBibHealthStatus(true);
+      updateCompileControlsUI();
+      persistPreferences();
+      updateAiActionButtons();
+      if (shouldScheduleCompile) scheduleCompile();
+    }
+
+    async function buildShareUrl(options = {}) {
+      const payload = buildShareStateObject(options);
+      const token = await encodeSharePayload(payload);
+      const url = new URL(window.location.href);
+      url.searchParams.set(URL_STATE_PARAM, token);
+      url.hash = '';
+      return url.toString();
+    }
+
+    async function copyShareUrlToClipboard(options = {}) {
+      const shareUrl = await buildShareUrl(options);
+      if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+        await navigator.clipboard.writeText(shareUrl);
+      } else {
+        window.prompt('Copy share URL', shareUrl);
+      }
+      history.replaceState(null, '', shareUrl);
+      return shareUrl;
+    }
+
+    async function loadShareStateFromToken(token, options = {}) {
+      const state = await decodeSharePayload(token);
+      applyShareState(state, options);
+      return state;
+    }
+
+    async function tryLoadShareStateFromLocation(options = {}) {
+      const url = new URL(window.location.href);
+      const token = extractShareTokenFromUrl(url);
+      if (!token) return false;
+      await loadShareStateFromToken(token, options);
+      return true;
     }
 
     function updateSupportedKeysContent() {
@@ -1812,8 +4552,52 @@ section_order:
       return Math.max(MIN_EDITOR_WIDTH, Math.min(MAX_EDITOR_WIDTH, numeric));
     }
 
+    function normalizeResumeEditorView(value) {
+      return value === 'ai' ? 'ai' : 'original';
+    }
+
+    function getResumeEditorView() {
+      return normalizeResumeEditorView(resumeEditorView);
+    }
+
+    function setResumeEditorView(value, options = {}) {
+      resumeEditorView = normalizeResumeEditorView(value);
+      updateResumeEditorSurface();
+      if (options.persist !== false) {
+        persistPreferences();
+      }
+    }
+
+    function updateResumeViewToggleUI() {
+      const isOriginal = getResumeEditorView() === 'original';
+      btnResumeViewOriginal.classList.toggle('active', isOriginal);
+      btnResumeViewOriginal.setAttribute('aria-pressed', isOriginal ? 'true' : 'false');
+      btnResumeViewAi.classList.toggle('active', !isOriginal);
+      btnResumeViewAi.setAttribute('aria-pressed', isOriginal ? 'false' : 'true');
+    }
+
+    function updateResumeEditorSurface() {
+      const onResumeTab = activeTab === 'resume';
+      const aiViewActive = onResumeTab && getResumeEditorView() === 'ai';
+      const showAiEditor = aiViewActive && isAiSettingsVerified() && hasGeneratedAiOutput() && getAiOutputViewMode() === 'variant';
+      const showAiPlaceholder = aiViewActive && isAiSettingsVerified() && !hasGeneratedAiOutput();
+
+      resumeViewToggle.classList.toggle('hidden', !onResumeTab);
+      resumeAiWorkspace.classList.toggle('hidden', !aiViewActive);
+      updateResumeViewToggleUI();
+
+      containers.resume.classList.toggle('hidden', !onResumeTab || aiViewActive);
+      aiOutputContainer.classList.toggle('hidden', !showAiEditor);
+      aiOutputPlaceholder.classList.toggle('hidden', !showAiPlaceholder);
+
+      if (showAiEditor) {
+        cmAiOutput.refresh();
+      }
+    }
+
     function refreshAllEditors() {
       Object.values(editors).forEach((editor) => editor.refresh());
+      cmAiOutput.refresh();
     }
 
     function applyEditorPaneWidth(value, persist = true, refresh = true) {
@@ -1885,12 +4669,22 @@ section_order:
 
     function updateTabScopedUI() {
       const onBibTab = activeTab === 'bib';
+      const onResumeTab = activeTab === 'resume';
       document.querySelectorAll('.tab-bib-only').forEach((el) => {
         el.classList.toggle('visible', onBibTab);
       });
       bibImportPanel.classList.toggle('hidden', !onBibTab);
+      btnUpload.disabled = false;
+      btnUpload.title = 'Upload options';
+      updateUploadRefreshButtonState();
       updateSupportedKeysContent();
       if (onBibTab) updateBibHealthStatus();
+      updateAiActionButtons();
+      updateResumeEditorSurface();
+      if (onResumeTab) {
+        cmAiOutput.refresh();
+        renderAiDiffView();
+      }
     }
 
     function updateBibImportPlaceholder() {
@@ -2092,6 +4886,26 @@ section_order:
     document.addEventListener('keydown', (event) => {
       handleGlobalUndoRedoShortcut(event);
       if (event.key === 'Escape' && pendingConfirmResolve) closeConfirmDialog(false);
+      if (event.key === 'Escape' && shareMenu.classList.contains('open')) closeShareMenu();
+      if (event.key === 'Escape' && uploadMenu.classList.contains('open')) closeUploadMenu();
+      if (event.key === 'Escape' && settingsFlyout.classList.contains('open')) setSettingsFlyoutOpen(false);
+    });
+
+    document.addEventListener('click', (event) => {
+      if (!shareMenu.contains(event.target)) {
+        closeShareMenu();
+      }
+      if (!uploadMenu.contains(event.target)) {
+        closeUploadMenu();
+      }
+      if (
+        settingsFlyout.classList.contains('open')
+        && !settingsFlyout.contains(event.target)
+        && event.target !== btnSettings
+        && !btnSettings.contains(event.target)
+      ) {
+        setSettingsFlyoutOpen(false);
+      }
     });
 
     enhanceAllSelects();
@@ -2168,6 +4982,7 @@ section_order:
       localStorage.setItem(LS_OVERRIDE_SOURCE, getModeSource());
       localStorage.setItem(LS_OVERRIDE_LINK_MODE, getModeLinkMode());
       localStorage.setItem(LS_COMPILE_MODE, getCompileMode());
+      localStorage.setItem(LS_RESUME_COMPILE_SOURCE, getResumeCompileSource());
       localStorage.setItem(LS_OVERRIDE_MODE_LEGACY, getSelectedMode());
       localStorage.setItem(LS_OVERRIDE_LINKS_DISABLED_BEHAVIOR, overrideLinksDisabledBehavior.value);
       localStorage.setItem(LS_OVERRIDE_PUBNUMS, overridePubnums.value);
@@ -2176,6 +4991,21 @@ section_order:
       localStorage.setItem(LS_OVERRIDE_MONO_FONT, overrideMonoFont.value);
       localStorage.setItem(LS_ACTIVE_TAB, activeTab);
       localStorage.setItem(LS_MOBILE_VIEW, getMobileView());
+      localStorage.setItem(LS_AI_PROVIDER, getAiProvider());
+      localStorage.setItem(LS_AI_MODEL, aiModel.value);
+      localStorage.setItem(LS_AI_API_KEY, aiApiKey.value);
+      localStorage.setItem(LS_GITHUB_TOKEN, getGithubTokenValue());
+      localStorage.setItem(LS_GITHUB_VERIFIED, isGithubTokenVerified() ? '1' : '0');
+      localStorage.setItem(LS_AI_WEB_SEARCH, aiWebSearch.checked ? '1' : '0');
+      localStorage.setItem(LS_AI_USER_PROMPT, aiUserPrompt.value);
+      localStorage.setItem(LS_AI_JOB_DESCRIPTION, aiJobDescription.value);
+      localStorage.setItem(LS_AI_OUTPUT, getAiOutputValue());
+      localStorage.setItem(LS_AI_VERIFIED, isAiSettingsVerified() ? '1' : '0');
+      localStorage.setItem(LS_RESUME_VIEW, getResumeEditorView());
+      localStorage.setItem(LS_PANEL_OVERRIDES_OPEN, panelOverrides.open ? '1' : '0');
+      localStorage.setItem(LS_PANEL_AI_SETTINGS_OPEN, panelAiSettings.open ? '1' : '0');
+      localStorage.setItem(LS_PANEL_INTEGRATIONS_OPEN, panelIntegrations.open ? '1' : '0');
+      localStorage.setItem(LS_PANEL_AI_JD_OPEN, aiJdPanel.open ? '1' : '0');
       const computedWidth = getComputedStyle(mainContainer).getPropertyValue('--editor-pane-width').trim();
       if (computedWidth.endsWith('%')) {
         localStorage.setItem(LS_EDITOR_PANE_WIDTH, String(clampEditorPaneWidth(computedWidth.slice(0, -1))));
@@ -2277,6 +5107,11 @@ section_order:
     }
 
     function updateUndoRedoButtons() {
+      if (!editors[activeTab]) {
+        btnUndo.disabled = true;
+        btnRedo.disabled = true;
+        return;
+      }
       btnUndo.disabled = !editorHasUndo(activeTab);
       btnRedo.disabled = !editorHasRedo(activeTab);
     }
@@ -2380,6 +5215,7 @@ section_order:
     tabs.forEach((tab) => {
       tab.addEventListener('click', () => {
         if (tab.classList.contains('hidden')) return;
+        closeUploadMenu();
         activeTab = tab.dataset.tab;
         syncActiveTabView();
         persistPreferences();
@@ -2393,23 +5229,153 @@ section_order:
       });
     });
 
-    const btnUpload = document.getElementById('btn-upload');
-    const fileInput = document.getElementById('file-input');
-    btnUpload.addEventListener('click', () => fileInput.click());
+    btnUpload.addEventListener('click', (event) => {
+      event.preventDefault();
+      setUploadMenuOpen(!uploadMenu.classList.contains('open'));
+    });
+    btnUpload.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowDown' || event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        setUploadMenuOpen(true);
+        btnUploadFile.focus();
+      }
+    });
+    btnUploadFile.addEventListener('click', () => {
+      pendingFileUploadTab = activeTab;
+      closeUploadMenu();
+      fileInput.click();
+    });
+    const onUploadFromUrl = async () => {
+      const sourceUrl = String(uploadUrlInput.value || '').trim();
+      if (!sourceUrl) {
+        setStatus('Paste a public URL to load from.', 'error');
+        uploadUrlInput.focus();
+        return;
+      }
+      const controls = [btnUpload, btnUploadFile, btnUploadUrl, btnUploadRefresh, btnUploadGist];
+      controls.forEach((control) => {
+        control.disabled = true;
+      });
+      try {
+        await loadEditorFromPublicUrl(sourceUrl, { tab: activeTab });
+        closeUploadMenu();
+      } catch (err) {
+        setStatus(`URL upload failed: ${err.message || err}`, 'error');
+      } finally {
+        controls.forEach((control) => {
+          control.disabled = false;
+        });
+      }
+    };
+    btnUploadUrl.addEventListener('click', onUploadFromUrl);
+    uploadUrlInput.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        onUploadFromUrl();
+      }
+    });
+    btnUploadRefresh.addEventListener('click', async () => {
+      const sourceUrl = getRemoteUploadSource(activeTab);
+      if (!sourceUrl) {
+        setStatus(`No saved URL source for ${getEditorLabel(activeTab)}.`, 'error');
+        return;
+      }
+      const accepted = await openConfirmDialog({
+        title: 'Refresh from saved URL?',
+        message: `This will overwrite ${getEditorLabel(activeTab)} with the latest content from the saved URL.`,
+        confirmText: 'Refresh',
+        cancelText: 'Cancel',
+        destructive: true,
+      });
+      if (!accepted) return;
+      const controls = [btnUpload, btnUploadFile, btnUploadUrl, btnUploadRefresh, btnUploadGist];
+      controls.forEach((control) => {
+        control.disabled = true;
+      });
+      try {
+        await loadEditorFromPublicUrl(sourceUrl, { tab: activeTab });
+      } catch (err) {
+        setStatus(`Refresh failed: ${err.message || err}`, 'error');
+      } finally {
+        controls.forEach((control) => {
+          control.disabled = false;
+        });
+        updateUploadRefreshButtonState();
+      }
+    });
+    btnUploadGist.addEventListener('click', async () => {
+      const gistSource = parseGistSource(getRemoteUploadSource(activeTab));
+      if (!gistSource) {
+        setStatus(`No GitHub gist source saved for ${getEditorLabel(activeTab)}.`, 'error');
+        return;
+      }
+      if (!getGithubTokenValue()) {
+        setStatus('Set a GitHub token in Settings > Integrations to update this gist.', 'error');
+        if (!panelIntegrations.open) setDetailsOpen(panelIntegrations, true);
+        setSettingsFlyoutOpen(true);
+        persistPreferences();
+        return;
+      }
+      if (!isGithubTokenVerified()) {
+        setStatus('Verify GitHub token in Settings > Integrations before updating this gist.', 'error');
+        if (!panelIntegrations.open) setDetailsOpen(panelIntegrations, true);
+        setSettingsFlyoutOpen(true);
+        persistPreferences();
+        return;
+      }
+      const accepted = await openConfirmDialog({
+        title: 'Update gist from editor?',
+        message: `This will overwrite the matching gist file for ${getEditorLabel(activeTab)} with your current editor content.`,
+        confirmText: 'Update Gist',
+        cancelText: 'Cancel',
+        destructive: true,
+      });
+      if (!accepted) return;
+      const controls = [btnUpload, btnUploadFile, btnUploadUrl, btnUploadRefresh, btnUploadGist];
+      controls.forEach((control) => {
+        control.disabled = true;
+      });
+      try {
+        setStatus(`Updating gist for ${getEditorLabel(activeTab)}...`, 'compiling');
+        const result = await updateGistFromEditorSource(activeTab);
+        setStatus(`Updated gist ${result.gistId} (${result.fileName}).`, 'ready');
+      } catch (err) {
+        setStatus(`Gist update failed: ${err.message || err}`, 'error');
+      } finally {
+        controls.forEach((control) => {
+          control.disabled = false;
+        });
+        updateUploadRefreshButtonState();
+      }
+    });
     fileInput.addEventListener('change', (e) => {
       const file = e.target.files[0];
-      if (!file) return;
+      if (!file) {
+        pendingFileUploadTab = null;
+        return;
+      }
+      const targetTab = normalizeEditorKey(pendingFileUploadTab) || activeTab;
+      pendingFileUploadTab = null;
+      if (!editors[targetTab]) {
+        fileInput.value = '';
+        return;
+      }
       const reader = new FileReader();
       reader.onload = (ev) => {
         suppressHistoryTracking = true;
-        editors[activeTab].setValue(ev.target.result);
+        editors[targetTab].setValue(ev.target.result);
         suppressHistoryTracking = false;
-        editorHistories[activeTab] = createDefaultHistory(ev.target.result);
-        const contentKey = EDITOR_CONTENT_KEYS[activeTab];
+        if (targetTab === 'resume') {
+          markResumeCustomized(true);
+        }
+        editorHistories[targetTab] = createDefaultHistory(ev.target.result);
+        const contentKey = EDITOR_CONTENT_KEYS[targetTab];
         if (contentKey) localStorage.setItem(contentKey, ev.target.result);
+        setRemoteUploadSource(targetTab, '');
         queuePersistHistories();
         updateUndoRedoButtons();
         scheduleCompile();
+        setStatus(`Loaded ${getEditorLabel(targetTab)} from local file.`, 'ready');
       };
       reader.readAsText(file);
       fileInput.value = '';
@@ -2428,6 +5394,412 @@ section_order:
       queuePersistHistories();
       updateUndoRedoButtons();
       scheduleCompile();
+    }
+
+    function sanitizeAiOutput(rawText) {
+      const value = String(rawText || '').trim();
+      if (!value) return '';
+      const fenced = value.match(/^```(?:yaml|yml)?\s*([\s\S]*?)\s*```$/i);
+      if (fenced) return fenced[1].trim();
+      return value;
+    }
+
+    function normalizeAiMessageContent(content) {
+      if (typeof content === 'string') return content;
+      if (!Array.isArray(content)) return '';
+      return content
+        .map((part) => {
+          if (typeof part === 'string') return part;
+          if (!part || typeof part !== 'object') return '';
+          if (typeof part.text === 'string') return part.text;
+          if (typeof part.output_text === 'string') return part.output_text;
+          return '';
+        })
+        .filter(Boolean)
+        .join('\n')
+        .trim();
+    }
+
+    function extractOpenAiResponsesText(payload) {
+      if (typeof payload?.output_text === 'string' && payload.output_text.trim()) {
+        return payload.output_text.trim();
+      }
+      const output = Array.isArray(payload?.output) ? payload.output : [];
+      const chunks = [];
+      output.forEach((item) => {
+        if (!item || typeof item !== 'object') return;
+        const text = normalizeAiMessageContent(item.content);
+        if (text) chunks.push(text);
+      });
+      return chunks.join('\n').trim();
+    }
+
+    function extractChatCompletionsText(payload) {
+      const firstChoice = Array.isArray(payload?.choices) ? payload.choices[0] : null;
+      if (!firstChoice || !firstChoice.message) return '';
+      return normalizeAiMessageContent(firstChoice.message.content);
+    }
+
+    function extractGeminiText(payload) {
+      const firstCandidate = Array.isArray(payload?.candidates) ? payload.candidates[0] : null;
+      const parts = firstCandidate?.content?.parts;
+      if (!Array.isArray(parts)) return '';
+      return parts
+        .map((part) => (typeof part?.text === 'string' ? part.text : ''))
+        .filter(Boolean)
+        .join('\n')
+        .trim();
+    }
+
+    function extractClaudeText(payload) {
+      const content = Array.isArray(payload?.content) ? payload.content : [];
+      return content
+        .map((part) => (part && part.type === 'text' && typeof part.text === 'string' ? part.text : ''))
+        .filter(Boolean)
+        .join('\n')
+        .trim();
+    }
+
+    async function fetchProviderJson(url, init) {
+      const response = await fetch(url, init);
+      const text = await response.text();
+      let payload = null;
+      try {
+        payload = text ? JSON.parse(text) : {};
+      } catch (err) {
+        payload = null;
+      }
+      if (!response.ok) {
+        const message = payload?.error?.message || payload?.message || `Request failed (${response.status})`;
+        throw new Error(message);
+      }
+      if (!payload || typeof payload !== 'object') {
+        throw new Error('Provider returned a non-JSON response.');
+      }
+      return payload;
+    }
+
+    function buildAiUserPrompt() {
+      const focus = String(aiUserPrompt.value || '').trim();
+      const jobDescription = String(aiJobDescription.value || '').trim();
+      const resumeYaml = cmResume.getValue();
+      return `Prompt focus (user):
+${focus || '(none provided)'}
+
+Target job description:
+${jobDescription || '(none provided)'}
+
+Current resume.yml:
+${resumeYaml}
+
+Return YAML only.`;
+    }
+
+    async function callProviderForAiVariant() {
+      const provider = getAiProvider();
+      const model = getAiModelValue();
+      const apiKey = getAiApiKeyValue();
+      const wantsWebSearch = !!aiWebSearch.checked;
+      const systemPrompt = AI_DEFAULT_PROMPT;
+      const userPrompt = buildAiUserPrompt();
+
+      if (provider === 'openai') {
+        const body = {
+          model,
+          input: [
+            {
+              role: 'system',
+              content: [{ type: 'input_text', text: systemPrompt }],
+            },
+            {
+              role: 'user',
+              content: [{ type: 'input_text', text: userPrompt }],
+            },
+          ],
+          temperature: 0.3,
+        };
+        if (wantsWebSearch) {
+          body.tools = [{ type: 'web_search_preview' }];
+        }
+        const payload = await fetchProviderJson('https://api.openai.com/v1/responses', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${apiKey}`,
+          },
+          body: JSON.stringify(body),
+        });
+        return extractOpenAiResponsesText(payload);
+      }
+
+      if (provider === 'gemini') {
+        const body = {
+          contents: [{ role: 'user', parts: [{ text: `${systemPrompt}\n\n${userPrompt}` }] }],
+          generationConfig: { temperature: 0.3 },
+        };
+        if (wantsWebSearch) {
+          body.tools = [{ google_search: {} }];
+        }
+        const payload = await fetchProviderJson(
+          `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(body),
+          },
+        );
+        return extractGeminiText(payload);
+      }
+
+      if (provider === 'openrouter') {
+        const payload = await fetchProviderJson('https://openrouter.ai/api/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${apiKey}`,
+            'HTTP-Referer': window.location.origin,
+            'X-Title': 'Resume Compiler',
+          },
+          body: JSON.stringify({
+            model,
+            messages: [
+              { role: 'system', content: systemPrompt },
+              { role: 'user', content: userPrompt },
+            ],
+            temperature: 0.3,
+          }),
+        });
+        return extractChatCompletionsText(payload);
+      }
+
+      if (provider === 'groq') {
+        const payload = await fetchProviderJson('https://api.groq.com/openai/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${apiKey}`,
+          },
+          body: JSON.stringify({
+            model,
+            messages: [
+              { role: 'system', content: systemPrompt },
+              { role: 'user', content: userPrompt },
+            ],
+            temperature: 0.3,
+          }),
+        });
+        return extractChatCompletionsText(payload);
+      }
+
+      if (provider === 'claude') {
+        const payload = await fetchProviderJson('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': apiKey,
+            'anthropic-version': '2023-06-01',
+            'anthropic-dangerous-direct-browser-access': 'true',
+          },
+          body: JSON.stringify({
+            model,
+            max_tokens: 4000,
+            temperature: 0.3,
+            system: systemPrompt,
+            messages: [{ role: 'user', content: userPrompt }],
+          }),
+        });
+        return extractClaudeText(payload);
+      }
+
+      throw new Error('Unsupported AI provider.');
+    }
+
+    async function callProviderForAiSettingsVerify() {
+      const provider = getAiProvider();
+      const model = getAiModelValue();
+      const apiKey = getAiApiKeyValue();
+      const systemPrompt = 'You are a connectivity check. Reply with OK.';
+      const userPrompt = 'Reply with exactly OK.';
+
+      if (provider === 'openai') {
+        const payload = await fetchProviderJson('https://api.openai.com/v1/responses', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${apiKey}`,
+          },
+          body: JSON.stringify({
+            model,
+            input: [
+              {
+                role: 'system',
+                content: [{ type: 'input_text', text: systemPrompt }],
+              },
+              {
+                role: 'user',
+                content: [{ type: 'input_text', text: userPrompt }],
+              },
+            ],
+            temperature: 0,
+            max_output_tokens: 12,
+          }),
+        });
+        return extractOpenAiResponsesText(payload);
+      }
+
+      if (provider === 'gemini') {
+        const payload = await fetchProviderJson(
+          `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              contents: [{ role: 'user', parts: [{ text: `${systemPrompt}\n\n${userPrompt}` }] }],
+              generationConfig: { temperature: 0, maxOutputTokens: 12 },
+            }),
+          },
+        );
+        return extractGeminiText(payload);
+      }
+
+      if (provider === 'openrouter') {
+        const payload = await fetchProviderJson('https://openrouter.ai/api/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${apiKey}`,
+            'HTTP-Referer': window.location.origin,
+            'X-Title': 'Resume Compiler',
+          },
+          body: JSON.stringify({
+            model,
+            messages: [
+              { role: 'system', content: systemPrompt },
+              { role: 'user', content: userPrompt },
+            ],
+            temperature: 0,
+            max_tokens: 12,
+          }),
+        });
+        return extractChatCompletionsText(payload);
+      }
+
+      if (provider === 'groq') {
+        const payload = await fetchProviderJson('https://api.groq.com/openai/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${apiKey}`,
+          },
+          body: JSON.stringify({
+            model,
+            messages: [
+              { role: 'system', content: systemPrompt },
+              { role: 'user', content: userPrompt },
+            ],
+            temperature: 0,
+            max_tokens: 12,
+          }),
+        });
+        return extractChatCompletionsText(payload);
+      }
+
+      if (provider === 'claude') {
+        const payload = await fetchProviderJson('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': apiKey,
+            'anthropic-version': '2023-06-01',
+            'anthropic-dangerous-direct-browser-access': 'true',
+          },
+          body: JSON.stringify({
+            model,
+            max_tokens: 12,
+            temperature: 0,
+            system: systemPrompt,
+            messages: [{ role: 'user', content: userPrompt }],
+          }),
+        });
+        return extractClaudeText(payload);
+      }
+
+      throw new Error('Unsupported AI provider.');
+    }
+
+    async function verifyAiSettings() {
+      if (!isAiConfigured()) {
+        setAiSettingsVerified(false);
+        setAiVerifyStatus('Set AI provider, model, and API key before verification.', 'error');
+        setStatus('AI settings verification failed: missing provider/model/key.', 'error');
+        return;
+      }
+      const requestId = ++aiVerifyRequestId;
+      aiVerifyInFlight = true;
+      updateAiActionButtons();
+      setAiVerifyStatus('Verifying provider/model/key...');
+      setStatus('Verifying AI settings...', 'compiling');
+      try {
+        const raw = await callProviderForAiSettingsVerify();
+        if (requestId !== aiVerifyRequestId) return;
+        const normalized = sanitizeAiOutput(raw);
+        if (!normalized) {
+          throw new Error('Verification request succeeded but returned empty output.');
+        }
+        setAiSettingsVerified(true);
+        setAiVerifyStatus(`Verified ${AI_PROVIDER_CONFIG[getAiProvider()]?.label || getAiProvider()} settings.`, 'success');
+        setStatus('AI settings verified. Resume AI controls unlocked.', 'ready');
+      } catch (err) {
+        if (requestId !== aiVerifyRequestId) return;
+        setAiSettingsVerified(false);
+        setAiVerifyStatus(`Verification failed: ${err.message || err}`, 'error');
+        setStatus(`AI verification failed: ${err.message || err}`, 'error');
+      } finally {
+        if (requestId === aiVerifyRequestId) {
+          aiVerifyInFlight = false;
+          updateAiActionButtons();
+        }
+      }
+    }
+
+    async function generateAiVariant() {
+      if (!isAiSettingsVerified()) {
+        setAiStatus('Verify AI settings first, then generate a resume variant.', 'error');
+        return;
+      }
+      if (!isAiConfigured()) {
+        setAiStatus('Set AI provider, model, and key first (Resume YAML only).', 'error');
+        return;
+      }
+      const requestId = ++aiRequestId;
+      aiInFlight = true;
+      updateAiActionButtons();
+      setAiStatus('Generating YAML variant...');
+      persistPreferences();
+
+      try {
+        const raw = await callProviderForAiVariant();
+        if (requestId !== aiRequestId) return;
+        const normalized = sanitizeAiOutput(raw);
+        if (!normalized) {
+          throw new Error('Model returned an empty response.');
+        }
+        setAiOutputValue(normalized);
+        setAiStatus('Variant generated. Review, copy, and optionally enable generated compile.', 'success');
+      } catch (err) {
+        if (requestId !== aiRequestId) return;
+        setAiStatus(`AI generation failed: ${err.message || err}`, 'error');
+      } finally {
+        if (requestId === aiRequestId) {
+          aiInFlight = false;
+          updateAiActionButtons();
+          persistPreferences();
+        }
+      }
     }
 
     function normalizeBibKey(raw) {
@@ -2898,21 +6270,36 @@ section_order:
     }
 
     cmResume.on('change', () => {
+      if (!suppressHistoryTracking) {
+        markResumeCustomized(true);
+      }
+      renderAiDiffView();
       scheduleEditorHistorySnapshot('resume');
       scheduleCompile();
     });
     cmConfig.on('change', () => {
       scheduleEditorHistorySnapshot('config');
+      if (getActiveConfigEditorKey() === 'config') {
+        syncConfigControlsFromActiveConfig();
+      }
       scheduleCompile();
     });
     cmConfigShort.on('change', () => {
       scheduleEditorHistorySnapshot('config-short');
+      if (getActiveConfigEditorKey() === 'config-short') {
+        syncConfigControlsFromActiveConfig();
+      }
       scheduleCompile();
     });
     cmBib.on('change', () => {
       scheduleEditorHistorySnapshot('bib');
       scheduleCompile();
       updateBibHealthStatus();
+    });
+    cmAiOutput.on('change', () => {
+      renderAiDiffView();
+      updateAiActionButtons();
+      persistPreferences();
     });
 
     function formatLastUpdatedDate(dateObj = new Date()) {
@@ -2998,23 +6385,6 @@ section_order:
       overrides.variant = getModeVariant() === 'short' ? 'short' : 'long';
       if (getModeLinkMode() === 'no-js') {
         overrides.enable_links = false;
-      }
-      if (overrideLinksDisabledBehavior.value !== 'config') {
-        overrides.links_disabled_behavior = overrideLinksDisabledBehavior.value;
-      }
-      if (overridePubnums.value === 'on') {
-        overrides.show_publication_numbers = true;
-      } else if (overridePubnums.value === 'off') {
-        overrides.show_publication_numbers = false;
-      }
-      if (overrideContact.value !== 'config') {
-        overrides.contact_display_mode = overrideContact.value;
-      }
-      if (overrideFont.value !== 'config') {
-        overrides.font = overrideFont.value;
-      }
-      if (overrideMonoFont.value !== 'config') {
-        overrides.mono_font = overrideMonoFont.value;
       }
 
       return overrides;
@@ -3104,8 +6474,9 @@ section_order:
 
     async function registerTypstSources() {
       const bibContent = cmBib.getValue();
+      const resumeForCompile = getResumeContentForCompile();
       await $typst.addSource('/template.typ', templateContent);
-      await $typst.addSource('/resume.yml', cmResume.getValue());
+      await $typst.addSource('/resume.yml', resumeForCompile);
       await $typst.addSource('/resume.typ', getResumeTypSource({ forDownload: false }));
       await $typst.addSource('/config.yml', cmConfig.getValue());
       await $typst.addSource('/config-short.yml', cmConfigShort.getValue());
@@ -3233,7 +6604,7 @@ section_order:
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = deriveResumeFilename(cmResume.getValue(), getSelectedMode());
+        a.download = deriveResumeFilename(getResumeContentForCompile(), getSelectedMode());
         a.click();
         URL.revokeObjectURL(url);
         setStatus('Ready', 'ready');
@@ -3304,24 +6675,219 @@ section_order:
 
     const onModeControlChange = () => {
       updateTabVisibility();
+      syncConfigControlsFromActiveConfig();
+      lastSourceSelection = getModeSource();
       persistPreferences();
       scheduleCompile();
     };
-    overrideVariant.addEventListener('change', onModeControlChange);
-    overrideSource.addEventListener('change', onModeControlChange);
+    let lastSourceSelection = getModeSource();
+    overrideVariant.addEventListener('change', () => {
+      onModeControlChange();
+    });
+    overrideSource.addEventListener('change', async () => {
+      const previousSource = lastSourceSelection;
+      const nextSource = getModeSource();
+      if (previousSource === nextSource) return;
+
+      if (
+        previousSource === 'bibtex'
+        && nextSource === 'resume'
+        && resumeHasBibtexLinkedEntries(cmResume.getValue())
+      ) {
+        const accepted = await openConfirmDialog({
+          title: 'Switch to YAML Publications Source?',
+          message: 'Your resume has BibTeX-linked entries (`bib_key`). In non-BibTeX mode those entries will be ignored. Continue?',
+          confirmText: 'Switch Source',
+          cancelText: 'Stay in BibTeX',
+          destructive: false,
+        });
+        if (!accepted) {
+          setModeSource(previousSource);
+          refreshCustomSelects();
+          return;
+        }
+      }
+
+      maybeApplyDefaultResumeForSource(nextSource);
+      onModeControlChange();
+    });
     overrideLinkMode.addEventListener('change', onModeControlChange);
     btnCompileNow.addEventListener('click', () => compile());
     btnUndo.addEventListener('click', () => performEditorUndo());
     btnRedo.addEventListener('click', () => performEditorRedo());
-    const onOverridePreferenceChange = () => {
+    const onConfigBackedOverrideChange = (controlName) => {
+      updateActiveConfigFromControls(controlName);
+      persistPreferences();
+    };
+    overrideLinksDisabledBehavior.addEventListener('change', () => onConfigBackedOverrideChange('links_disabled_behavior'));
+    overridePubnums.addEventListener('change', () => onConfigBackedOverrideChange('show_publication_numbers'));
+    overrideContact.addEventListener('change', () => onConfigBackedOverrideChange('contact_display_mode'));
+    overrideFont.addEventListener('change', () => onConfigBackedOverrideChange('font'));
+    overrideMonoFont.addEventListener('change', () => onConfigBackedOverrideChange('mono_font'));
+
+    btnShare.addEventListener('click', (event) => {
+      event.preventDefault();
+      if (!hasAiKeyForShareMenu()) {
+        copyShareFromMenu(false);
+        return;
+      }
+      setShareMenuOpen(!shareMenu.classList.contains('open'));
+    });
+    btnShare.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowDown' || event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        if (!hasAiKeyForShareMenu()) {
+          copyShareFromMenu(false);
+          return;
+        }
+        setShareMenuOpen(true);
+        btnShareWithoutKey.focus();
+      }
+    });
+    btnShareWithoutKey.addEventListener('click', () => copyShareFromMenu(false));
+    btnShareWithKey.addEventListener('click', () => copyShareFromMenu(true));
+    btnSettings.addEventListener('click', () => {
+      if (window.innerWidth <= DESKTOP_SPLIT_BREAKPOINT && getMobileView() === 'preview') {
+        setMobileView('editor');
+      }
+      setSettingsFlyoutOpen(!settingsFlyout.classList.contains('open'));
+    });
+    btnSettingsClose.addEventListener('click', () => setSettingsFlyoutOpen(false));
+    settingsScrim.addEventListener('click', () => setSettingsFlyoutOpen(false));
+    btnOpenAiSettings.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      setDetailsOpen(panelAiSettings, true);
+      if (window.innerWidth <= DESKTOP_SPLIT_BREAKPOINT && getMobileView() === 'preview') {
+        setMobileView('editor');
+      }
+      window.setTimeout(() => {
+        setSettingsFlyoutOpen(true);
+        persistPreferences();
+      }, 0);
+    });
+
+    panelOverrides.addEventListener('toggle', () => {
+      persistPreferences();
+      refreshAllEditors();
+    });
+    panelAiSettings.addEventListener('toggle', () => {
+      persistPreferences();
+      refreshAllEditors();
+    });
+    panelIntegrations.addEventListener('toggle', () => {
+      persistPreferences();
+      refreshAllEditors();
+    });
+    aiJdPanel.addEventListener('toggle', () => {
+      persistPreferences();
+      refreshAllEditors();
+    });
+    aiOutputViewInputs.forEach((input) => {
+      input.addEventListener('change', () => {
+        setAiOutputViewMode(input.value);
+        renderAiDiffView();
+      });
+    });
+    btnResumeViewOriginal.addEventListener('click', () => {
+      setResumeEditorView('original');
+      refreshAllEditors();
+    });
+    btnResumeViewAi.addEventListener('click', () => {
+      setResumeEditorView('ai');
+      if (!isAiSettingsVerified() && !hasGeneratedAiOutput()) {
+        setAiStatus('Set up and verify AI settings to generate resume variants.', 'error');
+      }
+      refreshAllEditors();
+    });
+
+    resumeUseGenerated.addEventListener('change', () => {
+      if (resumeUseGenerated.checked && (!String(getAiOutputValue() || '').trim() || !isAiSettingsVerified())) {
+        setResumeCompileSource('original', { persist: true });
+        setAiStatus('Generate a variant first before enabling generated compile.', 'error');
+        scheduleCompile();
+        return;
+      }
+      if (resumeUseGenerated.checked) {
+        setAiStatus('Generated variant enabled for compile/PDF. Original resume.yml remains unchanged.', 'success');
+      } else if (!aiInFlight) {
+        setAiStatus('Using original resume.yml for compile/PDF.', '');
+      }
       persistPreferences();
       scheduleCompile();
+    });
+
+    const onAiSettingsChanged = (options = {}) => {
+      const invalidateVerification = options.invalidateVerification === true;
+      if (invalidateVerification && isAiSettingsVerified()) {
+        setAiSettingsVerified(false, { persist: false });
+      }
+      ensureAiModelForProvider(false);
+      updateShareMenuVisibility();
+      updateAiActionButtons();
+      if (!aiVerifyInFlight) {
+        setAiVerifyStatus('Settings changed. Click Verify AI Settings.');
+      }
+      if (!isAiConfigured() && !aiInFlight) {
+        setAiStatus('Set AI provider + key to generate resume variants from Resume YAML.');
+      }
+      persistPreferences();
     };
-    overrideLinksDisabledBehavior.addEventListener('change', onOverridePreferenceChange);
-    overridePubnums.addEventListener('change', onOverridePreferenceChange);
-    overrideContact.addEventListener('change', onOverridePreferenceChange);
-    overrideFont.addEventListener('change', onOverridePreferenceChange);
-    overrideMonoFont.addEventListener('change', onOverridePreferenceChange);
+    aiProvider.addEventListener('change', () => {
+      ensureAiModelForProvider(true);
+      onAiSettingsChanged({ invalidateVerification: true });
+      const provider = getAiProvider();
+      if (provider !== 'disabled' && aiWebSearch.checked && provider !== 'openai' && provider !== 'gemini') {
+        setAiStatus('Use a web-enabled model for this provider; native web-search wiring is direct for OpenAI/Gemini.');
+      }
+    });
+    aiModel.addEventListener('input', () => onAiSettingsChanged({ invalidateVerification: true }));
+    aiApiKey.addEventListener('input', () => onAiSettingsChanged({ invalidateVerification: true }));
+    githubToken.addEventListener('input', () => {
+      setGithubTokenVerified(false, { persist: false });
+      if (getGithubTokenValue()) {
+        setGithubVerifyStatus('Token changed. Click Verify GitHub Token.');
+      }
+      persistPreferences();
+      updateUploadGistButtonState();
+    });
+    btnGithubVerify.addEventListener('click', () => {
+      verifyGithubToken();
+    });
+    aiWebSearch.addEventListener('change', () => {
+      onAiSettingsChanged();
+      const provider = getAiProvider();
+      if (provider !== 'disabled' && aiWebSearch.checked && provider !== 'openai' && provider !== 'gemini') {
+        setAiStatus('Use a web-enabled model for this provider; native web-search wiring is direct for OpenAI/Gemini.');
+      }
+    });
+    aiUserPrompt.addEventListener('input', () => {
+      persistPreferences();
+    });
+    aiJobDescription.addEventListener('input', () => {
+      persistPreferences();
+    });
+
+    btnAiGenerate.addEventListener('click', () => {
+      generateAiVariant();
+    });
+    btnAiVerify.addEventListener('click', () => {
+      verifyAiSettings();
+    });
+    btnAiCopy.addEventListener('click', async () => {
+      const value = String(getAiOutputValue() || '').trim();
+      if (!value) return;
+      try {
+        if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+          await navigator.clipboard.writeText(value);
+        } else {
+          window.prompt('Copy YAML variant', value);
+        }
+        setAiStatus('Variant copied to clipboard.', 'success');
+      } catch (err) {
+        setAiStatus('Copy failed. You can still copy manually from the output box.', 'error');
+      }
+    });
 
     async function fetchText(url) {
       const resp = await fetch(url);
@@ -3344,6 +6910,7 @@ section_order:
 
     async function loadDefaults() {
       let resumeYaml = DEFAULT_RESUME_YAML;
+      let bibResumeYaml = DEFAULT_RESUME_YAML;
       let configYaml = DEFAULT_CONFIG_YAML;
       let configShortYaml = DEFAULT_SHORT_CONFIG_YAML;
       let bibContent = DEFAULT_BIB;
@@ -3352,6 +6919,11 @@ section_order:
       try {
         resumeYaml = await fetchText(resolveRepoPath('resume.yml'));
       } catch (e) { }
+      try {
+        bibResumeYaml = await fetchText(resolveRepoPath('resume-bibtex.yml'));
+      } catch (e) {
+        bibResumeYaml = resumeYaml;
+      }
       try {
         configYaml = await fetchText(resolveRepoPath('config.yml'));
       } catch (e) { }
@@ -3362,7 +6934,7 @@ section_order:
         bibContent = await fetchText(resolveRepoPath('publications.bib'));
       } catch (e) { }
 
-      return { resumeYaml, configYaml, configShortYaml, bibContent };
+      return { resumeYaml, bibResumeYaml, configYaml, configShortYaml, bibContent };
     }
 
     async function init() {
@@ -3371,6 +6943,7 @@ section_order:
         clearSavedState();
         localStorage.setItem(LS_CACHE_VERSION, CACHE_VERSION);
       }
+      loadRemoteUploadSources();
       let defaults = null;
       try {
         defaults = await loadDefaults();
@@ -3380,24 +6953,72 @@ section_order:
         return;
       }
 
+      defaultResumeBySource = {
+        resume: defaults.resumeYaml,
+        bibtex: defaults.bibResumeYaml || defaults.resumeYaml,
+      };
+
+      const legacyMode = localStorage.getItem(LS_OVERRIDE_MODE_LEGACY) || 'default';
+      const legacyControls = modeToControlValues(legacyMode);
+      const initialModeVariant = localStorage.getItem(LS_OVERRIDE_VARIANT) || legacyControls.variant;
+      const initialModeSource = localStorage.getItem(LS_OVERRIDE_SOURCE) || legacyControls.source;
+      const initialModeLink = localStorage.getItem(LS_OVERRIDE_LINK_MODE) || legacyControls.linkMode;
+      const initialResumeDefault = initialModeSource === 'bibtex'
+        ? (defaults.bibResumeYaml || defaults.resumeYaml)
+        : defaults.resumeYaml;
+
       suppressHistoryTracking = true;
-      cmResume.setValue(localStorage.getItem(LS_RESUME) || defaults.resumeYaml);
+      cmResume.setValue(localStorage.getItem(LS_RESUME) || initialResumeDefault);
       cmConfig.setValue(localStorage.getItem(LS_CONFIG) || defaults.configYaml);
       cmConfigShort.setValue(localStorage.getItem(LS_CONFIG_SHORT) || defaults.configShortYaml);
       cmBib.setValue(localStorage.getItem(LS_BIB) || defaults.bibContent);
       suppressHistoryTracking = false;
 
-      const legacyMode = localStorage.getItem(LS_OVERRIDE_MODE_LEGACY) || 'default';
-      const legacyControls = modeToControlValues(legacyMode);
-      setModeVariant(localStorage.getItem(LS_OVERRIDE_VARIANT) || legacyControls.variant);
-      setModeSource(localStorage.getItem(LS_OVERRIDE_SOURCE) || legacyControls.source);
-      setModeLinkMode(localStorage.getItem(LS_OVERRIDE_LINK_MODE) || legacyControls.linkMode);
+      setModeVariant(initialModeVariant);
+      setModeSource(initialModeSource);
+      setModeLinkMode(initialModeLink);
       setCompileMode(localStorage.getItem(LS_COMPILE_MODE) || 'auto');
-      setMobileView(localStorage.getItem(LS_MOBILE_VIEW) || 'editor');
+      setResumeCompileSource(localStorage.getItem(LS_RESUME_COMPILE_SOURCE) || 'original', { persist: false });
+      setResumeEditorView(localStorage.getItem(LS_RESUME_VIEW) || 'original', { persist: false });
+      const storedMobileView = localStorage.getItem(LS_MOBILE_VIEW) || 'editor';
+      setMobileView(window.innerWidth <= DESKTOP_SPLIT_BREAKPOINT ? 'editor' : storedMobileView);
+      setAiOutputViewMode('variant');
       const storedActiveTab = localStorage.getItem(LS_ACTIVE_TAB);
-      if (storedActiveTab && storedActiveTab in editors) {
+      if (storedActiveTab && storedActiveTab in containers) {
         activeTab = storedActiveTab;
       }
+      setDetailsOpen(panelOverrides, readStoredOpenState(LS_PANEL_OVERRIDES_OPEN, true));
+      setDetailsOpen(panelAiSettings, readStoredOpenState(LS_PANEL_AI_SETTINGS_OPEN, false));
+      setDetailsOpen(panelIntegrations, readStoredOpenState(LS_PANEL_INTEGRATIONS_OPEN, false));
+      setDetailsOpen(aiJdPanel, readStoredOpenState(LS_PANEL_AI_JD_OPEN, true));
+      setSelectValue(aiProvider, normalizeAiProviderValue(localStorage.getItem(LS_AI_PROVIDER) || 'disabled'), 'disabled');
+      ensureAiModelForProvider(false);
+      aiModel.value = localStorage.getItem(LS_AI_MODEL) || aiModel.value || getDefaultAiModel(getAiProvider());
+      aiApiKey.value = localStorage.getItem(LS_AI_API_KEY) || '';
+      githubToken.value = localStorage.getItem(LS_GITHUB_TOKEN) || '';
+      const storedGithubVerified = localStorage.getItem(LS_GITHUB_VERIFIED);
+      setGithubTokenVerified(storedGithubVerified === '1' && !!githubToken.value, { persist: false });
+      if (!githubToken.value && !githubVerifyInFlight) {
+        setGithubVerifyStatus('Not verified.');
+      } else if (githubToken.value && !isGithubTokenVerified() && !githubVerifyInFlight) {
+        setGithubVerifyStatus('Token set. Click Verify GitHub Token.');
+      }
+      const storedAiVerified = localStorage.getItem(LS_AI_VERIFIED);
+      setAiSettingsVerified(storedAiVerified === '1' && isAiConfigured(), { persist: false });
+      setAiVerifyStatus(isAiSettingsVerified() ? 'AI settings verified.' : 'Not verified.', isAiSettingsVerified() ? 'success' : '');
+      aiWebSearch.checked = localStorage.getItem(LS_AI_WEB_SEARCH) !== '0';
+      aiUserPrompt.value = localStorage.getItem(LS_AI_USER_PROMPT) || AI_DEFAULT_PROMPT;
+      aiJobDescription.value = localStorage.getItem(LS_AI_JOB_DESCRIPTION) || '';
+      setAiOutputValue(localStorage.getItem(LS_AI_OUTPUT) || '');
+      updateShareMenuVisibility();
+      setSettingsFlyoutOpen(false);
+      const persistedResumeCustomized = localStorage.getItem(LS_RESUME_CUSTOMIZED);
+      if (persistedResumeCustomized === '1' || persistedResumeCustomized === '0') {
+        markResumeCustomized(persistedResumeCustomized === '1');
+      } else {
+        markResumeCustomized(!isDefaultResumeContent(cmResume.getValue()));
+      }
+      lastSourceSelection = getModeSource();
       hasPendingManualChanges = false;
       if (getCompileMode() === 'manual' && compileTimeout) {
         clearTimeout(compileTimeout);
@@ -3411,24 +7032,27 @@ section_order:
         const activeConfigForPaper = getModeVariant() === 'short' ? cmConfigShort.getValue() : cmConfig.getValue();
         paperSize.value = detectPaperSize(activeConfigForPaper);
       }
-      setSelectValue(
-        overrideLinksDisabledBehavior,
-        localStorage.getItem(LS_OVERRIDE_LINKS_DISABLED_BEHAVIOR) || 'config',
-        'config',
-      );
-      setSelectValue(overridePubnums, localStorage.getItem(LS_OVERRIDE_PUBNUMS) || 'config', 'config');
-      setSelectValue(overrideContact, localStorage.getItem(LS_OVERRIDE_CONTACT) || 'config', 'config');
-      setSelectValue(overrideFont, localStorage.getItem(LS_OVERRIDE_FONT) || 'config', 'config');
-      setSelectValue(overrideMonoFont, localStorage.getItem(LS_OVERRIDE_MONO_FONT) || 'config', 'config');
       const storedPaneWidth = localStorage.getItem(LS_EDITOR_PANE_WIDTH);
       applyEditorPaneWidth(storedPaneWidth || DEFAULT_EDITOR_WIDTH, false);
       updateBibImportPlaceholder();
       refreshCustomSelects();
+      syncConfigControlsFromActiveConfig();
       loadEditorHistoriesFromStorage();
+      let loadedFromShareUrl = false;
+      try {
+        loadedFromShareUrl = await tryLoadShareStateFromLocation({ scheduleCompile: false });
+      } catch (err) {
+        setStatus('Share URL load failed: ' + err.message, 'error');
+      }
       updateTabVisibility();
+      syncConfigControlsFromActiveConfig();
       updateBibHealthStatus(true);
       updateCompileControlsUI();
+      updateAiActionButtons();
       persistPreferences();
+      if (loadedFromShareUrl) {
+        setStatus('Loaded state from share URL.', 'ready');
+      }
 
       const typstScript = document.getElementById('typst');
 
@@ -3449,13 +7073,17 @@ section_order:
 
     async function initTypst() {
       try {
+        const compilerWasmUrl =
+          'https://cdn.jsdelivr.net/npm/@myriaddreamin/typst-ts-web-compiler/pkg/typst_ts_web_compiler_bg.wasm';
+        const rendererWasmUrl =
+          'https://cdn.jsdelivr.net/npm/@myriaddreamin/typst-ts-renderer/pkg/typst_ts_renderer_bg.wasm';
         $typst.setCompilerInitOptions({
-          getModule: () =>
-            'https://cdn.jsdelivr.net/npm/@myriaddreamin/typst-ts-web-compiler/pkg/typst_ts_web_compiler_bg.wasm',
+          // wasm-bindgen init now prefers an object containing module_or_path.
+          getModule: () => ({ module_or_path: compilerWasmUrl }),
         });
         $typst.setRendererInitOptions({
-          getModule: () =>
-            'https://cdn.jsdelivr.net/npm/@myriaddreamin/typst-ts-renderer/pkg/typst_ts_renderer_bg.wasm',
+          // Keep compiler/renderer init signatures aligned to avoid deprecation warnings.
+          getModule: () => ({ module_or_path: rendererWasmUrl }),
         });
         ready = true;
         overlay.style.display = 'none';
