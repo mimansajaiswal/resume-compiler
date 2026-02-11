@@ -15,51 +15,52 @@ variant: long # Options: "long" or "short"
 fonts:
   heading_font: "New Computer Modern"
   body_font: "New Computer Modern"
-  font_size: 10.4pt
-  name_font_size: 1.55em
-  section_font_size: 1em
-  publications_font_size: 9.6pt
+  font_size: 10pt        # LaTeX uses 10pt
+  name_font_size: 1.4em  # LaTeX \Large
+  section_font_size: 1em # LaTeX \normalsize
+  publications_font_size: 10pt
   awards_font_size: 10pt
 
 # ------------------------------------------------------------------------------
 # SPACING AND LAYOUT
 # ------------------------------------------------------------------------------
 layout:
-  margin: 0.5in
-  line_spacing: 0.79em
-  skills_line_spacing: 0.64em
-  list_spacing: 0.16em
-  section_spacing: 0.92em
-  post_section_spacing: 0.32em
-  entry_spacing: 0.56em
-  entry_inner_spacing: 0.18em
-  work_entry_spacing: 0.46em
-  work_entry_inner_spacing: 0.14em
-  work_position_spacing: 0.22em
-  work_bullet_spacing: 0.1em
-  work_list_spacing: 0.12em
-  work_highlight_indent: 0.95em
-  education_entry_spacing: 0.48em
-  education_entry_inner_spacing: 0.14em
-  education_honors_spacing: 0.1em
+  margin: 0.65in          # LaTeX margin
+  line_spacing: 0.65em    # Typst par leading (additive, not total)
+  skills_line_spacing: 0.60em
+  list_spacing: 0.1em     # tight lists like LaTeX innerlist
+  section_spacing: 1.2em  # 1\baselineskip before section (~12pt)
+  post_section_spacing: 0.5em  # 0.5\baselineskip after section
+  entry_spacing: 0.5em
+  entry_inner_spacing: 0.12em
+  work_entry_spacing: 0.55em    # ~0.05in between work entries
+  work_entry_inner_spacing: 0.08em
+  work_position_spacing: 0.15em
+  work_bullet_spacing: 0.08em
+  work_list_spacing: 0.08em     # parsep=0 itemsep=0
+  work_highlight_indent: 0.9em
+  education_entry_spacing: 0.55em  # 0.05in
+  education_entry_inner_spacing: 0.05em
+  education_honors_spacing: 0.15em
   education_degree_spacing: 0.08em
   education_courses_spacing: 0.08em
-  education_highlights_spacing: 0.1em
-  education_list_spacing: 0.1em
-  education_highlight_indent: 0.95em
+  education_highlights_spacing: 0.08em
+  education_list_spacing: 0.08em
+  education_highlight_indent: 0.2em
   projects_entry_spacing: 0.44em
   projects_entry_inner_spacing: 0.18em
-  awards_entry_spacing: 0.34em
-  awards_entry_inner_spacing: 0.12em
-  awards_highlights_spacing: 0.1em
-  awards_list_spacing: 0.1em
+  awards_entry_spacing: 0.22em   # tight list like LaTeX
+  awards_entry_inner_spacing: 0.05em
+  awards_highlights_spacing: 0.05em
+  awards_list_spacing: 0.05em
   awards_highlight_indent: 0.95em
-  pub_spacing: 0.48em
-  publications_line_spacing: 0.7em
-  skill_spacing: 0.32em
-  header_rule_top_spacing: 0.14em
-  header_bottom_spacing: 0.26em
-  contact_separator_spacing: 0.2em
+  pub_spacing: 0.52em      # spacing between pub items
+  publications_line_spacing: 0.68em
+  publications_heading_tighten: -3pt  # Tighten gap after pub section headings
+  skill_spacing: 0.25em
+  header_rule_top_spacing: 0.2em
+  header_bottom_spacing: 0.3em   # 0.3\baselineskip in LaTeX
+  contact_separator_spacing: 0.3em
   last_updated_bottom_spacing: 0.16em
   generic_entry_spacing: 0.5em
   generic_entry_inner_spacing: 0.14em
@@ -71,19 +72,19 @@ layout:
 # ------------------------------------------------------------------------------
 styling:
   section_smallcaps: false
-  contact_font_size: 0.76em
-  summary_font_size: 0.92em
+  contact_font_size: 0.85em    # keep normal size like LaTeX
+  summary_font_size: 1.0em     # same as body
   secondary_color: "#111111"
-  link_color: "#000080"
+  link_color: "#00004D"        # LaTeX darkblue = rgb(0,0,0.3)
   section_rule_color: "#111111"
   section_rule_thickness: 0.6pt
-  section_rule_enabled: false
+  section_rule_enabled: false   # No section rules in LaTeX
   section_rule_gap: 0.12em
   section_heading_tracking: 0.01em
   header_rule_color: "#111111"
-  header_rule_thickness: 0.7pt
+  header_rule_thickness: 1pt    # LaTeX rule is 1pt
   publications_link_style: "compact"
-  last_updated_font_size: 0.68em
+  last_updated_font_size: 0.8em
   last_updated_label: "Last Updated on"
 
 # ------------------------------------------------------------------------------
@@ -97,6 +98,9 @@ visibility:
   show_interests: false
   show_references: false
   show_last_updated: true
+  show_titles: false           # Don't show "Research Scientist" subtitle
+  show_page_numbers: true      # Show X of Y footer
+  url_display_label: "Website" # Display URL as "Website"
 
 # ------------------------------------------------------------------------------
 # SECTION TITLES
@@ -122,7 +126,7 @@ section_order:
   - publications
   - education
   - awards
-  - skills
+  # - skills  # Not in LaTeX version
   # - languages
   # - projects
   # - interests

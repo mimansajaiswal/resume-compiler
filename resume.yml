@@ -42,12 +42,15 @@ personal:
     - network: Twitter
       username: MimansaJ
       url: https://twitter.com/MimansaJ
+      label: "@MimansaJ"
     - network: LinkedIn
       username: mimansajaiswal
       url: https://www.linkedin.com/in/mimansajaiswal/
+      label: "LinkedIn"
     - network: Email (alternate)
       username: mimansa@umich.edu
       url: mailto:mimansa@umich.edu
+      label: "mimansa@umich.edu"
 
 # ==============================================================================
 # INTERESTS / RESEARCH SUMMARY
@@ -131,6 +134,7 @@ education:
     highlights:
       - "Computational Human Analysis and Integration (CHAI) Lab"
       - "*Advisor*: Prof. Emily Provost"
+    thesis: "Implicit Design Choices and Their Impact on Emotion Recognition Model Development and Evaluation"
 
   - institution: University of Michigan
     url: http://www.umich.edu
@@ -180,7 +184,7 @@ publications:
     publisher: null
     releaseDate: null
     url: https://human-in-loop-explanation-annotation.vercel.app/
-    status: "Demo and Repository"
+    status: "Demo and Repo"
     include_short: false
 
   # Submitted Publications
@@ -318,45 +322,28 @@ publications:
 # AWARDS AND HONORS
 # ==============================================================================
 awards:
-  - title: Barbour Fellowship
-    date: 2022-09-01
-    issuer: University of Michigan Rackham Graduate School
-    location: Ann Arbor, MI
+  - title: "Reviewing: ICDMW, ICMI, ACII, CHI, CSCW, *ACL, AAAI, NeurIPS (2019-present)."
+    flat: true
+    bold_label: "Reviewing:"
+
+  - title: "Awarded Barbour Fellowship Amongst Over 1k+ Applicants"
     url: https://rackham.umich.edu/discover-rackham/announcing-the-2022-2023-barbour-scholars/
-    highlights:
-      - "Awarded amongst over 1,000+ applicants"
 
-  - title: Graduate Student Instructor for Affective Computing Course
-    date: 2020-01-01
-    issuer: University of Michigan
-    location: Ann Arbor, MI
-    url: null
+  - title: "Graduate Student Instructor for Affective Computing Course (Winter 2020)."
 
-  - title: Student Representative in CSE Faculty Hiring Committee
-    date: 2020-09-01
-    issuer: University of Michigan CSE Department
-    location: Ann Arbor, MI
-    url: null
+  - title: "Student Representative in CSE Faculty Hiring Committee (Academic Year 2020-21)."
 
-  - title: Invited Speaker at PyCon 2016
-    date: 2016-06-01
-    issuer: PyCon Singapore
-    location: Singapore
-    url: https://www.youtube.com/watch?v=rhVhR22t2IE&t=0s&list=PLMrPHnpQRHYZcOoyqcTMpFR1t-WLJAxb9&index=7
+  - title: "Invited Speaker for PyCon 2016 Singapore"
+    links:
+      - label: "[video]"
+        url: "https://www.youtube.com/watch?v=rhVhR22t2IE"
+      - text: ", PyCon 2016 India "
+      - label: "[video]"
+        url: "https://www.youtube.com/watch?v=A1IKw67vYkE"
 
-  - title: Invited Speaker at PyCon 2016
-    date: 2016-10-01
-    issuer: PyCon India
-    location: India
-    url: https://www.youtube.com/watch?v=A1IKw67vYkE
+  - title: "Invited to attend CRA-W Grad Cohort Workshop 2018, 2020 [declined]"
 
-  - title: National Talent Search Examination Scholarship
-    date: null
-    issuer: National Council of Educational Research and Training (NCERT)
-    location: India
-    url: null
-    highlights:
-      - "Top 0.01% in India"
+  - title: "National Talent Search Examination Scholarship (Top 0.01% in India)"
 
 # ==============================================================================
 # SKILLS
