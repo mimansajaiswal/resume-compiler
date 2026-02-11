@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Resume Compiler</title>
+  <link rel="icon" href="data:,">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/codemirror.min.css">
   <style>
     :root {
@@ -16,6 +17,7 @@
       --purple: #7d6b8a;
       --pink: #c4909a;
       --mono: "SF Mono", "Fira Code", "Cascadia Code", "JetBrains Mono", "Consolas", "Courier New", monospace;
+      --editor-pane-width: 45%;
     }
 
     * {
@@ -317,43 +319,84 @@
     }
 
     .editor-panel {
-      width: 45%;
+      width: var(--editor-pane-width);
       min-width: 300px;
       display: flex;
       flex-direction: column;
       border-right: 1px solid var(--earth);
       background: var(--linen);
+      overflow: hidden;
+    }
+
+    .pane-resizer {
+      width: 10px;
+      flex: 0 0 10px;
+      border-left: 1px solid #b8ad9a;
+      border-right: 1px solid #c8beaf;
+      background: linear-gradient(180deg, #ddd5c8, #d2c8b9);
+      cursor: col-resize;
+      position: relative;
+    }
+
+    .pane-resizer::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 3px;
+      height: 2.2rem;
+      transform: translate(-50%, -50%);
+      border-radius: 3px;
+      background: rgba(63, 58, 49, 0.38);
+      box-shadow: -3px 0 0 rgba(63, 58, 49, 0.2), 3px 0 0 rgba(63, 58, 49, 0.2);
+    }
+
+    .main-container.is-resizing,
+    .main-container.is-resizing * {
+      cursor: col-resize !important;
+      user-select: none !important;
     }
 
     .tabs {
       display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.34rem;
       flex-shrink: 0;
-      align-items: center;
-      padding: 0.5rem 0.6rem 0;
-      gap: 0.35rem;
+      padding: 0.42rem 0.6rem;
       background: var(--linen-dark);
       border-bottom: 1px solid var(--earth);
     }
 
+    .tab-list {
+      display: flex;
+      align-items: center;
+      gap: 0.36rem;
+      min-width: 0;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      padding-bottom: 0.04rem;
+    }
+
     .tab {
-      padding: 0.35rem 0.75rem;
+      padding: 0.32rem 0.66rem;
       cursor: pointer;
       font-family: var(--mono);
-      font-size: 0.68rem;
+      font-size: 0.65rem;
       font-weight: 700;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.055em;
       text-transform: uppercase;
-      color: var(--earth);
-      background: transparent;
+      color: #776d5e;
+      background: #ece6dd;
       border: 1px solid transparent;
       transition: all 0.15s;
       user-select: none;
       white-space: nowrap;
-      margin-bottom: -1px;
     }
 
     .tab:hover {
       color: var(--charcoal);
+      border-color: #c7bca8;
     }
 
     .tab.active {
@@ -367,25 +410,28 @@
     }
 
     .tab-actions {
-      margin-left: auto;
-      padding-right: 0.2rem;
-      padding-bottom: 0.5rem;
       display: flex;
-      gap: 0.4rem;
+      gap: 0.28rem;
+      align-items: center;
+      justify-content: flex-start;
+      flex-wrap: wrap;
     }
 
     .tab-actions button {
-      padding: 0.25rem 0.55rem;
+      height: 2.05rem;
+      padding: 0 0.54rem;
       border: 1px solid var(--earth);
-      border-radius: 0;
+      border-radius: 2px;
       background: var(--linen);
       font-family: var(--mono);
-      font-size: 0.65rem;
+      font-size: 0.62rem;
       font-weight: 600;
       cursor: pointer;
       color: var(--charcoal);
-      letter-spacing: 0.06em;
+      letter-spacing: 0.045em;
       text-transform: uppercase;
+      line-height: 1;
+      white-space: nowrap;
     }
 
     .tab-actions button:hover {
@@ -395,6 +441,16 @@
     .tab-actions button:disabled {
       opacity: 0.45;
       cursor: not-allowed;
+    }
+
+    .tab-actions .tab-bib-only {
+      display: none;
+    }
+
+    .tab-actions .tab-bib-only.visible {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .schema-help {
@@ -419,6 +475,82 @@
       font-size: 0.64rem;
       background: #ece7dd;
       padding: 0.02rem 0.2rem;
+    }
+
+    .bib-import-panel {
+      border-bottom: 1px solid var(--earth);
+      background: #ece6dc;
+      padding: 0.44rem 0.68rem 0.48rem;
+      display: grid;
+      grid-template-columns: minmax(10.2rem, 0.95fr) minmax(11rem, 2fr) auto auto;
+      gap: 0.34rem;
+      align-items: center;
+    }
+
+    .bib-import-panel.hidden {
+      display: none;
+    }
+
+    .bib-import-panel .bib-import-status {
+      grid-column: 1 / -1;
+      font-size: 0.6rem;
+      color: #665d4f;
+      letter-spacing: 0.03em;
+      line-height: 1.35;
+    }
+
+    .bib-import-panel .bib-import-status.warning {
+      color: #7b5614;
+      font-weight: 700;
+    }
+
+    .bib-import-panel input {
+      border: 1px solid var(--earth);
+      background: #f6f1e8;
+      color: var(--charcoal);
+      font-family: var(--mono);
+      font-size: 0.63rem;
+      padding: 0.36rem 0.42rem;
+      min-width: 0;
+      height: 2.05rem;
+    }
+
+    .bib-import-panel button {
+      border: 1px solid #8e826f;
+      background: #332f2a;
+      color: #f4efe6;
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.045em;
+      text-transform: uppercase;
+      font-weight: 700;
+      height: 2.05rem;
+      padding: 0 0.58rem;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .bib-import-panel button.secondary {
+      border-color: var(--earth);
+      background: #f8f3eb;
+      color: #433d34;
+      font-weight: 600;
+    }
+
+    .bib-import-panel button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .bib-import-panel .custom-select {
+      min-width: 0;
+      width: 100%;
+    }
+
+    .bib-import-panel .custom-select-trigger {
+      height: 2.05rem;
+      padding: 0.25rem 0.42rem;
+      font-size: 0.62rem;
     }
 
     .override-panel {
@@ -497,11 +629,11 @@
 
     .compile-controls {
       border: 1px solid var(--earth);
-      background: #f5f0e7;
-      padding: 0.22rem;
+      background: #f4efe7;
+      padding: 0.2rem 0.24rem;
       display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      gap: 0.24rem;
+      grid-template-columns: minmax(10.8rem, 1fr) auto minmax(9.2rem, auto);
+      gap: 0.3rem;
       align-items: center;
     }
 
@@ -517,13 +649,14 @@
       background: #322f2b;
       color: #f4efe6;
       font-family: var(--mono);
-      font-size: 0.66rem;
-      letter-spacing: 0.05em;
+      font-size: 0.61rem;
+      letter-spacing: 0.045em;
       text-transform: uppercase;
       font-weight: 700;
-      padding: 0.34rem 0.55rem;
+      padding: 0.28rem 0.56rem;
       cursor: pointer;
-      min-width: 5.5rem;
+      min-width: 4.9rem;
+      height: 1.95rem;
     }
 
     .compile-now-btn:hover {
@@ -539,13 +672,15 @@
     }
 
     .compile-mode-hint {
-      grid-column: 1 / -1;
-      font-size: 0.6rem;
+      grid-column: auto;
+      font-size: 0.57rem;
       color: #655d50;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      font-weight: 700;
-      padding: 0 0.12rem 0.05rem;
+      letter-spacing: 0.02em;
+      text-transform: none;
+      font-weight: 600;
+      padding: 0 0.05rem 0 0.18rem;
+      text-align: right;
+      white-space: nowrap;
     }
 
     .compile-mode-hint.pending {
@@ -626,31 +761,34 @@
 
     .preview-panel {
       flex: 1;
-      overflow: auto;
+      overflow: hidden;
       background: var(--oatmeal);
       display: flex;
       flex-direction: column;
       align-items: stretch;
-      padding: 1.5rem;
-      gap: 1rem;
+      padding: 0 1rem 1rem;
+      gap: 0;
       position: relative;
     }
 
     .preview-toolbar {
-      width: min(880px, 100%);
-      margin: 0 auto;
-      background: #eee7db;
+      width: min(760px, 100%);
+      margin: 0 auto 0.55rem;
+      background: #efe7db;
       border: 1px solid var(--earth);
-      padding: 0.35rem 0.45rem 0.42rem;
+      padding: 0.26rem 0.4rem 0.3rem;
       display: flex;
       flex-direction: column;
-      gap: 0.22rem;
+      gap: 0.16rem;
+      position: relative;
+      z-index: 2;
+      box-shadow: 0 2px 8px rgba(49, 42, 32, 0.1);
     }
 
     .preview-toolbar label {
-      font-size: 0.62rem;
+      font-size: 0.56rem;
       font-weight: 700;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.045em;
       text-transform: uppercase;
       color: #5a5449;
     }
@@ -661,6 +799,15 @@
       align-items: center;
       gap: 1rem;
       width: 100%;
+      padding: 0.1rem 0 0.4rem;
+    }
+
+    .preview-scroll {
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+      width: 100%;
+      position: relative;
     }
 
     .preview-panel .page {
@@ -678,7 +825,7 @@
 
     .preview-feedback {
       position: absolute;
-      inset: 1.5rem;
+      inset: 0.4rem;
       display: none;
       align-items: center;
       justify-content: center;
@@ -761,6 +908,27 @@
 
     .status-bar.pending {
       color: #d8be7b;
+    }
+
+    .credit-bar {
+      background: #2d2a26;
+      color: #a79a88;
+      padding: 0.2rem 1.2rem 0.24rem;
+      font-family: var(--mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.03em;
+      border-top: 1px solid #3d3831;
+      line-height: 1.45;
+    }
+
+    .credit-bar a {
+      color: #d7c1a9;
+      text-decoration: underline;
+      text-underline-offset: 0.1em;
+    }
+
+    .credit-bar a:hover {
+      color: #f0d8bd;
     }
 
     .loading-overlay {
@@ -882,6 +1050,7 @@
       }
 
       .editor-panel,
+      .pane-resizer,
       .preview-panel {
         width: 100%;
         min-width: 0;
@@ -890,6 +1059,10 @@
       .editor-panel {
         border-right: none;
         border-bottom: 1px solid var(--earth);
+      }
+
+      .pane-resizer {
+        display: none;
       }
 
       .preview-panel {
@@ -916,21 +1089,33 @@
         border-right: none;
       }
 
+      .pane-resizer {
+        display: none;
+      }
+
       .preview-panel {
-        padding: 1rem;
+        padding: 0 0.7rem 0.7rem;
       }
 
       .preview-feedback {
-        inset: 1rem;
+        inset: 0.3rem;
       }
 
       .tabs {
-        flex-wrap: wrap;
+        gap: 0.42rem;
       }
 
       .tab {
-        padding: 0.3rem 0.6rem;
-        font-size: 0.62rem;
+        padding: 0.28rem 0.5rem;
+        font-size: 0.6rem;
+      }
+
+      .tab-actions {
+        justify-content: flex-start;
+      }
+
+      .tab-actions button {
+        flex: 0 0 auto;
       }
 
       .override-item.span-2 {
@@ -945,12 +1130,23 @@
         grid-template-columns: 1fr;
       }
 
+      .compile-mode-hint {
+        grid-column: 1 / -1;
+        text-align: left;
+        padding-left: 0;
+      }
+
+      .bib-import-panel {
+        grid-template-columns: 1fr;
+      }
+
       .compile-now-btn {
         width: 100%;
       }
 
       .preview-toolbar {
-        padding: 0.3rem 0.35rem 0.36rem;
+        width: 100%;
+        padding: 0.26rem 0.3rem 0.32rem;
       }
 
       .paper-size-wrap span {
@@ -1064,41 +1260,42 @@
         </div>
       </div>
       <div class="tabs">
-        <div class="tab active" data-tab="resume">Resume (YAML)</div>
-        <div class="tab" data-tab="config">Config (YAML)</div>
-        <div class="tab" data-tab="config-short">Config Short (YAML)</div>
-        <div class="tab" data-tab="bib">Publications (BibTeX)</div>
+        <div class="tab-list">
+          <div class="tab active" data-tab="resume">Resume (YAML)</div>
+          <div class="tab" data-tab="config">Config (YAML)</div>
+          <div class="tab" data-tab="config-short">Config Short (YAML)</div>
+          <div class="tab" data-tab="bib">Publications (BibTeX)</div>
+        </div>
         <div class="tab-actions">
           <button id="btn-undo" aria-label="Undo (Cmd/Ctrl+Z)">Undo</button>
           <button id="btn-redo" aria-label="Redo (Cmd/Ctrl+Shift+Z or Ctrl+Y)">Redo</button>
+          <button id="btn-bib-clean" class="tab-bib-only" aria-label="Clean BibTeX (when BibTeX tab is active)">Clean
+            .bib</button>
+          <button id="btn-bib-download" class="tab-bib-only"
+            aria-label="Download BibTeX (when BibTeX tab is active)">Download .bib</button>
           <button id="btn-upload" aria-label="Upload file">Upload</button>
           <input type="file" id="file-input" accept=".yml,.yaml,.bib,.txt" style="display:none">
         </div>
       </div>
+      <div class="bib-import-panel hidden" id="bib-import-panel">
+        <select id="bib-import-provider">
+          <option value="dblp">DBLP Author ID</option>
+          <option value="semantic">Semantic Scholar Author ID</option>
+          <option value="google">Google Scholar ID</option>
+        </select>
+        <input id="bib-import-id" type="text"
+          placeholder="Enter ID (or full profile URL). Example: j/Geffner:Blai or 1234567">
+        <button id="btn-bib-import" type="button">Import + Merge</button>
+        <button id="btn-bib-import-replace" class="secondary" type="button">Import + Replace</button>
+        <div id="bib-import-status" class="bib-import-status">
+          Imports merge generated BibTeX entries from a provider ID into the current `.bib`. Duplicate titles are
+          flagged.
+        </div>
+      </div>
       <details class="schema-help">
         <summary>Supported Keys</summary>
-        <div>
-          <div>Schema style is standardized (no legacy aliases): use the keys shown below directly.</div>
-          <div>Work: <code>work[].name</code>, <code>work[].positions[].name</code>,
-            <code>work[].positions[].content[]</code></div>
-          <div>Education: <code>education[].name</code>, optional <code>content[]</code>, <code>honors[]</code>,
-            <code>courses[]</code>, <code>thesis</code></div>
-          <div>Publications: <code>bib_key</code> or markdown-first entries with <code>name</code> (title),
-            <code>content</code> (details), <code>authors</code>, <code>links[]</code></div>
-          <div>Build controls are split: <code>length</code> (<code>default</code>/<code>short</code>),
-            <code>source</code> (<code>resume</code>/<code>bibtex</code>), and <code>link mode</code>
-            (<code>links on</code>/<code>no-js</code>).</div>
-          <div>BibTeX links: set <code>publications[].url</code> to override, or omit it to use the BibTeX
-            <code>url</code> field.</div>
-          <div>No-link behavior: <code>visibility.links_disabled_behavior</code> = <code>label</code> or
-            <code>label_with_url</code>.</div>
-          <div>Generic sections: any extra top-level array (example: <code>community_service</code>) auto-renders even
-            if not in <code>section_order</code>.</div>
-          <div>Fonts: configure <code>fonts.font</code> (general) and <code>fonts.mono_font</code> (inline
-            code/monospace).</div>
-          <div>Contact icons come from Typst Universe (<code>scienceicons</code> + <code>sicons</code>, including
-            academic networks like Google Scholar/DBLP/ORCID); unknown networks render as label-only even with
-            <code>icon_label</code>.</div>
+        <div id="supported-keys-content">
+          <div>Loading tab-specific key hints...</div>
         </div>
       </details>
       <div class="editor-wrapper">
@@ -1108,6 +1305,8 @@
         <div class="cm-container hidden" id="cm-bib"></div>
       </div>
     </div>
+    <div class="pane-resizer" id="pane-resizer" role="separator" aria-orientation="vertical"
+      aria-label="Resize editor and preview columns"></div>
     <div class="preview-panel" id="preview">
       <div class="preview-toolbar">
         <label>Compile</label>
@@ -1126,11 +1325,13 @@
           <div id="compile-mode-hint" class="compile-mode-hint">Auto compile on every change</div>
         </div>
       </div>
-      <div class="preview-pages" id="preview-pages"></div>
-      <div class="preview-feedback" id="preview-feedback" aria-live="polite">
-        <div class="preview-feedback-card">
-          <div class="preview-feedback-spinner"></div>
-          <div class="preview-feedback-text" id="preview-feedback-text">Compiling changes...</div>
+      <div class="preview-scroll" id="preview-scroll">
+        <div class="preview-pages" id="preview-pages"></div>
+        <div class="preview-feedback" id="preview-feedback" aria-live="polite">
+          <div class="preview-feedback-card">
+            <div class="preview-feedback-spinner"></div>
+            <div class="preview-feedback-text" id="preview-feedback-text">Compiling changes...</div>
+          </div>
         </div>
       </div>
     </div>
@@ -1149,9 +1350,17 @@
   </div>
 
   <div class="status-bar" id="status-bar">Loading...</div>
+  <div class="credit-bar">
+    Built by <a href="https://mimansajaiswal.github.io" target="_blank" rel="noopener noreferrer">Mimansa Jaiswal</a>
+    · See more <a href="https://mimansajaiswal.github.io/tools/" target="_blank" rel="noopener noreferrer">Tools Made
+      with LLMs</a>
+    · Code: <a href="https://github.com/mimansajaiswal/resume-compiler" target="_blank"
+      rel="noopener noreferrer">resume-compiler</a>
+  </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/codemirror.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/mode/yaml/yaml.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/mode/stex/stex.min.js"></script>
   <script type="module"
     src="https://cdn.jsdelivr.net/npm/@myriaddreamin/typst.ts@0.7.0-rc2/dist/esm/contrib/all-in-one-lite.bundle.js"
     id="typst">
@@ -1246,6 +1455,9 @@ styling:
   section_heading_sticky: true
   header_rule_color: "#9F9FA8"
   publications_link_style: "compact"
+  publication_title_bold: false
+  publication_autobold_authors: true
+  publication_bold_author_names: []
   contact_font_size: 0.85em
   summary_font_size: 1em
   last_updated_font_size: 0.8em
@@ -1316,6 +1528,9 @@ styling:
   section_heading_sticky: true
   header_rule_color: "#9F9FA8"
   publications_link_style: "compact"
+  publication_title_bold: false
+  publication_autobold_authors: true
+  publication_bold_author_names: []
   contact_font_size: 0.74em
   summary_font_size: 0.92em
   last_updated_font_size: 0.66em
@@ -1389,6 +1604,7 @@ section_order:
     const LS_OVERRIDE_CONTACT = lsKey('override_contact');
     const LS_OVERRIDE_FONT = lsKey('override_font');
     const LS_OVERRIDE_MONO_FONT = lsKey('override_mono_font');
+    const LS_EDITOR_PANE_WIDTH = lsKey('editor_pane_width');
     const LS_KEYS = [
       LS_CACHE_VERSION,
       LS_RESUME,
@@ -1409,6 +1625,7 @@ section_order:
       LS_OVERRIDE_CONTACT,
       LS_OVERRIDE_FONT,
       LS_OVERRIDE_MONO_FONT,
+      LS_EDITOR_PANE_WIDTH,
     ];
     const EDITOR_CONTENT_KEYS = {
       resume: LS_RESUME,
@@ -1425,6 +1642,7 @@ section_order:
 
     const preview = document.getElementById('preview');
     const mainContainer = document.querySelector('.main-container');
+    const paneResizer = document.getElementById('pane-resizer');
     const mobileViewButtons = Array.from(document.querySelectorAll('[data-mobile-view]'));
     const previewPages = document.getElementById('preview-pages');
     const previewFeedbackText = document.getElementById('preview-feedback-text');
@@ -1433,6 +1651,8 @@ section_order:
     const btnDownloadTyp = document.getElementById('btn-download-typ');
     const btnUndo = document.getElementById('btn-undo');
     const btnRedo = document.getElementById('btn-redo');
+    const btnBibClean = document.getElementById('btn-bib-clean');
+    const btnBibDownload = document.getElementById('btn-bib-download');
     const btnCompileNow = document.getElementById('btn-compile-now');
     const btnReset = document.getElementById('btn-reset');
     const compileModeHint = document.getElementById('compile-mode-hint');
@@ -1446,6 +1666,13 @@ section_order:
     const overrideContact = document.getElementById('override-contact');
     const overrideFont = document.getElementById('override-font');
     const overrideMonoFont = document.getElementById('override-mono-font');
+    const bibImportPanel = document.getElementById('bib-import-panel');
+    const bibImportProvider = document.getElementById('bib-import-provider');
+    const bibImportId = document.getElementById('bib-import-id');
+    const btnBibImport = document.getElementById('btn-bib-import');
+    const btnBibImportReplace = document.getElementById('btn-bib-import-replace');
+    const bibImportStatus = document.getElementById('bib-import-status');
+    const supportedKeysContent = document.getElementById('supported-keys-content');
     const overlay = document.getElementById('loading-overlay');
     const confirmModal = document.getElementById('confirm-modal');
     const confirmTitle = document.getElementById('confirm-title');
@@ -1467,6 +1694,7 @@ section_order:
       tabSize: 2,
       indentWithTabs: false,
       lineWrapping: true,
+      viewportMargin: 20,
       extraKeys: EDITOR_EXTRA_KEYS,
     });
 
@@ -1476,6 +1704,7 @@ section_order:
       tabSize: 2,
       indentWithTabs: false,
       lineWrapping: true,
+      viewportMargin: 20,
       extraKeys: EDITOR_EXTRA_KEYS,
     });
 
@@ -1485,14 +1714,17 @@ section_order:
       tabSize: 2,
       indentWithTabs: false,
       lineWrapping: true,
+      viewportMargin: 20,
       extraKeys: EDITOR_EXTRA_KEYS,
     });
 
     const cmBib = CodeMirror(document.getElementById('cm-bib'), {
-      mode: null,
+      mode: 'text/x-bibtex',
       lineNumbers: true,
       tabSize: 2,
+      indentWithTabs: false,
       lineWrapping: true,
+      viewportMargin: 20,
       extraKeys: EDITOR_EXTRA_KEYS,
     });
 
@@ -1518,10 +1750,152 @@ section_order:
     const editorHistoryTimers = {};
     const EDITOR_HISTORY_LIMIT = 25;
     const editorHistories = {};
+    const DESKTOP_SPLIT_BREAKPOINT = 1024;
+    const DEFAULT_EDITOR_WIDTH = 45;
+    const MIN_EDITOR_WIDTH = 28;
+    const MAX_EDITOR_WIDTH = 72;
+    const GOOGLE_PROXY_PREFIX = 'https://r.jina.ai/http://';
+    let bibtexTidyModulePromise = null;
+
+    const TAB_SUPPORTED_KEYS_HTML = {
+      resume: `
+        <div>Schema style is standardized (no legacy aliases): use the keys below directly.</div>
+        <div>Work: <code>work[].name</code>, <code>work[].positions[].name</code>, <code>work[].positions[].content[]</code></div>
+        <div>Education: <code>education[].name</code>, optional <code>content[]</code>, <code>honors[]</code>, <code>courses[]</code>, <code>thesis</code></div>
+        <div>Publications in YAML mode: <code>publications[].name</code>, optional <code>authors</code>, <code>publisher</code>, <code>year</code>, <code>links[]</code>, <code>section</code></div>
+        <div>Generic sections: any extra top-level array (example <code>community_service</code>) auto-renders, even if omitted from <code>section_order</code>.</div>
+      `,
+      config: `
+        <div>Main groups: <code>fonts</code>, <code>layout</code>, <code>styling</code>, <code>visibility</code>, <code>section_titles</code>, <code>section_order</code>.</div>
+        <div>Publication defaults: <code>styling.publication_title_bold</code>, <code>styling.publication_autobold_authors</code>, <code>styling.publication_bold_author_names[]</code>.</div>
+        <div>Link-off behavior: <code>visibility.links_disabled_behavior</code> = <code>label</code> or <code>label_with_url</code>.</div>
+        <div>Contact style: <code>styling.contact_display_mode</code> = <code>label</code> or <code>icon_label</code>.</div>
+      `,
+      'config-short': `
+        <div>Same key set as <code>config.yml</code>, but tuned for one-page/condensed output.</div>
+        <div>Typical edits: tighter <code>layout.*</code> spacing, reduced <code>fonts.*</code> sizes, and shorter <code>section_order</code>.</div>
+        <div>Publication settings stay available: <code>styling.publication_title_bold</code>, <code>styling.publication_autobold_authors</code>, <code>styling.publication_bold_author_names[]</code>.</div>
+      `,
+      bib: `
+        <div>Use standard BibTeX entries: <code>@article</code>, <code>@inproceedings</code>, <code>@misc</code>, etc.</div>
+        <div>Required in this app: citation key plus useful fields like <code>title</code>, <code>author</code>, <code>year</code>, and optional <code>url</code>.</div>
+        <div>Use <code>Clean .bib</code> for formatting/normalization and <code>Download .bib</code> to export current editor contents.</div>
+      `,
+    };
+    const BIB_IMPORT_PLACEHOLDERS = {
+      dblp: 'Example: j/Geffner:Blai or https://dblp.org/pid/j/Geffner:Blai.html',
+      semantic: 'Example: 1741102 or https://www.semanticscholar.org/author/.../1741102',
+      google: 'Example: cLzCYMIAAAAJ or https://scholar.google.com/citations?user=cLzCYMIAAAAJ',
+    };
 
     function setStatus(text, level) {
       statusBar.textContent = text;
       statusBar.className = 'status-bar' + (level ? ' ' + level : '');
+    }
+
+    function setBibImportStatus(text, level = '') {
+      bibImportStatus.textContent = text;
+      bibImportStatus.classList.toggle('warning', level === 'warning');
+    }
+
+    function updateSupportedKeysContent() {
+      supportedKeysContent.innerHTML = TAB_SUPPORTED_KEYS_HTML[activeTab] || TAB_SUPPORTED_KEYS_HTML.resume;
+    }
+
+    function isDesktopSplitEnabled() {
+      return window.innerWidth > DESKTOP_SPLIT_BREAKPOINT;
+    }
+
+    function clampEditorPaneWidth(value) {
+      const numeric = Number(value);
+      if (!Number.isFinite(numeric)) return DEFAULT_EDITOR_WIDTH;
+      return Math.max(MIN_EDITOR_WIDTH, Math.min(MAX_EDITOR_WIDTH, numeric));
+    }
+
+    function refreshAllEditors() {
+      Object.values(editors).forEach((editor) => editor.refresh());
+    }
+
+    function applyEditorPaneWidth(value, persist = true, refresh = true) {
+      const clamped = clampEditorPaneWidth(value);
+      if (!isDesktopSplitEnabled()) {
+        mainContainer.style.removeProperty('--editor-pane-width');
+        if (persist) {
+          localStorage.setItem(LS_EDITOR_PANE_WIDTH, String(clamped));
+        }
+        if (refresh) refreshAllEditors();
+        return;
+      }
+      mainContainer.style.setProperty('--editor-pane-width', `${clamped}%`);
+      if (persist) {
+        localStorage.setItem(LS_EDITOR_PANE_WIDTH, String(clamped));
+      }
+      if (refresh) refreshAllEditors();
+    }
+
+    function setupPaneResizer() {
+      let dragging = false;
+      let raf = null;
+
+      const onPointerMove = (event) => {
+        if (!dragging || !isDesktopSplitEnabled()) return;
+        if (raf) cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(() => {
+          const rect = mainContainer.getBoundingClientRect();
+          const width = rect.width || 1;
+          const percentage = ((event.clientX - rect.left) / width) * 100;
+          applyEditorPaneWidth(percentage, false, false);
+        });
+      };
+
+      const stopDragging = () => {
+        if (!dragging) return;
+        dragging = false;
+        if (raf) {
+          cancelAnimationFrame(raf);
+          raf = null;
+        }
+        mainContainer.classList.remove('is-resizing');
+        const computed = getComputedStyle(mainContainer).getPropertyValue('--editor-pane-width').trim();
+        if (computed.endsWith('%')) {
+          localStorage.setItem(LS_EDITOR_PANE_WIDTH, String(clampEditorPaneWidth(computed.slice(0, -1))));
+        }
+        refreshAllEditors();
+        window.removeEventListener('pointermove', onPointerMove);
+        window.removeEventListener('pointerup', stopDragging);
+      };
+
+      paneResizer.addEventListener('pointerdown', (event) => {
+        if (!isDesktopSplitEnabled()) return;
+        event.preventDefault();
+        dragging = true;
+        mainContainer.classList.add('is-resizing');
+        if (typeof paneResizer.setPointerCapture === 'function') {
+          paneResizer.setPointerCapture(event.pointerId);
+        }
+        window.addEventListener('pointermove', onPointerMove);
+        window.addEventListener('pointerup', stopDragging);
+      });
+
+      window.addEventListener('resize', () => {
+        const storedWidth = localStorage.getItem(LS_EDITOR_PANE_WIDTH);
+        applyEditorPaneWidth(storedWidth || DEFAULT_EDITOR_WIDTH, false);
+      });
+    }
+
+    function updateTabScopedUI() {
+      const onBibTab = activeTab === 'bib';
+      document.querySelectorAll('.tab-bib-only').forEach((el) => {
+        el.classList.toggle('visible', onBibTab);
+      });
+      bibImportPanel.classList.toggle('hidden', !onBibTab);
+      updateSupportedKeysContent();
+      if (onBibTab) updateBibHealthStatus();
+    }
+
+    function updateBibImportPlaceholder() {
+      const provider = bibImportProvider.value;
+      bibImportId.placeholder = BIB_IMPORT_PLACEHOLDERS[provider] || BIB_IMPORT_PLACEHOLDERS.dblp;
     }
 
     function showPreviewFeedback(text, isError = false) {
@@ -1721,6 +2095,7 @@ section_order:
     });
 
     enhanceAllSelects();
+    setupPaneResizer();
 
     const tabs = Array.from(document.querySelectorAll('.tab[data-tab]'));
 
@@ -1801,6 +2176,10 @@ section_order:
       localStorage.setItem(LS_OVERRIDE_MONO_FONT, overrideMonoFont.value);
       localStorage.setItem(LS_ACTIVE_TAB, activeTab);
       localStorage.setItem(LS_MOBILE_VIEW, getMobileView());
+      const computedWidth = getComputedStyle(mainContainer).getPropertyValue('--editor-pane-width').trim();
+      if (computedWidth.endsWith('%')) {
+        localStorage.setItem(LS_EDITOR_PANE_WIDTH, String(clampEditorPaneWidth(computedWidth.slice(0, -1))));
+      }
     }
 
     function createDefaultHistory(value) {
@@ -1913,6 +2292,7 @@ section_order:
       queuePersistHistories();
       updateUndoRedoButtons();
       scheduleCompile();
+      if (editorKey === 'bib') updateBibHealthStatus(true);
     }
 
     function performEditorUndo(editorKey = activeTab) {
@@ -1975,6 +2355,7 @@ section_order:
       });
       if (editors[activeTab]) editors[activeTab].refresh();
       updateUndoRedoButtons();
+      updateTabScopedUI();
     }
 
     function updateTabVisibility() {
@@ -2034,6 +2415,473 @@ section_order:
       fileInput.value = '';
     });
 
+    function setEditorContent(editorKey, value) {
+      const editor = editors[editorKey];
+      if (!editor) return;
+      const nextValue = String(value ?? '');
+      suppressHistoryTracking = true;
+      editor.setValue(nextValue);
+      suppressHistoryTracking = false;
+      editorHistories[editorKey] = createDefaultHistory(nextValue);
+      const contentKey = EDITOR_CONTENT_KEYS[editorKey];
+      if (contentKey) localStorage.setItem(contentKey, nextValue);
+      queuePersistHistories();
+      updateUndoRedoButtons();
+      scheduleCompile();
+    }
+
+    function normalizeBibKey(raw) {
+      const text = String(raw || '').trim();
+      if (!text) return '';
+      return text.replace(/[^A-Za-z0-9:_-]+/g, '');
+    }
+
+    function normalizeTitle(raw) {
+      return String(raw || '')
+        .toLowerCase()
+        .replace(/[{}]/g, '')
+        .replace(/[^a-z0-9]+/g, ' ')
+        .trim();
+    }
+
+    function splitBibEntryTexts(text) {
+      const input = String(text || '');
+      const entries = [];
+      let index = 0;
+
+      while (index < input.length) {
+        const at = input.indexOf('@', index);
+        if (at < 0) break;
+        const openBrace = input.indexOf('{', at);
+        if (openBrace < 0) break;
+
+        let depth = 0;
+        let end = -1;
+        for (let i = openBrace; i < input.length; i += 1) {
+          const ch = input[i];
+          if (ch === '{') depth += 1;
+          if (ch === '}') {
+            depth -= 1;
+            if (depth === 0) {
+              end = i + 1;
+              break;
+            }
+          }
+        }
+
+        if (end < 0) break;
+        const candidate = input.slice(at, end).trim();
+        if (candidate) entries.push(candidate);
+        index = end;
+      }
+
+      return entries;
+    }
+
+    function parseBibEntries(text) {
+      return splitBibEntryTexts(text).map((entryText) => {
+        const header = entryText.match(/^@([A-Za-z]+)\s*\{\s*([^,\s]+)\s*,/);
+        const type = header ? String(header[1]).toLowerCase() : '';
+        const key = normalizeBibKey(header ? header[2] : '');
+        const titleMatch = entryText.match(/\btitle\s*=\s*(\{[\s\S]*?\}|\"[\s\S]*?\")\s*,?/i);
+        const titleRaw = titleMatch ? titleMatch[1] : '';
+        const title = normalizeTitle(titleRaw.replace(/^[{"]|[}"]$/g, ''));
+        return { key, type, title, text: entryText };
+      });
+    }
+
+    function getBibDuplicateStats(text) {
+      const entries = parseBibEntries(text);
+      const seenKeys = new Set();
+      const seenTitles = new Set();
+      let duplicateKeys = 0;
+      let duplicateTitles = 0;
+
+      entries.forEach((entry) => {
+        if (entry.key) {
+          if (seenKeys.has(entry.key)) duplicateKeys += 1;
+          seenKeys.add(entry.key);
+        }
+        if (entry.title) {
+          if (seenTitles.has(entry.title)) duplicateTitles += 1;
+          seenTitles.add(entry.title);
+        }
+      });
+
+      return { totalEntries: entries.length, duplicateKeys, duplicateTitles };
+    }
+
+    function updateBibHealthStatus(force = false) {
+      const stats = getBibDuplicateStats(cmBib.getValue());
+      const hasDupes = stats.duplicateKeys > 0 || stats.duplicateTitles > 0;
+      btnBibClean.textContent = hasDupes ? 'Clean .bib*' : 'Clean .bib';
+      if (activeTab !== 'bib' && !force) return;
+      if (stats.totalEntries === 0) {
+        setBibImportStatus('BibTeX tab is empty. Import by ID or paste entries manually.');
+      } else if (hasDupes) {
+        setBibImportStatus(
+          `Detected overlap: ${stats.duplicateKeys} duplicate keys and ${stats.duplicateTitles} duplicate titles. Cleaning is recommended.`,
+          'warning',
+        );
+      } else {
+        setBibImportStatus(`Loaded ${stats.totalEntries} BibTeX entries. No obvious duplicates detected.`);
+      }
+    }
+
+    function bibtexEsc(value) {
+      return String(value || '')
+        .replace(/[{}]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    function slugifyBibToken(value) {
+      return String(value || '')
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '')
+        .trim();
+    }
+
+    function inferBibType(paper = {}) {
+      const venue = String(paper.venue || '').toLowerCase();
+      const publicationTypes = Array.isArray(paper.publicationTypes) ? paper.publicationTypes.map((x) => String(x).toLowerCase()) : [];
+      if (publicationTypes.some((x) => x.includes('journal'))) return 'article';
+      if (publicationTypes.some((x) => x.includes('conference'))) return 'inproceedings';
+      if (venue.includes('journal')) return 'article';
+      if (venue.includes('conference') || venue.includes('symposium') || venue.includes('workshop')) return 'inproceedings';
+      return 'misc';
+    }
+
+    function buildBibEntryFromPaper(paper, fallbackAuthorToken = 'author') {
+      const title = bibtexEsc(paper.title || 'Untitled');
+      const year = String(paper.year || '').match(/^\d{4}$/) ? String(paper.year) : 'n.d.';
+      const authorNames = (Array.isArray(paper.authors) ? paper.authors : [])
+        .map((author) => bibtexEsc(author?.name || ''))
+        .filter(Boolean);
+      const authors = authorNames.length > 0 ? authorNames.join(' and ') : fallbackAuthorToken;
+      const firstAuthorToken = slugifyBibToken(authorNames[0] || fallbackAuthorToken) || 'author';
+      const titleToken = slugifyBibToken(title).slice(0, 24) || 'paper';
+      const key = normalizeBibKey(`${firstAuthorToken}${year}${titleToken}`);
+      const venue = bibtexEsc(paper.venue || '');
+      const urlCandidate = paper.url || (paper.externalIds?.DOI ? `https://doi.org/${paper.externalIds.DOI}` : '');
+      const url = bibtexEsc(urlCandidate);
+      const type = inferBibType(paper);
+      const venueField = type === 'article' ? 'journal' : 'booktitle';
+      const lines = [
+        `@${type}{${key},`,
+        `  title={${title}},`,
+        `  author={${authors}},`,
+      ];
+      if (/^\d{4}$/.test(year)) {
+        lines.push(`  year={${year}},`);
+      }
+      if (venue) {
+        lines.push(`  ${venueField}={${venue}},`);
+      }
+      if (url) {
+        lines.push(`  url={${url}},`);
+      }
+      lines.push('}');
+      return lines.join('\n');
+    }
+
+    function extractIdFromUrl(value, pathToken) {
+      const raw = String(value || '').trim();
+      if (!raw) return '';
+      if (!/^https?:\/\//i.test(raw)) return raw;
+      try {
+        const parsed = new URL(raw);
+        if (pathToken === 'dblp') {
+          const parts = parsed.pathname.split('/').filter(Boolean);
+          const pidIndex = parts.findIndex((part) => part === 'pid');
+          if (pidIndex >= 0 && parts[pidIndex + 1]) {
+            return decodeURIComponent(parts.slice(pidIndex + 1).join('/').replace(/\.html$|\.bib$/i, ''));
+          }
+          return decodeURIComponent(parts.join('/').replace(/\.html$|\.bib$/i, ''));
+        }
+        if (pathToken === 'semantic') {
+          const parts = parsed.pathname.split('/').filter(Boolean);
+          const authorIdx = parts.findIndex((part) => part === 'author');
+          if (authorIdx >= 0 && parts[authorIdx + 1]) {
+            return decodeURIComponent(parts.at(-1));
+          }
+          return decodeURIComponent(parts.at(-1) || '');
+        }
+        if (pathToken === 'google') {
+          return parsed.searchParams.get('user') || decodeURIComponent(parsed.pathname.split('/').filter(Boolean).at(-1) || '');
+        }
+      } catch (err) {
+        return raw;
+      }
+      return raw;
+    }
+
+    async function fetchJson(url) {
+      const resp = await fetch(url);
+      if (!resp.ok) {
+        throw new Error(`Request failed (${resp.status}) for ${url}`);
+      }
+      return resp.json();
+    }
+
+    async function fetchTextContent(url) {
+      const resp = await fetch(url);
+      if (!resp.ok) {
+        throw new Error(`Request failed (${resp.status}) for ${url}`);
+      }
+      return resp.text();
+    }
+
+    async function importDblpBib(rawId) {
+      const dblpId = extractIdFromUrl(rawId, 'dblp').replace(/^pid\//i, '').trim();
+      if (!dblpId) throw new Error('Enter a valid DBLP author ID.');
+      const encodedId = dblpId.split('/').filter(Boolean).map((part) => encodeURIComponent(part)).join('/');
+      const bibUrl = `https://dblp.org/pid/${encodedId}.bib`;
+      const bibText = await fetchTextContent(bibUrl);
+      if (!/@[A-Za-z]+\s*\{/.test(bibText)) {
+        throw new Error('DBLP did not return valid BibTeX entries for this ID.');
+      }
+      return bibText.trim();
+    }
+
+    async function fetchSemanticScholarPapers(authorId) {
+      const out = [];
+      let offset = 0;
+      const limit = 100;
+      const maxPapers = 1000;
+      while (out.length < maxPapers) {
+        const fields = 'title,year,venue,url,authors,publicationTypes,externalIds';
+        const url = `https://api.semanticscholar.org/graph/v1/author/${encodeURIComponent(authorId)}/papers?offset=${offset}&limit=${limit}&fields=${fields}`;
+        const payload = await fetchJson(url);
+        const papers = Array.isArray(payload?.data) ? payload.data : [];
+        if (papers.length === 0) break;
+        out.push(...papers);
+        if (papers.length < limit) break;
+        offset += papers.length;
+      }
+      return out;
+    }
+
+    async function importSemanticScholarBib(rawId, fallbackAuthorName = 'Author') {
+      const semanticId = extractIdFromUrl(rawId, 'semantic').trim();
+      if (!semanticId) throw new Error('Enter a valid Semantic Scholar author ID.');
+      const papers = await fetchSemanticScholarPapers(semanticId);
+      if (!papers.length) throw new Error('No Semantic Scholar papers found for this author ID.');
+      const entries = papers
+        .filter((paper) => paper && paper.title)
+        .map((paper) => buildBibEntryFromPaper(paper, fallbackAuthorName));
+      return entries.join('\n\n');
+    }
+
+    async function importGoogleScholarBib(rawId) {
+      const scholarId = extractIdFromUrl(rawId, 'google').trim();
+      if (!scholarId) throw new Error('Enter a valid Google Scholar profile ID (user=...).');
+      const scholarUrl = `${GOOGLE_PROXY_PREFIX}http://scholar.google.com/citations?hl=en&user=${encodeURIComponent(scholarId)}`;
+      const profileText = await fetchTextContent(scholarUrl);
+      const nameMatch = profileText.match(/Title:\s*([^\n]+?)\s*-\s*Google Scholar/i)
+        || profileText.match(/<title>\s*([^<]+?)\s*-\s*Google Scholar/i);
+      const scholarName = nameMatch ? nameMatch[1].trim() : '';
+      if (!scholarName) {
+        throw new Error('Could not resolve a Scholar profile name from this ID.');
+      }
+      const searchUrl = `https://api.semanticscholar.org/graph/v1/author/search?query=${encodeURIComponent(scholarName)}&limit=5&fields=authorId,name,paperCount`;
+      const payload = await fetchJson(searchUrl);
+      const candidates = Array.isArray(payload?.data) ? payload.data : [];
+      if (candidates.length === 0) {
+        throw new Error('Scholar profile found, but no matching Semantic Scholar author was found.');
+      }
+      const normalizedTarget = scholarName.toLowerCase().replace(/\s+/g, ' ').trim();
+      const best = candidates.find((candidate) => String(candidate?.name || '').toLowerCase().trim() === normalizedTarget)
+        || candidates.sort((a, b) => (b?.paperCount || 0) - (a?.paperCount || 0))[0];
+      if (!best?.authorId) {
+        throw new Error('Scholar profile found, but no usable author ID match was found.');
+      }
+      return importSemanticScholarBib(best.authorId, scholarName);
+    }
+
+    function mergeBibContent(existingBib, incomingBib, replaceAll = false) {
+      const incomingEntries = parseBibEntries(incomingBib);
+      if (replaceAll) {
+        return {
+          mergedBib: incomingEntries.map((entry) => entry.text).join('\n\n').trim(),
+          imported: incomingEntries.length,
+          skippedByKey: 0,
+          skippedByTitle: 0,
+        };
+      }
+
+      const existingEntries = parseBibEntries(existingBib);
+      const seenKeys = new Set(existingEntries.map((entry) => entry.key).filter(Boolean));
+      const seenTitles = new Set(existingEntries.map((entry) => entry.title).filter(Boolean));
+      let skippedByKey = 0;
+      let skippedByTitle = 0;
+      const accepted = [];
+
+      incomingEntries.forEach((entry) => {
+        const keyDup = entry.key && seenKeys.has(entry.key);
+        const titleDup = entry.title && seenTitles.has(entry.title);
+        if (keyDup || titleDup) {
+          if (keyDup) skippedByKey += 1;
+          if (titleDup) skippedByTitle += 1;
+          return;
+        }
+        accepted.push(entry.text);
+        if (entry.key) seenKeys.add(entry.key);
+        if (entry.title) seenTitles.add(entry.title);
+      });
+
+      const existingTrimmed = String(existingBib || '').trim();
+      const mergedBib = [existingTrimmed, ...accepted].filter(Boolean).join('\n\n').trim();
+      return {
+        mergedBib,
+        imported: accepted.length,
+        skippedByKey,
+        skippedByTitle,
+      };
+    }
+
+    function downloadTextFile(content, filename, mimeType = 'text/plain;charset=utf-8') {
+      const blob = new Blob([content], { type: mimeType });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      link.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function simpleBibCleanup(bibText) {
+      const entries = parseBibEntries(bibText).map((entry) => entry.text);
+      if (entries.length === 0) return String(bibText || '').trim();
+      return entries.join('\n\n').trim() + '\n';
+    }
+
+    async function loadBibtexTidyApi() {
+      if (!bibtexTidyModulePromise) {
+        bibtexTidyModulePromise = import('https://cdn.skypack.dev/bibtex-tidy').catch(() => null);
+      }
+      const mod = await bibtexTidyModulePromise;
+      if (!mod) return null;
+      if (typeof mod.tidy === 'function') return mod.tidy;
+      if (mod.default && typeof mod.default.tidy === 'function') return mod.default.tidy;
+      if (typeof mod.default === 'function') return mod.default;
+      return null;
+    }
+
+    async function cleanBibEditorContent() {
+      const source = cmBib.getValue();
+      if (!source.trim()) {
+        setBibImportStatus('BibTeX is empty. Add entries before cleaning.');
+        return;
+      }
+      btnBibClean.disabled = true;
+      setBibImportStatus('Cleaning BibTeX...');
+      try {
+        const tidyFn = await loadBibtexTidyApi();
+        let cleaned = source;
+        if (tidyFn) {
+          try {
+            const maybeClean = tidyFn(source);
+            cleaned = typeof maybeClean === 'string' ? maybeClean : source;
+          } catch (err) {
+            cleaned = source;
+          }
+        }
+        if (!cleaned || typeof cleaned !== 'string') {
+          cleaned = source;
+        }
+        cleaned = simpleBibCleanup(cleaned);
+        setEditorContent('bib', cleaned);
+        setBibImportStatus('BibTeX cleaned and normalized. You can now download the file.');
+      } catch (err) {
+        setEditorContent('bib', simpleBibCleanup(source));
+        setBibImportStatus('Cleaned with fallback formatter (external tidy API unavailable).', 'warning');
+      } finally {
+        btnBibClean.disabled = false;
+        updateBibHealthStatus(true);
+      }
+    }
+
+    async function runBibImport(replaceAll = false) {
+      const provider = bibImportProvider.value;
+      const rawId = bibImportId.value.trim();
+      if (!rawId) {
+        setBibImportStatus('Enter an ID before importing.', 'warning');
+        bibImportId.focus();
+        return;
+      }
+      btnBibImport.disabled = true;
+      btnBibImportReplace.disabled = true;
+      setBibImportStatus(`Fetching entries from ${provider}...`);
+      try {
+        let importedBib = '';
+        if (provider === 'dblp') {
+          importedBib = await importDblpBib(rawId);
+        } else if (provider === 'semantic') {
+          importedBib = await importSemanticScholarBib(rawId);
+        } else if (provider === 'google') {
+          importedBib = await importGoogleScholarBib(rawId);
+        } else {
+          throw new Error('Unsupported provider.');
+        }
+
+        const existing = cmBib.getValue();
+        const merged = mergeBibContent(existing, importedBib, replaceAll);
+        if (!merged.mergedBib) {
+          throw new Error('No valid BibTeX entries were parsed from the import result.');
+        }
+        setEditorContent('bib', `${merged.mergedBib}\n`);
+        if (replaceAll) {
+          setBibImportStatus(`Imported and replaced with ${merged.imported} entries from ${provider}.`);
+        } else {
+          const overlap = merged.skippedByKey + merged.skippedByTitle;
+          if (overlap > 0) {
+            setBibImportStatus(
+              `Imported ${merged.imported} new entries (${overlap} overlapping entries skipped). Cleaning is recommended.`,
+              'warning',
+            );
+          } else {
+            setBibImportStatus(`Imported ${merged.imported} new entries from ${provider}.`);
+          }
+        }
+      } catch (err) {
+        const message = err && err.message ? err.message : String(err);
+        setBibImportStatus(`Import failed: ${message}`, 'warning');
+      } finally {
+        btnBibImport.disabled = false;
+        btnBibImportReplace.disabled = false;
+        updateBibHealthStatus(true);
+      }
+    }
+
+    btnBibClean.addEventListener('click', cleanBibEditorContent);
+    btnBibDownload.addEventListener('click', () => {
+      downloadTextFile(cmBib.getValue(), 'publications.bib', 'application/x-bibtex;charset=utf-8');
+      setBibImportStatus('Downloaded current BibTeX as publications.bib.');
+    });
+    btnBibImport.addEventListener('click', () => runBibImport(false));
+    btnBibImportReplace.addEventListener('click', async () => {
+      const accepted = await openConfirmDialog({
+        title: 'Replace current BibTeX?',
+        message: 'This will replace the current BibTeX tab with imported entries.',
+        confirmText: 'Replace',
+        cancelText: 'Cancel',
+        destructive: true,
+      });
+      if (!accepted) return;
+      runBibImport(true);
+    });
+    bibImportId.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        runBibImport(false);
+      }
+    });
+    bibImportProvider.addEventListener('change', () => {
+      updateBibImportPlaceholder();
+      setBibImportStatus('Provider changed. Enter an author ID and import.');
+    });
+
     function scheduleCompile() {
       if (compileTimeout) clearTimeout(compileTimeout);
       if (getCompileMode() === 'manual') {
@@ -2064,6 +2912,7 @@ section_order:
     cmBib.on('change', () => {
       scheduleEditorHistorySnapshot('bib');
       scheduleCompile();
+      updateBibHealthStatus();
     });
 
     function formatLastUpdatedDate(dateObj = new Date()) {
@@ -2183,10 +3032,28 @@ section_order:
       return `(${parts.join(', ')})`;
     }
 
-    function getResumeTypSource() {
+    function getResumeTypSource(options = {}) {
+      const forDownload = !!options.forDownload;
+      const paths = forDownload
+        ? {
+          template: 'template.typ',
+          resume: 'resume.yml',
+          bibResume: 'resume.yml',
+          configLong: 'config.yml',
+          configShort: 'config-short.yml',
+          bib: 'publications.bib',
+        }
+        : {
+          template: '/template.typ',
+          resume: '/resume.yml',
+          bibResume: '/resume.yml',
+          configLong: '/config.yml',
+          configShort: '/config-short.yml',
+          bib: '/publications.bib',
+        };
       const runtimeOverrides = overridesToTypstDict(getRuntimeOverridesObject());
       const selectedMode = escapeTypstString(getSelectedMode());
-      return `#import "/template.typ": build_resume
+      return `#import "${paths.template}": build_resume
 
 #let normalize_mode(mode) = {
   lower(str(mode).trim())
@@ -2199,11 +3066,11 @@ section_order:
 #let build_resume_by_mode(
   mode: "default",
   runtime_overrides: (:),
-  resume_file: "/resume.yml",
-  bib_resume_file: "/resume.yml",
-  config_long_file: "/config.yml",
-  config_short_file: "/config-short.yml",
-  bib_file: "/publications.bib",
+  resume_file: "${paths.resume}",
+  bib_resume_file: "${paths.bibResume}",
+  config_long_file: "${paths.configLong}",
+  config_short_file: "${paths.configShort}",
+  bib_file: "${paths.bib}",
 ) = {
   let m = normalize_mode(mode)
   let use_short = m.contains("short")
@@ -2239,7 +3106,7 @@ section_order:
       const bibContent = cmBib.getValue();
       await $typst.addSource('/template.typ', templateContent);
       await $typst.addSource('/resume.yml', cmResume.getValue());
-      await $typst.addSource('/resume.typ', getResumeTypSource());
+      await $typst.addSource('/resume.typ', getResumeTypSource({ forDownload: false }));
       await $typst.addSource('/config.yml', cmConfig.getValue());
       await $typst.addSource('/config-short.yml', cmConfigShort.getValue());
       for (const bibPath of BIB_SOURCE_ALIASES) {
@@ -2378,7 +3245,7 @@ section_order:
     });
 
     btnDownloadTyp.addEventListener('click', () => {
-      const typSource = getResumeTypSource();
+      const typSource = getResumeTypSource({ forDownload: true });
       const blob = new Blob([typSource], { type: 'text/plain;charset=utf-8' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -2553,9 +3420,13 @@ section_order:
       setSelectValue(overrideContact, localStorage.getItem(LS_OVERRIDE_CONTACT) || 'config', 'config');
       setSelectValue(overrideFont, localStorage.getItem(LS_OVERRIDE_FONT) || 'config', 'config');
       setSelectValue(overrideMonoFont, localStorage.getItem(LS_OVERRIDE_MONO_FONT) || 'config', 'config');
+      const storedPaneWidth = localStorage.getItem(LS_EDITOR_PANE_WIDTH);
+      applyEditorPaneWidth(storedPaneWidth || DEFAULT_EDITOR_WIDTH, false);
+      updateBibImportPlaceholder();
       refreshCustomSelects();
       loadEditorHistoriesFromStorage();
       updateTabVisibility();
+      updateBibHealthStatus(true);
       updateCompileControlsUI();
       persistPreferences();
 

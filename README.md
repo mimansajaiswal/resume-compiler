@@ -9,6 +9,7 @@ A highly configurable, ATS-friendly resume template for [Typst](https://typst.ap
 - **External configuration** - Manage settings in `config.yml`
 - **No-JS/plain-text variant** - Generate a PDF with links rendered as plain text
 - **BibTeX support** - Professional citation formatting with custom links
+- **Configurable publication emphasis** - Keep titles regular by default and optionally auto-bold selected author names
 - **Markdown-first content** - Use inline markdown in text fields (bold, italics, links)
 - **Configurable contact display** - Render contact row as labels or icons+labels
 - **Brand/academic profile icons** - Uses Typst Universe `scienceicons` + `sicons` (Google Scholar/DBLP/ORCID, etc.); unknown networks render label-only
@@ -570,6 +571,9 @@ styling:
   secondary_color: "#555555"   # Accent text color (hex)
   link_color: "#1C398D"        # Link color (hex)
   section_heading_sticky: true # Keep section heading with following content
+  publication_title_bold: false # Keep publication titles regular weight by default
+  publication_autobold_authors: true # Auto-bold `personal.name` in publication author lists
+  publication_bold_author_names: [] # Optional extra names to bold (exact-match strings)
   contact_display_mode: "icon_label"   # "label" | "icon_label"
   contact_icon_spacing: 0.21em
 

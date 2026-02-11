@@ -70,6 +70,9 @@ styling:
   header_rule_color: "#9F9FA8" # slightly lighter divider
   header_rule_thickness: 1pt # LaTeX rule is 1pt
   publications_link_style: "compact"
+  publication_title_bold: false # Keep publication titles regular-weight by default
+  publication_autobold_authors: true # Auto-bold `personal.name` inside publication authors
+  publication_bold_author_names: [] # Optional extra names to bold in author lists
   last_updated_font_size: 0.8em
   last_updated_label: "Last Updated on"
   contact_display_mode: "icon_label" # Options: "label", "icon_label"

@@ -55,6 +55,9 @@ styling:
   header_rule_color: "#9F9FA8"
   header_rule_thickness: 0.7pt
   publications_link_style: "compact"
+  publication_title_bold: false
+  publication_autobold_authors: true
+  publication_bold_author_names: []
   last_updated_font_size: 0.66em
   last_updated_label: "Last Updated on"
   contact_display_mode: "icon_label"

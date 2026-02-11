@@ -449,6 +449,55 @@
   }
 }
 
+#let publication_author_highlight_candidates(personal_name, config) = {
+  let candidates = ()
+  let configured = as_array(config.at("publication_bold_author_names", default: ()))
+  for candidate in configured {
+    let c = str(candidate).trim()
+    if c != "" {
+      candidates.push(c)
+    }
+  }
+
+  let auto_highlight = config.at("publication_autobold_authors", default: true)
+  if auto_highlight and personal_name != none and str(personal_name).trim() != "" {
+    candidates.push(str(personal_name).trim())
+  }
+
+  let seen = ()
+  let unique = ()
+  for candidate in candidates {
+    let key = lower(str(candidate))
+    if not seen.contains(key) {
+      seen.push(key)
+      unique.push(candidate)
+    }
+  }
+  unique
+}
+
+#let choose_author_highlight_name(authors_str, candidates) = {
+  if authors_str == none { return none }
+  let s = str(authors_str)
+  for candidate in as_array(candidates) {
+    let c = str(candidate).trim()
+    if c != "" and s.contains(c) {
+      return c
+    }
+  }
+  none
+}
+
+#let publication_title_content(title, config, trailing_period: false) = {
+  let rendered = render_rich(title, config)
+  let content = if trailing_period { rendered + [.] } else { rendered }
+  if config.at("publication_title_bold", default: false) {
+    strong(content)
+  } else {
+    content
+  }
+}
+
 #let resolve_profile_label(profile) = {
   if "label" in profile and profile.label != none and str(profile.label).trim() != "" {
     return profile.label
@@ -1172,7 +1221,7 @@
   pub_font_size,
   pub_link_style,
   pub_line_spacing,
-  author_name,
+  author_highlight_candidates,
   config,
   section_key: "accepted",
   publication_number: none,
@@ -1208,16 +1257,17 @@
     let url_from_bib = if type(bib_entry) == dictionary { bib_entry.at("url", default: none) } else { none }
     let entry_url = if non_empty(url_override) { url_override } else { url_from_bib }
     let extra_links = publication_links(pub, config)
+    let author_highlight_name = choose_author_highlight_name(authors, author_highlight_candidates)
     [
       #{
         if non_empty(entry_url) {
-          maybe_link(entry_url, strong(render_rich(title, config) + [.]), config)
+          maybe_link(entry_url, publication_title_content(title, config, trailing_period: true), config)
         } else {
-          strong(render_rich(title, config) + [.])
+          publication_title_content(title, config, trailing_period: true)
         }
       }
       #if non_empty(authors) {
-        [ #render_rich(highlight_author_name(authors, author_name), config).]
+        [ #render_rich(highlight_author_name(authors, author_highlight_name), config).]
       }
       #if non_empty(venue) {
         [
@@ -1247,11 +1297,15 @@
         let title = if title == none { "Untitled" } else { title }
         let has_url = "url" in pub and pub.url != none
         let content_text = pub.at("content", default: none)
+        let author_highlight_name = choose_author_highlight_name(
+          pub.at("authors", default: none),
+          author_highlight_candidates,
+        )
 
         if section_key == "works_in_progress" {
-          strong(render_rich(title, config))
+          publication_title_content(title, config)
           if "authors" in pub and pub.authors != none {
-            [. #render_rich(highlight_author_name(pub.authors, author_name), config).]
+            [. #render_rich(highlight_author_name(pub.authors, author_highlight_name), config).]
           }
           let pub_links = publication_links(pub, config)
           if pub_links.len() > 0 {
@@ -1263,12 +1317,12 @@
           }
         } else if section_key == "submitted" or section_key == "accepted" {
           if has_url {
-            maybe_link(pub.url, strong(render_rich(title, config) + [.]), config)
+            maybe_link(pub.url, publication_title_content(title, config, trailing_period: true), config)
           } else {
-            strong(render_rich(title, config) + [.])
+            publication_title_content(title, config, trailing_period: true)
           }
           if "authors" in pub and pub.authors != none {
-            [ #render_rich(highlight_author_name(pub.authors, author_name), config).]
+            [ #render_rich(highlight_author_name(pub.authors, author_highlight_name), config).]
           }
           if "publisher" in pub and non_empty(pub.publisher) {
             [ #emph(render_rich(pub.publisher, config)).]
@@ -1278,15 +1332,15 @@
           }
         } else {
           if has_url {
-            maybe_link(pub.url, strong(render_rich(title, config)), config)
+            maybe_link(pub.url, publication_title_content(title, config), config)
           } else {
-            strong(render_rich(title, config))
+            publication_title_content(title, config)
           }
           if "publisher" in pub and pub.publisher != none {
             [. In #emph(render_rich(pub.publisher, config)).]
           }
           if "authors" in pub and pub.authors != none {
-            [ #render_rich(highlight_author_name(pub.authors, author_name), config).]
+            [ #render_rich(highlight_author_name(pub.authors, author_highlight_name), config).]
           }
           if non_empty(content_text) {
             [ #render_rich(content_text, config)]
@@ -1323,7 +1377,8 @@
   let pub_font_size = config.at("publications_font_size", default: config.at("font_size", default: 10pt))
   let pub_link_style = config.at("publications_link_style", default: "compact")
   let pub_line_spacing = config.at("publications_line_spacing", default: config.at("line_spacing", default: 0.33em))
-  let author_name = data.at("personal", default: (:)).at("name", default: none)
+  let personal_name = data.at("personal", default: (:)).at("name", default: none)
+  let author_highlight_candidates = publication_author_highlight_candidates(personal_name, config)
   let publication_sections = as_array(config.at("publication_sections", default: ()))
   let show_publication_numbers = config.at("show_publication_numbers", default: false)
 
@@ -1355,7 +1410,7 @@
                   pub_font_size,
                   pub_link_style,
                   pub_line_spacing,
-                  author_name,
+                  author_highlight_candidates,
                   config,
                   section_key: section_key,
                   publication_number: if show_publication_numbers { "[" + str(i + 1) + "]" } else { none },
@@ -1394,7 +1449,7 @@
             pub_font_size,
             pub_link_style,
             pub_line_spacing,
-            author_name,
+            author_highlight_candidates,
             config,
             publication_number: if show_publication_numbers { "[" + str(i + 1) + "]" } else { none },
           )
@@ -1414,7 +1469,7 @@
           pub_font_size,
           pub_link_style,
           pub_line_spacing,
-          author_name,
+          author_highlight_candidates,
           config,
           publication_number: if show_publication_numbers { "[" + str(i + 1) + "]" } else { none },
         )
@@ -2058,6 +2113,15 @@
     }
     if "publications_link_style" in styling {
       flat.insert("publications_link_style", styling.publications_link_style)
+    }
+    if "publication_title_bold" in styling {
+      flat.insert("publication_title_bold", styling.publication_title_bold)
+    }
+    if "publication_autobold_authors" in styling {
+      flat.insert("publication_autobold_authors", styling.publication_autobold_authors)
+    }
+    if "publication_bold_author_names" in styling {
+      flat.insert("publication_bold_author_names", styling.publication_bold_author_names)
     }
     if "last_updated_font_size" in styling {
       flat.insert(
