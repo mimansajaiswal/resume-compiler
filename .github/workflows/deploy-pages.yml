@@ -7,10 +7,11 @@ on:
       - "web/**"
       - "template.typ"
       - "resume.yml"
+      - "resume-bibtex.yml"
       - "config.yml"
       - "config-short.yml"
       - "publications.bib"
-      - "example.yml"
+      - "resume.schema.json"
   workflow_dispatch:
 
 permissions:

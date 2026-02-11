@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "./resume.schema.json",
+  "title": "Flexible Typst Resume YAML",
+  "description": "Permissive schema for markdown-first resume data used by template.typ.",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "personal": {
+      "$ref": "#/$defs/entryObject"
+    },
+    "interests_summary": {
+      "$ref": "#/$defs/markdownValue"
+    },
+    "work": {
+      "$ref": "#/$defs/entryArray"
+    },
+    "education": {
+      "$ref": "#/$defs/entryArray"
+    },
+    "publications": {
+      "$ref": "#/$defs/entryArray"
+    },
+    "projects": {
+      "$ref": "#/$defs/entryArray"
+    },
+    "awards": {
+      "$ref": "#/$defs/entryArray"
+    },
+    "skills": {
+      "$ref": "#/$defs/entryArray"
+    },
+    "languages": {
+      "$ref": "#/$defs/entryArray"
+    },
+    "interests": {
+      "$ref": "#/$defs/entryArray"
+    },
+    "references": {
+      "$ref": "#/$defs/entryArray"
+    },
+    "meta": {
+      "$ref": "#/$defs/entryObject"
+    }
+  },
+  "$defs": {
+    "markdownValue": {
+      "type": "string"
+    },
+    "entryArray": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/flexibleValue"
+      }
+    },
+    "entryObject": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/flexibleValue"
+      },
+      "patternProperties": {
+        ".*url$": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "flexibleValue": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "integer"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/entryArray"
+        },
+        {
+          "$ref": "#/$defs/entryObject"
+        }
+      ]
+    }
+  }
+}

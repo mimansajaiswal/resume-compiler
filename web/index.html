@@ -65,6 +65,30 @@
       align-items: center;
     }
 
+    .paper-size-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      color: var(--earth);
+      font-size: 0.62rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .paper-size-wrap select {
+      background: transparent;
+      color: var(--linen);
+      border: 1px solid var(--earth);
+      border-radius: 0;
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      padding: 0.2rem 0.35rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+    }
+
     .header-actions button {
       padding: 0.3rem 0.85rem;
       border: 1px solid var(--earth);
@@ -182,6 +206,30 @@
 
     .tab-actions button:hover {
       background: var(--oatmeal);
+    }
+
+    .schema-help {
+      border-bottom: 1px solid var(--earth);
+      background: var(--linen-dark);
+      padding: 0.35rem 0.7rem;
+      font-size: 0.66rem;
+      line-height: 1.45;
+      color: var(--charcoal);
+    }
+
+    .schema-help summary {
+      cursor: pointer;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--charcoal);
+    }
+
+    .schema-help code {
+      font-family: var(--mono);
+      font-size: 0.64rem;
+      background: #ece7dd;
+      padding: 0.02rem 0.2rem;
     }
 
     .editor-wrapper {
@@ -367,6 +415,10 @@
         padding: 0.3rem 0.6rem;
         font-size: 0.62rem;
       }
+
+      .paper-size-wrap span {
+        display: none;
+      }
     }
   </style>
 </head>
@@ -384,6 +436,13 @@
       <div class="subtitle">yaml + typst // pdf generator</div>
     </div>
     <div class="header-actions">
+      <label class="paper-size-wrap">
+        <span>Paper</span>
+        <select id="paper-size">
+          <option value="letter">Letter</option>
+          <option value="a4">A4</option>
+        </select>
+      </label>
       <button id="btn-download" disabled>Download PDF</button>
       <button id="btn-reset">Reset to Defaults</button>
     </div>
@@ -400,6 +459,17 @@
           <input type="file" id="file-input" accept=".yml,.yaml,.bib,.txt" style="display:none">
         </div>
       </div>
+      <details class="schema-help">
+        <summary>Supported Keys</summary>
+        <div>
+          <div>Schema style is standardized (no legacy aliases): use the keys shown below directly.</div>
+          <div>Work: <code>work[].name</code>, <code>work[].positions[].name</code>, <code>work[].positions[].content[]</code></div>
+          <div>Education: <code>education[].name</code>, optional <code>content[]</code>, <code>honors[]</code>, <code>courses[]</code>, <code>thesis</code></div>
+          <div>Publications: <code>bib_key</code> or markdown-first entries with <code>name/content</code>, <code>authors</code>, <code>notes</code></div>
+          <div>Generic sections: any extra top-level array (example: <code>community_service</code>) auto-renders even if not in <code>section_order</code>.</div>
+          <div>Contact icons: set <code>styling.contact_display_mode</code> to <code>label</code>, <code>icon_label</code>, or <code>icon</code>.</div>
+        </div>
+      </details>
       <div class="editor-wrapper">
         <div class="cm-container" id="cm-resume"></div>
         <div class="cm-container hidden" id="cm-config"></div>
@@ -429,22 +499,32 @@
     - Your Title
 
 work:
-  - organization: Company Name
+  - name: Company Name
     url: https://company.com
     positions:
-      - position: Your Role
+      - name: Your Role
         startDate: 2024-01-01
         endDate: present
-        highlights:
+        content:
           - "Describe your accomplishment here"
 
 education:
-  - institution: University Name
+  - name: University Name
     location: City, State
     studyType: B.S.
     area: Your Major
     startDate: 2020-09-01
     endDate: 2024-05-01
+    content:
+      - "*Advisor*: Prof. Example Person"
+
+# Generic section example (auto-rendered even if omitted from section_order):
+community_service:
+  - name: Theorem Proving Reading Group
+    startDate: 2023-01-01
+    endDate: present
+    content:
+      - "Organize monthly paper discussions and proof clinics."
 
 skills:
   - category: Technical Skills
@@ -455,56 +535,45 @@ skills:
 `;
 
     const DEFAULT_CONFIG_YAML = `variant: long
+paper_size: "letter"
 fonts:
   heading_font: "New Computer Modern"
   body_font: "New Computer Modern"
-  font_size: 10.5pt
-  name_font_size: 1.8em
+  font_size: 10pt
+  name_font_size: 1.4em
   section_font_size: 1em
   publications_font_size: 9.6pt
   awards_font_size: 10pt
 layout:
   margin: 0.5in
-  line_spacing: 0.82em
-  list_spacing: 0.24em
-  section_spacing: 0.5em
-  post_section_spacing: 0.22em
-  entry_spacing: 0.72em
-  entry_inner_spacing: 0.26em
-  work_entry_spacing: 0.56em
-  work_entry_inner_spacing: 0.28em
-  work_position_spacing: 0.26em
-  work_bullet_spacing: 0.24em
-  work_list_spacing: 0.24em
-  education_entry_spacing: 0.72em
-  education_entry_inner_spacing: 0.26em
-  education_honors_spacing: 0.26em
-  education_degree_spacing: 0.26em
-  education_courses_spacing: 0.24em
-  education_highlights_spacing: 0.24em
-  education_list_spacing: 0.22em
-  projects_entry_spacing: 0.44em
-  projects_entry_inner_spacing: 0.18em
-  awards_entry_spacing: 0.46em
-  awards_entry_inner_spacing: 0.22em
-  awards_highlights_spacing: 0.22em
-  awards_list_spacing: 0.22em
-  pub_spacing: 0.46em
-  publications_line_spacing: 0.76em
-  skill_spacing: 0.16em
-  header_bottom_spacing: 0.14em
+  line_spacing: 0.33em
+  list_spacing: 0.61em
+  section_spacing: 1.2em
+  post_section_spacing: 0.78em
+  entry_spacing: 0.62em
+  entry_inner_spacing: 0.48em
+  pub_spacing: 0.61em
+  publications_line_spacing: 0.33em
+  publications_heading_tighten: 0pt
+  skill_spacing: 0.61em
+  header_rule_top_spacing: 0.52em
+  header_bottom_spacing: 0.3em
   last_updated_bottom_spacing: 0.2em
 styling:
-  section_smallcaps: true
-  secondary_color: "#555555"
-  link_color: "#0b61a4"
-  section_rule_color: "#222222"
+  section_smallcaps: false
+  secondary_color: "#111111"
+  link_color: "#1C398D"
+  section_rule_color: "#9F9FA8"
   section_rule_thickness: 0.6pt
+  header_rule_color: "#9F9FA8"
   publications_link_style: "compact"
   contact_font_size: 0.85em
-  summary_font_size: 0.92em
-  last_updated_font_size: 0.72em
+  summary_font_size: 1em
+  last_updated_font_size: 0.8em
   last_updated_label: "Last Updated on"
+  contact_display_mode: "label"
+  contact_icon_family: "lucide"
+  contact_icon_spacing: 0.18em
 visibility:
   show_location: false
   show_phone: true
@@ -513,6 +582,8 @@ visibility:
   show_interests: false
   show_references: false
   show_last_updated: true
+  enable_links: true
+  show_publication_numbers: false
 section_titles:
   work: "Experience"
   education: "Education"
@@ -538,11 +609,13 @@ const DEFAULT_BIB = `@article{example2024,
     const LS_RESUME = 'resume_compiler_resume_yaml';
     const LS_CONFIG = 'resume_compiler_config_yaml';
     const LS_BIB = 'resume_compiler_publications_bib';
+    const LS_PAPER = 'resume_compiler_paper_size';
 
     const preview = document.getElementById('preview');
     const statusBar = document.getElementById('status-bar');
     const btnDownload = document.getElementById('btn-download');
     const btnReset = document.getElementById('btn-reset');
+    const paperSize = document.getElementById('paper-size');
     const overlay = document.getElementById('loading-overlay');
 
     const cmResume = CodeMirror(document.getElementById('cm-resume'), {
@@ -648,6 +721,74 @@ const DEFAULT_BIB = `@article{example2024,
       return `${line}\n${configText}`;
     }
 
+    function upsertTopLevelKey(configText, key, valueLiteral) {
+      const pattern = new RegExp(`^\\s*${key}\\s*:.*$`, 'm');
+      const line = `${key}: ${valueLiteral}`;
+      if (pattern.test(configText)) {
+        return configText.replace(pattern, line);
+      }
+      return `${line}\n${configText}`;
+    }
+
+    function detectPaperSize(configText) {
+      const m = configText.match(/^\s*paper_size\s*:\s*["']?([A-Za-z-]+)["']?\s*$/m);
+      if (!m) return 'letter';
+      return m[1].toLowerCase() === 'a4' ? 'a4' : 'letter';
+    }
+
+    function injectRuntimeConfig(configText) {
+      let out = injectLastUpdated(configText);
+      out = upsertTopLevelKey(out, 'paper_size', `"${paperSize.value}"`);
+      return out;
+    }
+
+    function detectVariantLetter(configText, bibText = '') {
+      const hasBib = Boolean((bibText || '').trim());
+      const topLevelLinks = configText.match(/^\s*enable_links\s*:\s*(true|false)\s*$/mi);
+      const nestedLinks = configText.match(/^\s{2}enable_links\s*:\s*(true|false)\s*$/mi);
+      const enableLinks = topLevelLinks
+        ? topLevelLinks[1].toLowerCase() === 'true'
+        : (nestedLinks ? nestedLinks[1].toLowerCase() === 'true' : true);
+      const variantMatch = configText.match(/^\s*variant\s*:\s*["']?([A-Za-z-]+)["']?\s*$/m);
+      const variant = variantMatch ? variantMatch[1].toLowerCase() : 'long';
+
+      if (!enableLinks) return 'N';
+      if (hasBib) return 'B';
+      if (variant === 'short') return 'S';
+      if (variant === 'long') return 'L';
+      return 'C';
+    }
+
+    function deriveResumeFilename(resumeYamlText, configText, bibText) {
+      const lines = resumeYamlText.split(/\r?\n/);
+      let inPersonal = false;
+      let fullName = '';
+      for (const line of lines) {
+        if (!inPersonal && /^\s*personal:\s*$/.test(line)) {
+          inPersonal = true;
+          continue;
+        }
+        if (inPersonal && /^[^\s#]/.test(line)) break;
+        if (inPersonal) {
+          const m = line.match(/^\s{2}name:\s*["']?([^"'\n]+)["']?\s*$/);
+          if (m) {
+            fullName = m[1].trim();
+            break;
+          }
+        }
+      }
+
+      const variantLetter = detectVariantLetter(configText, bibText);
+      if (!fullName) return `Resume_${variantLetter}.pdf`;
+      const tokens = fullName.split(/\s+/).filter(Boolean);
+      if (tokens.length === 0) return `Resume_${variantLetter}.pdf`;
+      const first = tokens[0];
+      const last = tokens.length > 1 ? tokens[tokens.length - 1] : '';
+      const compact = `${first}${last}`.replace(/[^A-Za-z0-9]/g, '');
+      if (!compact) return `Resume_${variantLetter}.pdf`;
+      return `${compact}_Resume_${variantLetter}.pdf`;
+    }
+
     async function compile() {
       if (!ready) return;
 
@@ -656,7 +797,7 @@ const DEFAULT_BIB = `@article{example2024,
       try {
         await $typst.addSource('/template.typ', templateContent);
         await $typst.addSource('/resume.yml', cmResume.getValue());
-        const runtimeConfig = injectLastUpdated(cmConfig.getValue());
+        const runtimeConfig = injectRuntimeConfig(cmConfig.getValue());
         await $typst.addSource('/config.yml', runtimeConfig);
 
         const bibContent = cmBib.getValue().trim();
@@ -701,7 +842,7 @@ const DEFAULT_BIB = `@article{example2024,
       try {
         await $typst.addSource('/template.typ', templateContent);
         await $typst.addSource('/resume.yml', cmResume.getValue());
-        const runtimeConfig = injectLastUpdated(cmConfig.getValue());
+        const runtimeConfig = injectRuntimeConfig(cmConfig.getValue());
         await $typst.addSource('/config.yml', runtimeConfig);
 
         const bibContent = cmBib.getValue().trim();
@@ -715,7 +856,7 @@ const DEFAULT_BIB = `@article{example2024,
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'resume.pdf';
+        a.download = deriveResumeFilename(cmResume.getValue(), cmConfig.getValue(), cmBib.getValue());
         a.click();
         URL.revokeObjectURL(url);
         setStatus('Ready', 'ready');
@@ -731,7 +872,13 @@ const DEFAULT_BIB = `@article{example2024,
       localStorage.removeItem(LS_RESUME);
       localStorage.removeItem(LS_CONFIG);
       localStorage.removeItem(LS_BIB);
+      localStorage.removeItem(LS_PAPER);
       location.reload();
+    });
+
+    paperSize.addEventListener('change', () => {
+      localStorage.setItem(LS_PAPER, paperSize.value);
+      scheduleCompile();
     });
 
     async function fetchText(url) {
@@ -767,6 +914,12 @@ const DEFAULT_BIB = `@article{example2024,
       cmResume.setValue(localStorage.getItem(LS_RESUME) || defaults.resumeYaml);
       cmConfig.setValue(localStorage.getItem(LS_CONFIG) || defaults.configYaml);
       cmBib.setValue(localStorage.getItem(LS_BIB) || defaults.bibContent);
+      const storedPaper = localStorage.getItem(LS_PAPER);
+      if (storedPaper === 'a4' || storedPaper === 'letter') {
+        paperSize.value = storedPaper;
+      } else {
+        paperSize.value = detectPaperSize(cmConfig.getValue());
+      }
 
       const typstScript = document.getElementById('typst');
 

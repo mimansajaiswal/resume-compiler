@@ -42,7 +42,32 @@ jobs:
           if [ -z "$LAST_UPDATED" ]; then
             LAST_UPDATED="$(date '+%B %-d, %Y')"
           fi
+          RAW_NAME="$(sed -nE 's/^  name:[[:space:]]*"?([^"]+)"?/\1/p' resume.yml | head -n1)"
+          if [ -n "$RAW_NAME" ]; then
+            FIRST_NAME="$(echo "$RAW_NAME" | awk '{print $1}')"
+            LAST_NAME="$(echo "$RAW_NAME" | awk '{print $NF}')"
+            if [ "$FIRST_NAME" = "$LAST_NAME" ]; then
+              NAME_STEM="$FIRST_NAME"
+            else
+              NAME_STEM="${FIRST_NAME}${LAST_NAME}"
+            fi
+            NAME_STEM="$(echo "$NAME_STEM" | tr -cd '[:alnum:]')"
+          fi
+          if [ -z "${NAME_STEM:-}" ]; then
+            NAME_STEM="Resume"
+          fi
+          RESUME_FILENAME_L="${NAME_STEM}_Resume_L.pdf"
+          RESUME_FILENAME_S="${NAME_STEM}_Resume_S.pdf"
+          RESUME_FILENAME_C="${NAME_STEM}_Resume_C.pdf"
+          RESUME_FILENAME_B="${NAME_STEM}_Resume_B.pdf"
+          RESUME_FILENAME_N="${NAME_STEM}_Resume_N.pdf"
           echo "last_updated=$LAST_UPDATED" >> "$GITHUB_OUTPUT"
+          echo "name_stem=$NAME_STEM" >> "$GITHUB_OUTPUT"
+          echo "resume_filename_l=$RESUME_FILENAME_L" >> "$GITHUB_OUTPUT"
+          echo "resume_filename_s=$RESUME_FILENAME_S" >> "$GITHUB_OUTPUT"
+          echo "resume_filename_c=$RESUME_FILENAME_C" >> "$GITHUB_OUTPUT"
+          echo "resume_filename_b=$RESUME_FILENAME_B" >> "$GITHUB_OUTPUT"
+          echo "resume_filename_n=$RESUME_FILENAME_N" >> "$GITHUB_OUTPUT"
 
       - name: Install Typst
         uses: typst-community/setup-typst@v3
@@ -50,27 +75,31 @@ jobs:
           typst-version: latest
 
       - name: Build long resume
-        run: typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume.typ resume-long.pdf
+        run: typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume.typ "${{ steps.resume_meta.outputs.resume_filename_l }}"
 
       - name: Build short resume
-        run: typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume-short.typ resume-short.pdf
+        run: typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume-short.typ "${{ steps.resume_meta.outputs.resume_filename_s }}"
 
       - name: Build config-driven resume
-        run: typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume-with-config.typ resume-config.pdf
+        run: typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume-with-config.typ "${{ steps.resume_meta.outputs.resume_filename_c }}"
 
       - name: Build BibTeX resume
-        run: typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume-with-bibtex.typ resume-bibtex.pdf
+        run: typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume-with-bibtex.typ "${{ steps.resume_meta.outputs.resume_filename_b }}"
+
+      - name: Build no-JS resume
+        run: typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume-no-js.typ "${{ steps.resume_meta.outputs.resume_filename_n }}"
 
       - name: Upload resume PDFs (PR preview)
         if: github.event_name == 'pull_request'
         uses: actions/upload-artifact@v4
         with:
-          name: resume-pdfs
+          name: ${{ steps.resume_meta.outputs.name_stem }}-resume-pdfs
           path: |
-            resume-long.pdf
-            resume-short.pdf
-            resume-config.pdf
-            resume-bibtex.pdf
+            ${{ steps.resume_meta.outputs.resume_filename_l }}
+            ${{ steps.resume_meta.outputs.resume_filename_s }}
+            ${{ steps.resume_meta.outputs.resume_filename_c }}
+            ${{ steps.resume_meta.outputs.resume_filename_b }}
+            ${{ steps.resume_meta.outputs.resume_filename_n }}
 
       - name: Update latest release
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/')
@@ -80,17 +109,19 @@ jobs:
           name: Latest Resume PDFs
           make_latest: true
           files: |
-            resume-long.pdf
-            resume-short.pdf
-            resume-config.pdf
-            resume-bibtex.pdf
+            ${{ steps.resume_meta.outputs.resume_filename_l }}
+            ${{ steps.resume_meta.outputs.resume_filename_s }}
+            ${{ steps.resume_meta.outputs.resume_filename_c }}
+            ${{ steps.resume_meta.outputs.resume_filename_b }}
+            ${{ steps.resume_meta.outputs.resume_filename_n }}
           body: |
             Auto-updated resume PDFs from `${{ github.sha }}`
 
-            - **resume-long.pdf** — Full resume
-            - **resume-short.pdf** — Short resume
-            - **resume-config.pdf** — Config-driven resume
-            - **resume-bibtex.pdf** — BibTeX resume
+            - **${{ steps.resume_meta.outputs.resume_filename_l }}** — Full resume (long)
+            - **${{ steps.resume_meta.outputs.resume_filename_s }}** — Short resume
+            - **${{ steps.resume_meta.outputs.resume_filename_c }}** — Config-driven resume
+            - **${{ steps.resume_meta.outputs.resume_filename_b }}** — BibTeX resume
+            - **${{ steps.resume_meta.outputs.resume_filename_n }}** — Plain-text links disabled
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -112,32 +143,60 @@ jobs:
           if [ -z "$LAST_UPDATED" ]; then
             LAST_UPDATED="$(date '+%B %-d, %Y')"
           fi
+          RAW_NAME="$(sed -nE 's/^  name:[[:space:]]*"?([^"]+)"?/\1/p' resume.yml | head -n1)"
+          if [ -n "$RAW_NAME" ]; then
+            FIRST_NAME="$(echo "$RAW_NAME" | awk '{print $1}')"
+            LAST_NAME="$(echo "$RAW_NAME" | awk '{print $NF}')"
+            if [ "$FIRST_NAME" = "$LAST_NAME" ]; then
+              NAME_STEM="$FIRST_NAME"
+            else
+              NAME_STEM="${FIRST_NAME}${LAST_NAME}"
+            fi
+            NAME_STEM="$(echo "$NAME_STEM" | tr -cd '[:alnum:]')"
+          fi
+          if [ -z "${NAME_STEM:-}" ]; then
+            NAME_STEM="Resume"
+          fi
+          RESUME_FILENAME_L="${NAME_STEM}_Resume_L.pdf"
+          RESUME_FILENAME_S="${NAME_STEM}_Resume_S.pdf"
+          RESUME_FILENAME_C="${NAME_STEM}_Resume_C.pdf"
+          RESUME_FILENAME_B="${NAME_STEM}_Resume_B.pdf"
+          RESUME_FILENAME_N="${NAME_STEM}_Resume_N.pdf"
           echo "last_updated=$LAST_UPDATED" >> "$GITHUB_OUTPUT"
+          echo "name_stem=$NAME_STEM" >> "$GITHUB_OUTPUT"
+          echo "resume_filename_l=$RESUME_FILENAME_L" >> "$GITHUB_OUTPUT"
+          echo "resume_filename_s=$RESUME_FILENAME_S" >> "$GITHUB_OUTPUT"
+          echo "resume_filename_c=$RESUME_FILENAME_C" >> "$GITHUB_OUTPUT"
+          echo "resume_filename_b=$RESUME_FILENAME_B" >> "$GITHUB_OUTPUT"
+          echo "resume_filename_n=$RESUME_FILENAME_N" >> "$GITHUB_OUTPUT"
 
       - name: Install Typst
         uses: typst-community/setup-typst@v3
 
       - name: Build resume PDFs
         run: |
-          typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume.typ resume-long.pdf
-          typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume-short.typ resume-short.pdf
-          typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume-with-config.typ resume-config.pdf
-          typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume-with-bibtex.typ resume-bibtex.pdf
+          typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume.typ "${{ steps.resume_meta.outputs.resume_filename_l }}"
+          typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume-short.typ "${{ steps.resume_meta.outputs.resume_filename_s }}"
+          typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume-with-config.typ "${{ steps.resume_meta.outputs.resume_filename_c }}"
+          typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume-with-bibtex.typ "${{ steps.resume_meta.outputs.resume_filename_b }}"
+          typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume-no-js.typ "${{ steps.resume_meta.outputs.resume_filename_n }}"
 
       - name: Create versioned release
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            resume-long.pdf
-            resume-short.pdf
-            resume-config.pdf
-            resume-bibtex.pdf
+            ${{ steps.resume_meta.outputs.resume_filename_l }}
+            ${{ steps.resume_meta.outputs.resume_filename_s }}
+            ${{ steps.resume_meta.outputs.resume_filename_c }}
+            ${{ steps.resume_meta.outputs.resume_filename_b }}
+            ${{ steps.resume_meta.outputs.resume_filename_n }}
           body: |
             ## Resume PDFs
             Generated resume PDFs for ${{ github.ref_name }}
-            - `resume-long.pdf` — Full resume
-            - `resume-short.pdf` — Short resume
-            - `resume-config.pdf` — Config-driven resume
-            - `resume-bibtex.pdf` — BibTeX resume
+            - `${{ steps.resume_meta.outputs.resume_filename_l }}` — Full resume (long)
+            - `${{ steps.resume_meta.outputs.resume_filename_s }}` — Short resume
+            - `${{ steps.resume_meta.outputs.resume_filename_c }}` — Config-driven resume
+            - `${{ steps.resume_meta.outputs.resume_filename_b }}` — BibTeX resume
+            - `${{ steps.resume_meta.outputs.resume_filename_n }}` — Plain-text links disabled
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

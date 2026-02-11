@@ -34,15 +34,43 @@ jobs:
           if [ -z "$LAST_UPDATED" ]; then
             LAST_UPDATED="$(date '+%B %-d, %Y')"
           fi
+          RAW_NAME="$(sed -nE 's/^  name:[[:space:]]*"?([^"]+)"?/\1/p' resume.yml | head -n1)"
+          if [ -n "$RAW_NAME" ]; then
+            FIRST_NAME="$(echo "$RAW_NAME" | awk '{print $1}')"
+            LAST_NAME="$(echo "$RAW_NAME" | awk '{print $NF}')"
+            if [ "$FIRST_NAME" = "$LAST_NAME" ]; then
+              NAME_STEM="$FIRST_NAME"
+            else
+              NAME_STEM="${FIRST_NAME}${LAST_NAME}"
+            fi
+            NAME_STEM="$(echo "$NAME_STEM" | tr -cd '[:alnum:]')"
+          fi
+          if [ -z "${NAME_STEM:-}" ]; then
+            NAME_STEM="Resume"
+          fi
+          RESUME_FILENAME_L="${NAME_STEM}_Resume_L.pdf"
+          RESUME_FILENAME_S="${NAME_STEM}_Resume_S.pdf"
+          RESUME_FILENAME_C="${NAME_STEM}_Resume_C.pdf"
+          RESUME_FILENAME_B="${NAME_STEM}_Resume_B.pdf"
+          RESUME_FILENAME_N="${NAME_STEM}_Resume_N.pdf"
           echo "last_updated=$LAST_UPDATED" >> "$GITHUB_OUTPUT"
+          echo "name_stem=$NAME_STEM" >> "$GITHUB_OUTPUT"
+          echo "resume_filename_l=$RESUME_FILENAME_L" >> "$GITHUB_OUTPUT"
+          echo "resume_filename_s=$RESUME_FILENAME_S" >> "$GITHUB_OUTPUT"
+          echo "resume_filename_c=$RESUME_FILENAME_C" >> "$GITHUB_OUTPUT"
+          echo "resume_filename_b=$RESUME_FILENAME_B" >> "$GITHUB_OUTPUT"
+          echo "resume_filename_n=$RESUME_FILENAME_N" >> "$GITHUB_OUTPUT"
 
       - name: Install Typst
         uses: typst-community/setup-typst@v3
 
       - name: Build resume PDFs
         run: |
-          typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume.typ resume-long.pdf
-          typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume-short.typ resume-short.pdf
+          typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume.typ "${{ steps.resume_meta.outputs.resume_filename_l }}"
+          typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume-short.typ "${{ steps.resume_meta.outputs.resume_filename_s }}"
+          typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume-with-config.typ "${{ steps.resume_meta.outputs.resume_filename_c }}"
+          typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume-with-bibtex.typ "${{ steps.resume_meta.outputs.resume_filename_b }}"
+          typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume-no-js.typ "${{ steps.resume_meta.outputs.resume_filename_n }}"
 
       # ============================================================================
       # OPTION 1: Upload to AWS S3
@@ -56,8 +84,8 @@ jobs:
       #
       # - name: Upload to S3
       #   run: |
-      #     aws s3 cp resume-long.pdf s3://your-bucket-name/resume-long.pdf --acl public-read
-      #     aws s3 cp resume-short.pdf s3://your-bucket-name/resume-short.pdf --acl public-read
+      #     aws s3 cp "${{ steps.resume_meta.outputs.resume_filename_l }}" s3://your-bucket-name/"${{ steps.resume_meta.outputs.resume_filename_l }}" --acl public-read
+      #     aws s3 cp "${{ steps.resume_meta.outputs.resume_filename_s }}" s3://your-bucket-name/"${{ steps.resume_meta.outputs.resume_filename_s }}" --acl public-read
 
       # ============================================================================
       # OPTION 2: Upload to Cloudflare R2
@@ -66,7 +94,7 @@ jobs:
       #   uses: cloudflare/wrangler-action@v3
       #   with:
       #     apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      #     command: r2 object put your-bucket/resume-long.pdf --file=resume-long.pdf
+      #     command: r2 object put your-bucket/${{ steps.resume_meta.outputs.resume_filename_l }} --file=${{ steps.resume_meta.outputs.resume_filename_l }}
 
       # ============================================================================
       # OPTION 3: Upload to GitHub Pages
@@ -88,8 +116,8 @@ jobs:
       #     curl https://rclone.org/install.sh | sudo bash
       #     mkdir -p ~/.config/rclone
       #     echo "${{ secrets.RCLONE_CONFIG }}" > ~/.config/rclone/rclone.conf
-      #     rclone copy resume-long.pdf remote:your-folder/
-      #     rclone copy resume-short.pdf remote:your-folder/
+      #     rclone copy "${{ steps.resume_meta.outputs.resume_filename_l }}" remote:your-folder/
+      #     rclone copy "${{ steps.resume_meta.outputs.resume_filename_s }}" remote:your-folder/
 
       # ============================================================================
       # Default enabled output: upload as GitHub artifact
@@ -97,8 +125,11 @@ jobs:
       - name: Upload as GitHub artifact
         uses: actions/upload-artifact@v4
         with:
-          name: resume-pdfs-${{ github.sha }}
+          name: ${{ steps.resume_meta.outputs.name_stem }}-resume-pdfs-${{ github.sha }}
           path: |
-            resume-long.pdf
-            resume-short.pdf
+            ${{ steps.resume_meta.outputs.resume_filename_l }}
+            ${{ steps.resume_meta.outputs.resume_filename_s }}
+            ${{ steps.resume_meta.outputs.resume_filename_c }}
+            ${{ steps.resume_meta.outputs.resume_filename_b }}
+            ${{ steps.resume_meta.outputs.resume_filename_n }}
           retention-days: 90

@@ -7,7 +7,10 @@ A highly configurable, ATS-friendly resume template for [Typst](https://typst.ap
 - **YAML-based data storage** - Easy to maintain and version control
 - **Long/Short resume variants** - Create multiple versions from one data file
 - **External configuration** - Manage settings in `config.yml`
+- **No-JS/plain-text variant** - Generate a PDF with links rendered as plain text
 - **BibTeX support** - Professional citation formatting with custom links
+- **Markdown-first content** - Use inline markdown in text fields (bold, italics, links)
+- **Configurable contact display** - Render contact row as labels, icons+labels, or icons-only
 - **GitHub Actions** - Automatic PDF generation and cloud upload
 - **Highly configurable** - Customize fonts, spacing, colors, and section order
 - **ATS-friendly** - Single-column layout that parses well in Applicant Tracking Systems
@@ -24,14 +27,56 @@ Install Typst:
 
 ### Basic Usage
 
-1. **Edit your data** - Modify `resume.yml` with your personal information
+1. **Edit your data** - Modify the synthetic example in `resume.yml`
 2. **Customize settings** (optional) - Adjust configuration in `resume.typ` or `config.yml`
 3. **Compile**:
    ```bash
-   typst compile resume.typ
+   ./build-resumes.sh
    ```
 
-This generates `resume.pdf` in the same directory.
+This generates:
+- `{FirstName}{LastName}_Resume_L.pdf`
+- `{FirstName}{LastName}_Resume_S.pdf`
+- `{FirstName}{LastName}_Resume_C.pdf`
+- `{FirstName}{LastName}_Resume_B.pdf`
+- `{FirstName}{LastName}_Resume_N.pdf`
+
+### Markdown in YAML Fields
+
+All user-facing text fields are markdown-capable (except explicit URL fields such as `url`, `demo_url`, and `repo_url`).
+
+Examples:
+```yaml
+awards:
+  - content: "[Awarded Fellowship](https://example.com/fellowship)"
+
+publications:
+  - content: "Designing Interfaces for Delivering and Obtaining Generation Explanation Annotations"
+    section: works_in_progress
+    notes: "[Demo](https://example.com/demo) and [Repo](https://github.com/example/repo)"
+```
+
+### Supported Keys (Standardized)
+
+This project now uses a standardized key style with no legacy aliases:
+
+- `work[]`:
+  - `name` (organization name)
+  - `url`, `location`
+  - `positions[]` with:
+    - `name` (role title)
+    - `startDate`, `endDate`
+    - `content[]` (detail lines)
+- `education[]`:
+  - `name` (institution name)
+  - `url`, `location`, `studyType`, `area`, `startDate`, `endDate`
+  - optional `honors[]`, `content[]`, `thesis`, `courses[]`
+- `publications[]`:
+  - BibTeX mode: `bib_key`
+  - YAML mode: `name` or `content`, plus optional `authors`, `publisher`, `releaseDate`, `url`, `notes`
+- Generic section support:
+  - Any additional top-level array (for example `community_service`) is auto-rendered.
+  - You can optionally place it in `section_order` and set `section_titles.<key>`.
 
 ### Watch Mode (Auto-compile on changes)
 
@@ -50,13 +95,14 @@ resume_typst/
 ├── resume-short.typ                # Short resume variant
 ├── resume-with-config.typ          # Using external config
 ├── resume-with-bibtex.typ          # With BibTeX citations
+├── resume-no-js.typ                # Links disabled (plain-text output)
 │
 ├── resume.yml                      # Your resume data
 ├── resume-bibtex.yml               # Example with BibTeX references
-├── example.yml                     # Reference example
 │
 ├── config.yml                      # External configuration (long)
 ├── config-short.yml                # External configuration (short)
+├── build-resumes.sh                # Local builder for *_Resume_[L/S/C/B/N].pdf
 │
 ├── publications.bib                # BibTeX bibliography
 │
@@ -79,8 +125,8 @@ resume_typst/
 # Edit your data
 vim resume.yml
 
-# Compile
-typst compile resume.typ
+# Compile all variants with canonical filenames
+./build-resumes.sh
 ```
 
 **Best for:** Quick updates, simple resumes, learning the system
@@ -104,8 +150,7 @@ publications:
 
 Compile both:
 ```bash
-typst compile resume.typ        # Long (all items)
-typst compile resume-short.typ  # Short (filtered)
+./build-resumes.sh
 ```
 
 **Best for:** Job applications (short) vs academic CVs (long)
@@ -174,7 +219,8 @@ publications:
 
 3. Compile:
 ```bash
-typst compile resume-with-bibtex.typ
+./build-resumes.sh
+# BibTeX file will be {FirstName}{LastName}_Resume_B.pdf
 ```
 
 **Best for:** Academics with many publications, maintaining consistency with other documents
@@ -194,22 +240,22 @@ Add `include_short: false` to any entry in `resume.yml`:
 ```yaml
 work:
   # This entire work entry excluded from short version
-  - organization: Company Name
+  - name: Company Name
     include_short: false
     positions: [...]
 
   # Keep in both versions
-  - organization: Current Company
+  - name: Current Company
     positions:
       # Include this position in short version
-      - position: Senior Role
+      - name: Senior Role
         include_short: true
-        highlights: [...]
+        content: [...]
 
       # Exclude this older position from short
-      - position: Junior Role
+      - name: Junior Role
         include_short: false
-        highlights: [...]
+        content: [...]
 
 publications:
   # Top papers in short version
@@ -327,17 +373,17 @@ Use BibTeX for professional citation formatting with support for custom links.
 1. **Create `publications.bib`:**
 
 ```bibtex
-@article{jaiswal2024emotion,
-  title={From Text to Emotion: Unveiling the Emotion Annotation Capabilities of LLMs},
-  author={Niu, Minxue and Jaiswal, Mimansa and Provost, Emily Mower},
+@inproceedings{walker2024textemotion,
+  title={From Text to Emotion: Evaluating LLM Annotation Quality},
+  author={Niu, Melissa and Walker, Ethan and Morrison, Emily},
   journal={Interspeech 2024},
   year={2024},
-  url={https://arxiv.org/pdf/2408.17026}
+  url={https://example.com/papers/text-to-emotion.pdf}
 }
 
-@inproceedings{jaiswal2020privacy,
-  title={Privacy Enhanced Multimodal Neural Representations for Emotion Recognition},
-  author={Jaiswal, Mimansa and Provost, Emily Mower},
+@inproceedings{walker2020privacy,
+  title={Privacy-Enhanced Multimodal Neural Representations for Emotion Recognition},
+  author={Walker, Ethan and Morrison, Emily},
   booktitle={AAAI Conference on Artificial Intelligence},
   year={2020}
 }
@@ -348,23 +394,23 @@ Use BibTeX for professional citation formatting with support for custom links.
 ```yaml
 publications:
   # BibTeX entry with custom links
-  - bib_key: jaiswal2024emotion
+  - bib_key: walker2024textemotion
     links:
       - label: "Paper"
-        url: "https://arxiv.org/pdf/2408.17026"
+        url: "https://example.com/papers/text-to-emotion.pdf"
       - label: "Code"
         url: "https://github.com/example/code"
       - label: "Demo"
         url: "https://demo.example.com"
 
   # BibTeX entry without extra links
-  - bib_key: jaiswal2020privacy
+  - bib_key: walker2020privacy
 
   # Mix YAML and BibTeX formats
-  - name: "Work in Progress: CAPSTONE"
-    authors: "Mimansa Jaiswal"
-    status: "Research Notes"
-    url: "https://example.com"
+  - content: "Work in Progress: CAPSTONE"
+    section: works_in_progress
+    authors: "Ethan Walker"
+    notes: "[Research Notes](https://example.com)"
 ```
 
 3. **Configure and compile:**
@@ -393,6 +439,10 @@ Supported styles:
 You can mix both formats in the same `publications` section:
 - Entries with `bib_key` → formatted via BibTeX
 - Entries without `bib_key` → formatted manually (YAML)
+- For non-BibTeX entries, you can attach separate demo/repo links with either:
+  - `demo_url` and `repo_url`, or
+  - `links` (array of `{label, url}`)
+- You can also place links directly in markdown text fields like `content` or `notes`
 
 You can also split publications into multiple headings (for example `Works in Progress`, `Submitted Publications`, `Accepted Publications`) by:
 - Setting `publication_sections` in `config.yml`
@@ -420,10 +470,11 @@ Triggers on:
 - Manual workflow dispatch
 
 Builds:
-- `resume-long.pdf` (long version)
-- `resume-short.pdf` (short version)
-- `resume-config.pdf` (external config version)
-- `resume-bibtex.pdf` (BibTeX version)
+- `{FirstName}{LastName}_Resume_L.pdf` (long version)
+- `{FirstName}{LastName}_Resume_S.pdf` (short version)
+- `{FirstName}{LastName}_Resume_C.pdf` (config-driven version)
+- `{FirstName}{LastName}_Resume_B.pdf` (BibTeX version)
+- `{FirstName}{LastName}_Resume_N.pdf` (no-JS/plain-text links)
 
 Outputs:
 - Uploaded as GitHub Actions artifacts (90 days retention)
@@ -486,6 +537,7 @@ git push origin v1.0.0
 ```yaml
 # Variant (long/short)
 variant: long
+paper_size: letter            # Options: "letter" or "a4"
 
 # Fonts
 fonts:
@@ -498,17 +550,22 @@ fonts:
 # Layout
 layout:
   margin: 0.5in                # Page margins
-  line_spacing: 0.65em         # Line height
-  list_spacing: 0.65em         # Space between list items
-  section_spacing: 0.8em       # Space before sections
-  entry_spacing: 0.4em         # Space between resume entries
-  entry_inner_spacing: 0.2em   # Space between entry title/details/bullets
+  line_spacing: 0.33em         # Line spacing within wrapped lines
+  list_spacing: 0.61em         # Space between adjacent items
+  section_spacing: 1.2em       # Space before section headings
+  post_section_spacing: 0.78em # Space after section headings
+  entry_spacing: 0.62em        # Space between resume entries
+  entry_inner_spacing: 0.48em  # Space between entry title/details/content
+  header_rule_top_spacing: 0.52em # Gap between contact row and horizontal rule
 
 # Styling
 styling:
   section_smallcaps: true      # Use small caps for section headings
   secondary_color: "#555555"   # Accent text color (hex)
-  link_color: "#0b61a4"        # Link color (hex)
+  link_color: "#1C398D"        # Link color (hex)
+  contact_display_mode: "label"   # "label" | "icon_label" | "icon"
+  contact_icon_family: "lucide"   # "lucide" | "mdi" | "phosphor"
+  contact_icon_spacing: 0.18em
 
 # Visibility toggles
 visibility:
@@ -518,6 +575,8 @@ visibility:
   show_languages: true         # Languages section
   show_interests: false        # Interests list
   show_references: false       # References section
+  enable_links: true           # Set false to render links as plain text
+  show_publication_numbers: false  # Prefix publication items as [1], [2], ...
 
 # Section titles (customize headings)
 section_titles:
@@ -668,6 +727,13 @@ typst compile resume-short.typ        # Industry resume
 - Ensure strings with special characters are quoted
 - Validate YAML at [yamllint.com](http://www.yamllint.com/)
 
+**Editor shows JSON Resume type errors (e.g., "Expected object")**
+- This repo uses a flexible markdown-first schema, not strict JSON Resume typing
+- Ensure your editor loads `resume.schema.json`
+- VS Code users can use the included `.vscode/settings.json` mapping
+- `resume.yml` and `resume-bibtex.yml` also include:
+  - `# yaml-language-server: $schema=./resume.schema.json`
+
 **Error: "unknown citation label"**
 - Check that `bib_key` matches an entry in `publications.bib`
 - Ensure BibTeX file is in the same directory
@@ -731,11 +797,11 @@ No template edits are required anymore for most custom sections.
 1. Add data to `resume.yml` (any key name works, e.g. `patents`):
 ```yaml
 patents:
-  - title: "System and Method for X"
-    issuer: "USPTO"
-    date: 2025-01-01
+  - name: "System and Method for X"
+    subtitle: "USPTO"
+    startDate: 2025-01-01
     url: "https://example.com/patent"
-    highlights:
+    content:
       - "Co-inventor"
 ```
 
@@ -753,8 +819,8 @@ section_titles:
   patents: "Patents"
 ```
 
-The template will auto-render arrays/dictionaries using a generic resume layout.
-Use common fields like `title`, `name`, `subtitle`, `issuer`, `date`, `url`, `description`, and `highlights`.
+The template auto-renders arrays/dictionaries using a generic resume layout.
+Use standardized keys like `name`, `subtitle`, `startDate`, `endDate`, `url`, `content`, `notes`, and `skills`.
 
 ---
 

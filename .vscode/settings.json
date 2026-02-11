@@ -1,0 +1,8 @@
+{
+  "yaml.schemas": {
+    "./resume.schema.json": [
+      "resume.yml",
+      "resume-bibtex.yml"
+    ]
+  }
+}

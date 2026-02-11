@@ -1,87 +1,300 @@
+# yaml-language-server: $schema=./resume.schema.json
+
 # ==============================================================================
 # RESUME DATA - WITH BIBTEX PUBLICATIONS
 # ==============================================================================
-# This example demonstrates using BibTeX for publications
+# Complete synthetic example resume (theorem proving) using BibTeX keys.
 # ==============================================================================
 
 personal:
-  name: Mimansa Jaiswal
-  email: mimansa.jaiswal@gmail.com
-  phone: (734) 747-0283
-  url: https://mimansajaiswal.github.io/
+  name: Avery Collins
+  email: avery.collins@example.com
+  phone: (415) 555-0184
+  url: https://averycollins.dev/
   titles:
-    - Research Scientist
+    - Formal Verification Scientist
+  location:
+    city: Boston
+    region: MA
+    country: USA
 
-# ... other sections same as resume.yml ...
-# For demonstration, I'm including just a minimal example
+  profiles:
+    - network: GitHub
+      username: avery-collins
+      url: https://github.com/avery-collins
+      label: "GitHub"
+    - network: LinkedIn
+      username: avery-collins-formal
+      url: https://www.linkedin.com/in/avery-collins-formal/
+      label: "LinkedIn"
+    - network: Email (alternate)
+      username: acollins@princeton.edu
+      url: mailto:acollins@princeton.edu
+      label: "acollins@princeton.edu"
+
+interests_summary: |
+  I focus on *automated theorem proving and formal verification* for trustworthy software systems, including proof engineering for distributed protocols, certified optimization and compilation flows, and robust automation strategies for maintaining large mechanized proof codebases over time.
 
 work:
-  - organization: Meta (MSL Org)
-    url: https://ai.meta.com/
-    location: null
+  - name: Harbor Logic Systems (Proof Infrastructure)
+    url: https://example.com/harbor-logic
+    location: Boston, MA
     positions:
-      - position: Research Scientist
-        startDate: 2025-02-01
+      - name: Principal Theorem Proving Scientist
+        startDate: 2025-01-01
         endDate: present
-        highlights:
-          - "Developed and fine-tuned large language models using advanced post-training techniques."
+        content:
+          - "Designed Lean-based verification workflows for concurrent backend services and created reusable safety proof components for release qualification."
+          - "Built deterministic theorem-checking pipelines with counterexample replay tooling to accelerate triage of failed proof obligations."
+
+  - name: Granite Verification Lab
+    url: https://example.com/granite-verification
+    positions:
+      - name: Staff Formal Methods Engineer
+        startDate: 2022-04-01
+        endDate: 2024-12-01
+        content:
+          - "Developed verification templates for protocol implementations, combining SMT solvers with proof assistant tactics for higher automation coverage."
+          - "Introduced refinement-checking libraries that aligned architectural specifications with implementation-level invariants."
+
+  - name: Cedar Institute for Verified Computing
+    url: https://example.com/cedar-vc
+    positions:
+      - name: Postdoctoral Research Fellow
+        startDate: 2020-02-01
+        endDate: 2022-03-01
+        content:
+          - "Mechanized soundness theorems for a capability-safe language runtime and extracted executable checkers from proof terms."
+          - "Led interoperability experiments for transporting proof obligations between Coq and Lean proof developments."
+
+  - name: Argon Compiler Group
+    url: https://example.com/argon-compiler
+    positions:
+      - name: Research Intern
+        startDate: 2019-01-01
+        endDate: 2019-11-01
+        content:
+          - "Formalized correctness of optimization pipelines for a staged IR used in high-assurance embedded applications."
+          - "Implemented proof brittleness detection to catch fragile tactic dependencies during compiler branch merges."
+
+  - name: Meridian Robotics Reliability Team
+    url: https://example.com/meridian-robotics
+    positions:
+      - name: Verification Intern
+        startDate: 2017-06-01
+        endDate: 2017-12-01
+        content:
+          - "Specified temporal safety obligations for robotic control loops and proved bounded fault-response properties."
+          - "Connected runtime traces to theorem assumptions to improve auditability for certification submissions."
 
 education:
-  - institution: University of Michigan
-    url: http://www.umich.edu
-    location: Ann Arbor, MI
+  - name: Princeton University
+    url: https://www.princeton.edu/
+    location: Princeton, NJ
     studyType: Ph.D.
-    area: Computer Science and Engineering
-    startDate: 2017-09-01
-    endDate: 2023-08-01
+    area: Computer Science
+    startDate: 2013-09-01
+    endDate: 2018-06-01
+    honors:
+      - "Recipient, Centennial Graduate Fellowship in Engineering"
+    content:
+      - "Program in Applied and Computational Mathematics"
+      - "*Advisor*: Prof. Rachel Underwood"
+    thesis: "Compositional Proof Engineering for Verified Distributed Software"
 
-# ==============================================================================
-# PUBLICATIONS - BIBTEX FORMAT
-# ==============================================================================
-# Use bib_key to reference BibTeX entries
-# Add "links" array to include code/data/demo links
+  - name: Georgia Institute of Technology
+    url: https://www.gatech.edu/
+    location: Atlanta, GA
+    studyType: M.S.
+    area: Computer Science
+    startDate: 2011-08-01
+    endDate: 2013-05-01
+    honors:
+      - "GPA: 3.97/4.00"
+    courses:
+      - Type Theory and Lambda Calculus
+      - Static Program Analysis
+      - Parallel Algorithms
+
+  - name: University of Wisconsin-Madison
+    url: https://www.wisc.edu/
+    location: Madison, WI
+    studyType: B.S.
+    area: Computer Engineering
+    startDate: 2007-09-01
+    endDate: 2011-05-01
+    honors:
+      - "GPA: 3.89/4.00"
+    courses:
+      - Logic Design
+      - Theory of Computation
+      - Embedded Systems
+
 publications:
-  # Example: BibTeX entry with extra links
-  - bib_key: jaiswal2024textemotion
-    links:
-      - label: "Paper"
-        url: "https://arxiv.org/pdf/2408.17026"
-      - label: "Code"
-        url: "https://github.com/example/code"
+  - content: "Proof-Carrying Deployment Pipelines for Safety-Critical Runtime Services"
+    section: works_in_progress
+    authors: Avery Collins
+    notes: "[Technical Notes](https://averycollins.dev/posts/proof-carrying-deployments/)"
+    include_short: false
 
-  # Example: BibTeX entry with no extra links
-  - bib_key: jaiswal2020privacy
-    links:
-      - label: "Paper"
-        url: "https://arxiv.org/pdf/1910.13212.pdf"
+  - content: "Interactive Counterexample Replay for Lean 4 Verification Workflows"
+    section: works_in_progress
+    authors: Avery Collins
+    demo_url: "https://example.com/demos/counterexample-replay"
+    repo_url: "https://github.com/example/counterexample-replay"
+    include_short: false
 
-  # Example: BibTeX entry with data link
-  - bib_key: jaiswal2020muse
-    links:
-      - label: "Paper"
-        url: "https://aclanthology.org/2020.lrec-1.187.pdf"
-      - label: "Dataset"
-        url: "https://github.com/example/muse-dataset"
+  - name: "Proof Sketch Compression for Large Theorem Libraries"
+    section: submitted
+    authors: "M. Ortega, S. Lin, Avery Collins, P. Ghosh, D. Holt, and 9 others"
+    url: https://arxiv.org/abs/2601.01234
+    notes: "_Submitted_"
+    include_short: false
 
-  # Example: Simpler entry
-  - bib_key: jaiswal2019controlling
+  - name: "Auditable Refinement Chains for Regulatory Software Evidence"
+    section: submitted
+    authors: "Avery Collins, J. Harper, L. Dunn"
+    notes: "_Submitted_"
+    include_short: false
 
-  # You can also mix YAML and BibTeX formats
-  # YAML format (no bib_key) works as before
-  - name: "Work in Progress: CAPSTONE"
-    authors: Mimansa Jaiswal
-    publisher: null
-    releaseDate: null
-    url: https://mimansajaiswal.github.io/posts/capstone/
-    status: "Research Notes"
+  - name: "Reproducible Benchmarks for Interactive Theorem Prover Toolchains"
+    section: submitted
+    authors: "T. Morgan, E. Patel, K. Shah, Avery Collins, and collaborators"
+    url: https://arxiv.org/abs/2602.04567
+    notes: "_Submitted_"
+    include_short: false
+
+  - name: "Constructive Countermodels for Contract Verification in Rust"
+    section: submitted
+    authors: Avery Collins
+    url: https://example.com/papers/constructive-countermodels.pdf
+    notes: "_Workshop Paper_"
+    include_short: false
+
+  - name: "Specification Drift in Long-Lived Proof Repositories"
+    section: submitted
+    authors: Avery Collins
+    url: https://example.com/papers/spec-drift-proof-repos.pdf
+    notes: "_Workshop Paper_"
+    include_short: false
+
+  - name: "A Survey of Practical Proof Automation in Industrial Verification"
+    section: submitted
+    authors: Avery Collins
+    url: https://averycollins.dev/notes/industrial-proof-automation-survey
+    notes: "_Survey Paper_"
+    include_short: false
+
+  - bib_key: collins2026proofcontracts
+    section: accepted
+    include_short: false
+
+  - bib_key: collins2025proofrepair
+    section: accepted
+    include_short: false
+
+  - bib_key: collins2025kernelbudget
+    section: accepted
+    include_short: false
+
+  - bib_key: collins2024smttraces
+    section: accepted
+    include_short: false
+
+  - bib_key: collins2023certifiedsolvers
+    section: accepted
+    include_short: false
+
+  - bib_key: collins2023proofmigration
+    section: accepted
+    include_short: false
+
+  - bib_key: collins2022typedautomation
+    section: accepted
+
+  - bib_key: collins2022counterexamplecontracts
+    section: accepted
+
+  - bib_key: collins2021proofledger
+    section: accepted
+    include_short: false
+
+  - bib_key: collins2020equationalsynthesis
+    section: accepted
+    include_short: false
+
+  - bib_key: collins2019verifiedcontrollers
+    section: accepted
+    include_short: false
+
+awards:
+  - content: "*Reviewing:* CAV, ITP, POPL, PLDI, OOPSLA, CPP, FMCAD (2021-present)."
+
+  - content: "[Recipient, National Formal Methods Fellowship](https://example.com/fellowships/nfmf)"
+
+  - content: "Instructor for Proof Assistants in Practice (Fall 2024)."
+
+  - content: "Verification Curriculum Committee Representative (Academic Year 2023-24)."
+
+  - content: "Invited speaker at Verified Systems Summit 2025 [video](https://example.com/talks/vss-2025), Midwest Formal Methods Day 2024 [video](https://example.com/talks/mfmd-2024)"
+
+  - content: "Participant, CRA-E mentoring workshops for early-career faculty (2022, 2024)"
+
+  - content: "NSF CAREER Award nominee in Trustworthy Computing"
+
+community_service:
+  - name: Open Proof Club
+    startDate: 2022-01-01
+    endDate: present
+    content:
+      - "Host monthly theorem-proving reading sessions and maintain onboarding notes for new contributors."
+      - "Coordinate collaborative proof sprints focused on reusable Lean libraries."
+
+  - name: Verified Software Outreach Workshop
+    startDate: 2021-06-01
+    endDate: 2023-08-01
+    content:
+      - "Designed hands-on exercises covering mechanized semantics and proof automation basics."
+      - "Mentored student teams building small verified components in Coq and Lean."
 
 skills:
   - category: Research Areas
     skills:
-      - LLM Post-Training
-      - Model Evaluation
-      - NLP
+      - Interactive Theorem Proving
+      - Program Verification
+      - Type Theory and Proof Engineering
+      - Certified Compilation
+      - SMT Integration and Decision Procedures
+      - Formal Methods for Distributed Systems
+      - Runtime Assurance and Temporal Logic
+      - Mechanized Metatheory
+
+  - category: Technical Skills
+    skills:
+      - Lean
+      - Coq
+      - Isabelle/HOL
+      - SMT-LIB and Z3
+      - OCaml
+      - Rust
+      - Nix
+
+  - category: Professional Activities
+    skills:
+      - Artifact Evaluation Committees
+      - Graduate Mentorship
+      - Open-Source Maintenance
+      - Cross-Industry Research Collaboration
 
 languages:
   - language: English
-    fluency: Fluent
+    fluency: Native
+  - language: French
+    fluency: Professional Working Proficiency
+
+interests:
+  - content: Constructive Mathematics
+  - content: Proof Assistant Usability
+  - content: Verified Systems Design
+  - content: History of Logic
+  - content: Long-Distance Cycling
