@@ -11,7 +11,6 @@
 
 #let no_js_overrides = (
   enable_links: false,
-  strip_link_labels_when_links_disabled: true,
 )
 
 #build_resume(resume_data, no_js_overrides, config_file: "config.yml")

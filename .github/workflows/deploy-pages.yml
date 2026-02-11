@@ -4,6 +4,7 @@ on:
   push:
     branches: [main, master]
     paths:
+      - "index.html"
       - "web/**"
       - "template.typ"
       - "resume.yml"
@@ -35,12 +36,13 @@ jobs:
 
       - name: Prepare deployment
         run: |
-          mkdir -p dist
-          cp web/index.html dist/
-          cp template.typ dist/
-          cp resume.yml dist/default-resume.yml
-          cp config.yml dist/default-config.yml
-          cp publications.bib dist/default-publications.bib
+          mkdir -p dist/web
+          cp index.html dist/
+          cp web/index.html dist/web/
+          cp template.typ dist/web/
+          cp resume.yml dist/web/default-resume.yml
+          cp config.yml dist/web/default-config.yml
+          cp publications.bib dist/web/default-publications.bib
 
       - name: Setup Pages
         uses: actions/configure-pages@v5

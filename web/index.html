@@ -119,6 +119,16 @@
       cursor: not-allowed;
     }
 
+    #btn-download-typ {
+      background: transparent;
+      color: var(--earth);
+    }
+
+    #btn-download-typ:hover {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--linen);
+    }
+
     #btn-reset {
       background: transparent;
       color: var(--earth);
@@ -230,6 +240,44 @@
       font-size: 0.64rem;
       background: #ece7dd;
       padding: 0.02rem 0.2rem;
+    }
+
+    .schema-help iconify-icon {
+      font-size: 0.78rem;
+      vertical-align: -0.12em;
+      margin-right: 0.14rem;
+    }
+
+    .override-panel {
+      border-bottom: 1px solid var(--earth);
+      background: #efebe3;
+      padding: 0.45rem 0.7rem 0.55rem;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.45rem 0.55rem;
+    }
+
+    .override-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.16rem;
+    }
+
+    .override-item label {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #5a5449;
+    }
+
+    .override-item select {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      padding: 0.2rem 0.28rem;
+      border: 1px solid var(--earth);
+      background: var(--linen);
+      color: var(--charcoal);
     }
 
     .editor-wrapper {
@@ -444,6 +492,7 @@
         </select>
       </label>
       <button id="btn-download" disabled>Download PDF</button>
+      <button id="btn-download-typ">Download resume.typ</button>
       <button id="btn-reset">Reset to Defaults</button>
     </div>
   </header>
@@ -465,11 +514,80 @@
           <div>Schema style is standardized (no legacy aliases): use the keys shown below directly.</div>
           <div>Work: <code>work[].name</code>, <code>work[].positions[].name</code>, <code>work[].positions[].content[]</code></div>
           <div>Education: <code>education[].name</code>, optional <code>content[]</code>, <code>honors[]</code>, <code>courses[]</code>, <code>thesis</code></div>
-          <div>Publications: <code>bib_key</code> or markdown-first entries with <code>name/content</code>, <code>authors</code>, <code>notes</code></div>
+          <div>Publications: <code>bib_key</code> or markdown-first entries with <code>name</code> (title), <code>content</code> (details), <code>authors</code>, <code>links[]</code></div>
+          <div>BibTeX links: set <code>publications[].url</code> to override, or omit it to use the BibTeX <code>url</code> field.</div>
+          <div>No-link behavior: <code>visibility.links_disabled_behavior</code> = <code>label</code> or <code>label_with_url</code>.</div>
           <div>Generic sections: any extra top-level array (example: <code>community_service</code>) auto-renders even if not in <code>section_order</code>.</div>
-          <div>Contact icons: set <code>styling.contact_display_mode</code> to <code>label</code>, <code>icon_label</code>, or <code>icon</code>.</div>
+          <div>Fonts: configure <code>fonts.font</code> (general) and <code>fonts.mono_font</code> (inline code/monospace).</div>
+          <div>Contact icons: <iconify-icon icon="mdi:phone-outline"></iconify-icon><iconify-icon icon="mdi:email-outline"></iconify-icon><iconify-icon icon="mdi:web"></iconify-icon><iconify-icon icon="mdi:github"></iconify-icon><iconify-icon icon="mdi:linkedin"></iconify-icon> set <code>styling.contact_display_mode</code> to <code>label</code>, <code>icon_label</code>, or <code>icon</code>.</div>
         </div>
       </details>
+      <div class="override-panel">
+        <div class="override-item">
+          <label for="override-variant">Variant Override</label>
+          <select id="override-variant">
+            <option value="config">Use config.yml</option>
+            <option value="long">Long</option>
+            <option value="short">Short</option>
+          </select>
+        </div>
+        <div class="override-item">
+          <label for="override-links">Links Override</label>
+          <select id="override-links">
+            <option value="config">Use config.yml</option>
+            <option value="on">Enabled</option>
+            <option value="off">Disabled</option>
+          </select>
+        </div>
+        <div class="override-item">
+          <label for="override-links-disabled-behavior">Link-Off Rendering</label>
+          <select id="override-links-disabled-behavior">
+            <option value="config">Use config.yml</option>
+            <option value="label">Keep Label Only</option>
+            <option value="label_with_url">Label + [url]</option>
+          </select>
+        </div>
+        <div class="override-item">
+          <label for="override-pubnums">Pub Numbers Override</label>
+          <select id="override-pubnums">
+            <option value="config">Use config.yml</option>
+            <option value="on">Show [n]</option>
+            <option value="off">Hide [n]</option>
+          </select>
+        </div>
+        <div class="override-item">
+          <label for="override-contact">Contact Style Override</label>
+          <select id="override-contact">
+            <option value="config">Use config.yml</option>
+            <option value="label">Label</option>
+            <option value="icon_label">Icon + Label</option>
+            <option value="icon">Icon Only</option>
+          </select>
+        </div>
+        <div class="override-item">
+          <label for="override-font">General Font Override</label>
+          <select id="override-font">
+            <option value="config">Use config.yml</option>
+            <option value="New Computer Modern">New Computer Modern</option>
+            <option value="Libertinus Serif">Libertinus Serif</option>
+            <option value="TeX Gyre Termes">TeX Gyre Termes</option>
+            <option value="TeX Gyre Pagella">TeX Gyre Pagella</option>
+            <option value="DejaVu Serif">DejaVu Serif</option>
+          </select>
+        </div>
+        <div class="override-item">
+          <label for="override-mono-font">Monospace Font Override</label>
+          <select id="override-mono-font">
+            <option value="config">Use config.yml</option>
+            <option value="DejaVu Sans Mono">DejaVu Sans Mono</option>
+            <option value="Libertinus Mono">Libertinus Mono</option>
+            <option value="New Computer Modern Mono">New Computer Modern Mono</option>
+            <option value="Fira Code">Fira Code</option>
+            <option value="JetBrains Mono">JetBrains Mono</option>
+            <option value="Cascadia Mono">Cascadia Mono</option>
+          </select>
+        </div>
+      </div>
       <div class="editor-wrapper">
         <div class="cm-container" id="cm-resume"></div>
         <div class="cm-container hidden" id="cm-config"></div>
@@ -483,6 +601,7 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/codemirror.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/mode/yaml/yaml.min.js"></script>
+  <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
 
   <script type="module"
     src="https://cdn.jsdelivr.net/npm/@myriaddreamin/typst.ts@0.7.0-rc2/dist/esm/contrib/all-in-one-lite.bundle.js"
@@ -502,11 +621,16 @@ work:
   - name: Company Name
     url: https://company.com
     positions:
-      - name: Your Role
+      - name: Senior Research Engineer
         startDate: 2024-01-01
         endDate: present
         content:
-          - "Describe your accomplishment here"
+          - "Describe your current-role accomplishments here"
+      - name: Research Engineer
+        startDate: 2022-01-01
+        endDate: 2023-12-01
+        content:
+          - "Describe your previous role at the same company here"
 
 education:
   - name: University Name
@@ -534,11 +658,11 @@ skills:
       - Skill 3
 `;
 
-    const DEFAULT_CONFIG_YAML = `variant: long
+const DEFAULT_CONFIG_YAML = `variant: long
 paper_size: "letter"
 fonts:
-  heading_font: "New Computer Modern"
-  body_font: "New Computer Modern"
+  font: "New Computer Modern"
+  mono_font: "DejaVu Sans Mono"
   font_size: 10pt
   name_font_size: 1.4em
   section_font_size: 1em
@@ -583,6 +707,7 @@ visibility:
   show_references: false
   show_last_updated: true
   enable_links: true
+  links_disabled_behavior: "label"
   show_publication_numbers: false
 section_titles:
   work: "Experience"
@@ -610,12 +735,27 @@ const DEFAULT_BIB = `@article{example2024,
     const LS_CONFIG = 'resume_compiler_config_yaml';
     const LS_BIB = 'resume_compiler_publications_bib';
     const LS_PAPER = 'resume_compiler_paper_size';
+    const LS_OVERRIDE_VARIANT = 'resume_compiler_override_variant';
+    const LS_OVERRIDE_LINKS = 'resume_compiler_override_links';
+    const LS_OVERRIDE_LINKS_DISABLED_BEHAVIOR = 'resume_compiler_override_links_disabled_behavior';
+    const LS_OVERRIDE_PUBNUMS = 'resume_compiler_override_pubnums';
+    const LS_OVERRIDE_CONTACT = 'resume_compiler_override_contact';
+    const LS_OVERRIDE_FONT = 'resume_compiler_override_font';
+    const LS_OVERRIDE_MONO_FONT = 'resume_compiler_override_mono_font';
 
     const preview = document.getElementById('preview');
     const statusBar = document.getElementById('status-bar');
     const btnDownload = document.getElementById('btn-download');
+    const btnDownloadTyp = document.getElementById('btn-download-typ');
     const btnReset = document.getElementById('btn-reset');
     const paperSize = document.getElementById('paper-size');
+    const overrideVariant = document.getElementById('override-variant');
+    const overrideLinks = document.getElementById('override-links');
+    const overrideLinksDisabledBehavior = document.getElementById('override-links-disabled-behavior');
+    const overridePubnums = document.getElementById('override-pubnums');
+    const overrideContact = document.getElementById('override-contact');
+    const overrideFont = document.getElementById('override-font');
+    const overrideMonoFont = document.getElementById('override-mono-font');
     const overlay = document.getElementById('loading-overlay');
 
     const cmResume = CodeMirror(document.getElementById('cm-resume'), {
@@ -695,14 +835,6 @@ const DEFAULT_BIB = `@article{example2024,
     cmConfig.on('change', scheduleCompile);
     cmBib.on('change', scheduleCompile);
 
-    function getMainContent() {
-      const bibContent = cmBib.getValue().trim();
-      if (bibContent) {
-        return `#import "/template.typ": build_resume\n#let resume_data = yaml("/resume.yml")\n#build_resume(resume_data, (:), config_file: "/config.yml", bib_file: "/publications.bib")`;
-      }
-      return `#import "/template.typ": build_resume\n#let resume_data = yaml("/resume.yml")\n#build_resume(resume_data, (:), config_file: "/config.yml")`;
-    }
-
     function formatLastUpdatedDate(dateObj = new Date()) {
       return dateObj.toLocaleDateString('en-US', {
         month: 'long',
@@ -711,52 +843,102 @@ const DEFAULT_BIB = `@article{example2024,
       });
     }
 
-    function injectLastUpdated(configText) {
-      const stamp = formatLastUpdatedDate();
-      const line = `last_updated: "${stamp}"`;
-      const hasLine = /^\s*last_updated\s*:/m.test(configText);
-      if (hasLine) {
-        return configText.replace(/^\s*last_updated\s*:.+$/m, line);
-      }
-      return `${line}\n${configText}`;
-    }
-
-    function upsertTopLevelKey(configText, key, valueLiteral) {
-      const pattern = new RegExp(`^\\s*${key}\\s*:.*$`, 'm');
-      const line = `${key}: ${valueLiteral}`;
-      if (pattern.test(configText)) {
-        return configText.replace(pattern, line);
-      }
-      return `${line}\n${configText}`;
-    }
-
     function detectPaperSize(configText) {
       const m = configText.match(/^\s*paper_size\s*:\s*["']?([A-Za-z-]+)["']?\s*$/m);
       if (!m) return 'letter';
       return m[1].toLowerCase() === 'a4' ? 'a4' : 'letter';
     }
 
-    function injectRuntimeConfig(configText) {
-      let out = injectLastUpdated(configText);
-      out = upsertTopLevelKey(out, 'paper_size', `"${paperSize.value}"`);
-      return out;
+    function parseConfigBoolean(configText, key, fallback) {
+      const top = configText.match(new RegExp(`^\\s*${key}\\s*:\\s*(true|false)\\s*$`, 'mi'));
+      const nested = configText.match(new RegExp(`^\\s{2}${key}\\s*:\\s*(true|false)\\s*$`, 'mi'));
+      if (top) return top[1].toLowerCase() === 'true';
+      if (nested) return nested[1].toLowerCase() === 'true';
+      return fallback;
     }
 
-    function detectVariantLetter(configText, bibText = '') {
-      const hasBib = Boolean((bibText || '').trim());
-      const topLevelLinks = configText.match(/^\s*enable_links\s*:\s*(true|false)\s*$/mi);
-      const nestedLinks = configText.match(/^\s{2}enable_links\s*:\s*(true|false)\s*$/mi);
-      const enableLinks = topLevelLinks
-        ? topLevelLinks[1].toLowerCase() === 'true'
-        : (nestedLinks ? nestedLinks[1].toLowerCase() === 'true' : true);
-      const variantMatch = configText.match(/^\s*variant\s*:\s*["']?([A-Za-z-]+)["']?\s*$/m);
-      const variant = variantMatch ? variantMatch[1].toLowerCase() : 'long';
+    function parseConfigVariant(configText) {
+      const m = configText.match(/^\s*variant\s*:\s*["']?([A-Za-z-]+)["']?\s*$/m);
+      return m ? m[1].toLowerCase() : 'long';
+    }
 
-      if (!enableLinks) return 'N';
-      if (hasBib) return 'B';
-      if (variant === 'short') return 'S';
-      if (variant === 'long') return 'L';
-      return 'C';
+    function escapeTypstString(value) {
+      return String(value).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+    }
+
+    function getRuntimeOverridesObject() {
+      const overrides = {
+        last_updated: formatLastUpdatedDate(),
+        paper_size: paperSize.value,
+      };
+
+      if (overrideVariant.value !== 'config') {
+        overrides.variant = overrideVariant.value;
+      }
+      if (overrideLinks.value === 'on') {
+        overrides.enable_links = true;
+      } else if (overrideLinks.value === 'off') {
+        overrides.enable_links = false;
+      }
+      if (overrideLinksDisabledBehavior.value !== 'config') {
+        overrides.links_disabled_behavior = overrideLinksDisabledBehavior.value;
+      }
+      if (overridePubnums.value === 'on') {
+        overrides.show_publication_numbers = true;
+      } else if (overridePubnums.value === 'off') {
+        overrides.show_publication_numbers = false;
+      }
+      if (overrideContact.value !== 'config') {
+        overrides.contact_display_mode = overrideContact.value;
+      }
+      if (overrideFont.value !== 'config') {
+        overrides.font = overrideFont.value;
+      }
+      if (overrideMonoFont.value !== 'config') {
+        overrides.mono_font = overrideMonoFont.value;
+      }
+
+      return overrides;
+    }
+
+    function overridesToTypstDict(overrides) {
+      const parts = [];
+      Object.entries(overrides).forEach(([key, value]) => {
+        if (typeof value === 'boolean') {
+          parts.push(`${key}: ${value ? 'true' : 'false'}`);
+        } else {
+          parts.push(`${key}: "${escapeTypstString(value)}"`);
+        }
+      });
+      return `(${parts.join(', ')})`;
+    }
+
+    function getResumeTypSource() {
+      const bibContent = cmBib.getValue().trim();
+      const runtimeOverrides = overridesToTypstDict(getRuntimeOverridesObject());
+      if (bibContent) {
+        return `#import "/template.typ": build_resume\n#let resume_data = yaml("/resume.yml")\n#let runtime_overrides = ${runtimeOverrides}\n#build_resume(resume_data, runtime_overrides, config_file: "/config.yml", bib_file: "/publications.bib")`;
+      }
+      return `#import "/template.typ": build_resume\n#let resume_data = yaml("/resume.yml")\n#let runtime_overrides = ${runtimeOverrides}\n#build_resume(resume_data, runtime_overrides, config_file: "/config.yml")`;
+    }
+
+    function getMainContent() {
+      return `#include "/resume.typ"`;
+    }
+
+    function detectVariantSuffix(configText, bibText = '') {
+      const hasBib = Boolean((bibText || '').trim());
+      let enableLinks = parseConfigBoolean(configText, 'enable_links', true);
+      let variant = parseConfigVariant(configText);
+      if (overrideLinks.value === 'on') enableLinks = true;
+      if (overrideLinks.value === 'off') enableLinks = false;
+      if (overrideVariant.value !== 'config') variant = overrideVariant.value;
+
+      if (!enableLinks) return '_N';
+      if (hasBib) return '_B';
+      if (variant === 'short') return '_S';
+      if (variant === 'long') return '';
+      return '_C';
     }
 
     function deriveResumeFilename(resumeYamlText, configText, bibText) {
@@ -778,15 +960,15 @@ const DEFAULT_BIB = `@article{example2024,
         }
       }
 
-      const variantLetter = detectVariantLetter(configText, bibText);
-      if (!fullName) return `Resume_${variantLetter}.pdf`;
+      const variantSuffix = detectVariantSuffix(configText, bibText);
+      if (!fullName) return `Resume${variantSuffix}.pdf`;
       const tokens = fullName.split(/\s+/).filter(Boolean);
-      if (tokens.length === 0) return `Resume_${variantLetter}.pdf`;
+      if (tokens.length === 0) return `Resume${variantSuffix}.pdf`;
       const first = tokens[0];
       const last = tokens.length > 1 ? tokens[tokens.length - 1] : '';
       const compact = `${first}${last}`.replace(/[^A-Za-z0-9]/g, '');
-      if (!compact) return `Resume_${variantLetter}.pdf`;
-      return `${compact}_Resume_${variantLetter}.pdf`;
+      if (!compact) return `Resume${variantSuffix}.pdf`;
+      return `${compact}_Resume${variantSuffix}.pdf`;
     }
 
     async function compile() {
@@ -797,8 +979,8 @@ const DEFAULT_BIB = `@article{example2024,
       try {
         await $typst.addSource('/template.typ', templateContent);
         await $typst.addSource('/resume.yml', cmResume.getValue());
-        const runtimeConfig = injectRuntimeConfig(cmConfig.getValue());
-        await $typst.addSource('/config.yml', runtimeConfig);
+        await $typst.addSource('/resume.typ', getResumeTypSource());
+        await $typst.addSource('/config.yml', cmConfig.getValue());
 
         const bibContent = cmBib.getValue().trim();
         if (bibContent) {
@@ -827,6 +1009,14 @@ const DEFAULT_BIB = `@article{example2024,
         localStorage.setItem(LS_RESUME, cmResume.getValue());
         localStorage.setItem(LS_CONFIG, cmConfig.getValue());
         localStorage.setItem(LS_BIB, cmBib.getValue());
+        localStorage.setItem(LS_PAPER, paperSize.value);
+        localStorage.setItem(LS_OVERRIDE_VARIANT, overrideVariant.value);
+        localStorage.setItem(LS_OVERRIDE_LINKS, overrideLinks.value);
+        localStorage.setItem(LS_OVERRIDE_LINKS_DISABLED_BEHAVIOR, overrideLinksDisabledBehavior.value);
+        localStorage.setItem(LS_OVERRIDE_PUBNUMS, overridePubnums.value);
+        localStorage.setItem(LS_OVERRIDE_CONTACT, overrideContact.value);
+        localStorage.setItem(LS_OVERRIDE_FONT, overrideFont.value);
+        localStorage.setItem(LS_OVERRIDE_MONO_FONT, overrideMonoFont.value);
 
         setStatus('Ready', 'ready');
       } catch (err) {
@@ -842,8 +1032,8 @@ const DEFAULT_BIB = `@article{example2024,
       try {
         await $typst.addSource('/template.typ', templateContent);
         await $typst.addSource('/resume.yml', cmResume.getValue());
-        const runtimeConfig = injectRuntimeConfig(cmConfig.getValue());
-        await $typst.addSource('/config.yml', runtimeConfig);
+        await $typst.addSource('/resume.typ', getResumeTypSource());
+        await $typst.addSource('/config.yml', cmConfig.getValue());
 
         const bibContent = cmBib.getValue().trim();
         if (bibContent) {
@@ -867,12 +1057,30 @@ const DEFAULT_BIB = `@article{example2024,
       }
     });
 
+    btnDownloadTyp.addEventListener('click', () => {
+      const typSource = getResumeTypSource();
+      const blob = new Blob([typSource], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'resume.typ';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
     btnReset.addEventListener('click', () => {
       if (!confirm('Reset all editors to defaults? Your changes will be lost.')) return;
       localStorage.removeItem(LS_RESUME);
       localStorage.removeItem(LS_CONFIG);
       localStorage.removeItem(LS_BIB);
       localStorage.removeItem(LS_PAPER);
+      localStorage.removeItem(LS_OVERRIDE_VARIANT);
+      localStorage.removeItem(LS_OVERRIDE_LINKS);
+      localStorage.removeItem(LS_OVERRIDE_LINKS_DISABLED_BEHAVIOR);
+      localStorage.removeItem(LS_OVERRIDE_PUBNUMS);
+      localStorage.removeItem(LS_OVERRIDE_CONTACT);
+      localStorage.removeItem(LS_OVERRIDE_FONT);
+      localStorage.removeItem(LS_OVERRIDE_MONO_FONT);
       location.reload();
     });
 
@@ -880,6 +1088,13 @@ const DEFAULT_BIB = `@article{example2024,
       localStorage.setItem(LS_PAPER, paperSize.value);
       scheduleCompile();
     });
+    overrideVariant.addEventListener('change', scheduleCompile);
+    overrideLinks.addEventListener('change', scheduleCompile);
+    overrideLinksDisabledBehavior.addEventListener('change', scheduleCompile);
+    overridePubnums.addEventListener('change', scheduleCompile);
+    overrideContact.addEventListener('change', scheduleCompile);
+    overrideFont.addEventListener('change', scheduleCompile);
+    overrideMonoFont.addEventListener('change', scheduleCompile);
 
     async function fetchText(url) {
       const resp = await fetch(url);
@@ -887,15 +1102,67 @@ const DEFAULT_BIB = `@article{example2024,
       return resp.text();
     }
 
+    async function fetchTextAny(paths) {
+      let lastError = null;
+      for (const p of paths) {
+        try {
+          return await fetchText(p);
+        } catch (err) {
+          lastError = err;
+        }
+      }
+      throw lastError || new Error(`Failed to fetch any candidate path: ${paths.join(', ')}`);
+    }
+
+    function computeRepoBasePrefix() {
+      const path = window.location.pathname || '';
+      const webWithSlashIdx = path.indexOf('/web/');
+      if (webWithSlashIdx >= 0) return path.slice(0, webWithSlashIdx);
+      if (path.endsWith('/web')) return path.slice(0, -4);
+      return '';
+    }
+
     async function loadDefaults() {
       let resumeYaml = DEFAULT_RESUME_YAML;
       let configYaml = DEFAULT_CONFIG_YAML;
       let bibContent = DEFAULT_BIB;
-      templateContent = await fetchText('./template.typ');
+      const basePrefix = computeRepoBasePrefix();
+      const abs = (suffix) => `${basePrefix}${suffix}`;
+      templateContent = await fetchTextAny([
+        './template.typ',
+        '../template.typ',
+        abs('/template.typ'),
+        abs('/web/template.typ'),
+        './web/template.typ',
+      ]);
 
-      try { resumeYaml = await fetchText('./default-resume.yml'); } catch (e) { }
-      try { configYaml = await fetchText('./default-config.yml'); } catch (e) { }
-      try { bibContent = await fetchText('./default-publications.bib'); } catch (e) { }
+      try {
+        resumeYaml = await fetchTextAny([
+          './default-resume.yml',
+          '../resume.yml',
+          abs('/resume.yml'),
+          abs('/web/default-resume.yml'),
+          './web/default-resume.yml',
+        ]);
+      } catch (e) { }
+      try {
+        configYaml = await fetchTextAny([
+          './default-config.yml',
+          '../config.yml',
+          abs('/config.yml'),
+          abs('/web/default-config.yml'),
+          './web/default-config.yml',
+        ]);
+      } catch (e) { }
+      try {
+        bibContent = await fetchTextAny([
+          './default-publications.bib',
+          '../publications.bib',
+          abs('/publications.bib'),
+          abs('/web/default-publications.bib'),
+          './web/default-publications.bib',
+        ]);
+      } catch (e) { }
 
       return { resumeYaml, configYaml, bibContent };
     }
@@ -920,6 +1187,13 @@ const DEFAULT_BIB = `@article{example2024,
       } else {
         paperSize.value = detectPaperSize(cmConfig.getValue());
       }
+      overrideVariant.value = localStorage.getItem(LS_OVERRIDE_VARIANT) || 'config';
+      overrideLinks.value = localStorage.getItem(LS_OVERRIDE_LINKS) || 'config';
+      overrideLinksDisabledBehavior.value = localStorage.getItem(LS_OVERRIDE_LINKS_DISABLED_BEHAVIOR) || 'config';
+      overridePubnums.value = localStorage.getItem(LS_OVERRIDE_PUBNUMS) || 'config';
+      overrideContact.value = localStorage.getItem(LS_OVERRIDE_CONTACT) || 'config';
+      overrideFont.value = localStorage.getItem(LS_OVERRIDE_FONT) || 'config';
+      overrideMonoFont.value = localStorage.getItem(LS_OVERRIDE_MONO_FONT) || 'config';
 
       const typstScript = document.getElementById('typst');
 

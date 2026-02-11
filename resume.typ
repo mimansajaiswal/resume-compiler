@@ -1,7 +1,7 @@
 // ============================================================================
-// MAIN RESUME FILE (Long Variant)
+// MAIN RESUME ENTRYPOINT (Config-Driven)
 // ============================================================================
-// Data from resume.yml, config from config.yml
+// Data from resume.yml, settings from config.yml
 // Compile with: typst compile resume.typ
 // ============================================================================
 

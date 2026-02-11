@@ -6,8 +6,8 @@ variant: short
 paper_size: letter # Options: "letter" or "a4"
 
 fonts:
-  heading_font: "New Computer Modern"
-  body_font: "New Computer Modern"
+  font: "New Computer Modern"
+  mono_font: "DejaVu Sans Mono"
   font_size: 10.2pt
   name_font_size: 1.5em
   section_font_size: 1em
@@ -52,7 +52,7 @@ styling:
   publications_link_style: "compact"
   last_updated_font_size: 0.66em
   last_updated_label: "Last Updated on"
-  contact_display_mode: "label"
+  contact_display_mode: "icon_label"
   contact_icon_family: "lucide"
   contact_icon_spacing: 0.16em
 
@@ -65,6 +65,7 @@ visibility:
   show_references: false
   show_last_updated: true
   enable_links: true
+  links_disabled_behavior: "label"
   show_publication_numbers: false
 
 section_titles:

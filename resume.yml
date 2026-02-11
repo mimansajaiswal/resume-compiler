@@ -50,9 +50,16 @@ work:
         content:
           - "Designed a Lean-based proof pipeline for concurrent service invariants, reducing manual proof script maintenance and increasing theorem reuse across product teams."
           - "Built a certified regression framework that links generated counterexamples to failing obligations, cutting verification turnaround for major releases."
+      - name: Senior Theorem Proving Scientist
+        startDate: 2023-03-01
+        endDate: 2024-12-01
+        content:
+          - "Led proof refactoring initiatives across multiple verification repositories, improving maintainability during language and library upgrades."
+          - "Built tactic diagnostics dashboards that tracked instability hotspots and reduced flaky proof failures in continuous integration."
 
   - name: Granite Verification Lab
     url: https://example.com/granite-verification
+    location: Boston, MA
     positions:
       - name: Staff Formal Methods Engineer
         startDate: 2022-04-01
@@ -135,58 +142,57 @@ education:
       - Embedded Systems
 
 publications:
-  - content: "Proof-Carrying Deployment Pipelines for Safety-Critical Runtime Services"
+  - name: "Proof-Carrying Deployment Pipelines for Safety-Critical Runtime Services"
     section: works_in_progress
     authors: Avery Collins
-    notes: "[Technical Notes](https://averycollins.dev/posts/proof-carrying-deployments/)"
+    content: "[Technical Notes](https://averycollins.dev/posts/proof-carrying-deployments/)"
     include_short: false
 
-  - content: "Interactive Counterexample Replay for Lean 4 Verification Workflows"
+  - name: "Interactive Counterexample Replay for Lean 4 Verification Workflows"
     section: works_in_progress
     authors: Avery Collins
-    demo_url: "https://example.com/demos/counterexample-replay"
-    repo_url: "https://github.com/example/counterexample-replay"
+    content: "[Demo](https://example.com/demos/counterexample-replay) | [Repo](https://github.com/example/counterexample-replay)"
     include_short: false
 
   - name: "Proof Sketch Compression for Large Theorem Libraries"
     section: submitted
     authors: "M. Ortega, S. Lin, Avery Collins, P. Ghosh, D. Holt, and 9 others"
     url: https://arxiv.org/abs/2601.01234
-    notes: "_Submitted_"
+    content: "_Submitted_"
     include_short: false
 
   - name: "Auditable Refinement Chains for Regulatory Software Evidence"
     section: submitted
     authors: "Avery Collins, J. Harper, L. Dunn"
-    notes: "_Submitted_"
+    content: "_Submitted_"
     include_short: false
 
   - name: "Reproducible Benchmarks for Interactive Theorem Prover Toolchains"
     section: submitted
     authors: "T. Morgan, E. Patel, K. Shah, Avery Collins, and collaborators"
     url: https://arxiv.org/abs/2602.04567
-    notes: "_Submitted_"
+    content: "_Submitted_"
     include_short: false
 
   - name: "Constructive Countermodels for Contract Verification in Rust"
     section: submitted
     authors: Avery Collins
     url: https://example.com/papers/constructive-countermodels.pdf
-    notes: "_Workshop Paper_"
+    content: "_Workshop Paper_"
     include_short: false
 
   - name: "Specification Drift in Long-Lived Proof Repositories"
     section: submitted
     authors: Avery Collins
     url: https://example.com/papers/spec-drift-proof-repos.pdf
-    notes: "_Workshop Paper_"
+    content: "_Workshop Paper_"
     include_short: false
 
   - name: "A Survey of Practical Proof Automation in Industrial Verification"
     section: submitted
     authors: Avery Collins
     url: https://averycollins.dev/notes/industrial-proof-automation-survey
-    notes: "_Survey Paper_"
+    content: "_Survey Paper_"
     include_short: false
 
   - name: "Proof Contracts for Deterministic Build Reproducibility"

@@ -48,29 +48,35 @@ jobs:
           if [ -z "${NAME_STEM:-}" ]; then
             NAME_STEM="Resume"
           fi
-          RESUME_FILENAME_L="${NAME_STEM}_Resume_L.pdf"
+          RESUME_FILENAME_MAIN="${NAME_STEM}_Resume.pdf"
           RESUME_FILENAME_S="${NAME_STEM}_Resume_S.pdf"
-          RESUME_FILENAME_C="${NAME_STEM}_Resume_C.pdf"
           RESUME_FILENAME_B="${NAME_STEM}_Resume_B.pdf"
           RESUME_FILENAME_N="${NAME_STEM}_Resume_N.pdf"
+          RESUME_PATH_MAIN="artifacts/${RESUME_FILENAME_MAIN}"
+          RESUME_PATH_S="artifacts/${RESUME_FILENAME_S}"
+          RESUME_PATH_B="artifacts/${RESUME_FILENAME_B}"
+          RESUME_PATH_N="artifacts/${RESUME_FILENAME_N}"
           echo "last_updated=$LAST_UPDATED" >> "$GITHUB_OUTPUT"
           echo "name_stem=$NAME_STEM" >> "$GITHUB_OUTPUT"
-          echo "resume_filename_l=$RESUME_FILENAME_L" >> "$GITHUB_OUTPUT"
+          echo "resume_filename_main=$RESUME_FILENAME_MAIN" >> "$GITHUB_OUTPUT"
           echo "resume_filename_s=$RESUME_FILENAME_S" >> "$GITHUB_OUTPUT"
-          echo "resume_filename_c=$RESUME_FILENAME_C" >> "$GITHUB_OUTPUT"
           echo "resume_filename_b=$RESUME_FILENAME_B" >> "$GITHUB_OUTPUT"
           echo "resume_filename_n=$RESUME_FILENAME_N" >> "$GITHUB_OUTPUT"
+          echo "resume_path_main=$RESUME_PATH_MAIN" >> "$GITHUB_OUTPUT"
+          echo "resume_path_s=$RESUME_PATH_S" >> "$GITHUB_OUTPUT"
+          echo "resume_path_b=$RESUME_PATH_B" >> "$GITHUB_OUTPUT"
+          echo "resume_path_n=$RESUME_PATH_N" >> "$GITHUB_OUTPUT"
 
       - name: Install Typst
         uses: typst-community/setup-typst@v3
 
       - name: Build resume PDFs
         run: |
-          typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume.typ "${{ steps.resume_meta.outputs.resume_filename_l }}"
-          typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume-short.typ "${{ steps.resume_meta.outputs.resume_filename_s }}"
-          typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume-with-config.typ "${{ steps.resume_meta.outputs.resume_filename_c }}"
-          typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume-with-bibtex.typ "${{ steps.resume_meta.outputs.resume_filename_b }}"
-          typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume-no-js.typ "${{ steps.resume_meta.outputs.resume_filename_n }}"
+          mkdir -p artifacts
+          typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume.typ "${{ steps.resume_meta.outputs.resume_path_main }}"
+          typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume-short.typ "${{ steps.resume_meta.outputs.resume_path_s }}"
+          typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume-with-bibtex.typ "${{ steps.resume_meta.outputs.resume_path_b }}"
+          typst compile --input "last_updated=${{ steps.resume_meta.outputs.last_updated }}" resume-no-js.typ "${{ steps.resume_meta.outputs.resume_path_n }}"
 
       # ============================================================================
       # OPTION 1: Upload to AWS S3
@@ -84,8 +90,8 @@ jobs:
       #
       # - name: Upload to S3
       #   run: |
-      #     aws s3 cp "${{ steps.resume_meta.outputs.resume_filename_l }}" s3://your-bucket-name/"${{ steps.resume_meta.outputs.resume_filename_l }}" --acl public-read
-      #     aws s3 cp "${{ steps.resume_meta.outputs.resume_filename_s }}" s3://your-bucket-name/"${{ steps.resume_meta.outputs.resume_filename_s }}" --acl public-read
+      #     aws s3 cp "${{ steps.resume_meta.outputs.resume_path_main }}" s3://your-bucket-name/"${{ steps.resume_meta.outputs.resume_filename_main }}" --acl public-read
+      #     aws s3 cp "${{ steps.resume_meta.outputs.resume_path_s }}" s3://your-bucket-name/"${{ steps.resume_meta.outputs.resume_filename_s }}" --acl public-read
 
       # ============================================================================
       # OPTION 2: Upload to Cloudflare R2
@@ -94,7 +100,7 @@ jobs:
       #   uses: cloudflare/wrangler-action@v3
       #   with:
       #     apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      #     command: r2 object put your-bucket/${{ steps.resume_meta.outputs.resume_filename_l }} --file=${{ steps.resume_meta.outputs.resume_filename_l }}
+      #     command: r2 object put your-bucket/${{ steps.resume_meta.outputs.resume_filename_main }} --file=${{ steps.resume_meta.outputs.resume_path_main }}
 
       # ============================================================================
       # OPTION 3: Upload to GitHub Pages
@@ -116,8 +122,8 @@ jobs:
       #     curl https://rclone.org/install.sh | sudo bash
       #     mkdir -p ~/.config/rclone
       #     echo "${{ secrets.RCLONE_CONFIG }}" > ~/.config/rclone/rclone.conf
-      #     rclone copy "${{ steps.resume_meta.outputs.resume_filename_l }}" remote:your-folder/
-      #     rclone copy "${{ steps.resume_meta.outputs.resume_filename_s }}" remote:your-folder/
+      #     rclone copy "${{ steps.resume_meta.outputs.resume_path_main }}" remote:your-folder/
+      #     rclone copy "${{ steps.resume_meta.outputs.resume_path_s }}" remote:your-folder/
 
       # ============================================================================
       # Default enabled output: upload as GitHub artifact
@@ -127,9 +133,8 @@ jobs:
         with:
           name: ${{ steps.resume_meta.outputs.name_stem }}-resume-pdfs-${{ github.sha }}
           path: |
-            ${{ steps.resume_meta.outputs.resume_filename_l }}
-            ${{ steps.resume_meta.outputs.resume_filename_s }}
-            ${{ steps.resume_meta.outputs.resume_filename_c }}
-            ${{ steps.resume_meta.outputs.resume_filename_b }}
-            ${{ steps.resume_meta.outputs.resume_filename_n }}
+            ${{ steps.resume_meta.outputs.resume_path_main }}
+            ${{ steps.resume_meta.outputs.resume_path_s }}
+            ${{ steps.resume_meta.outputs.resume_path_b }}
+            ${{ steps.resume_meta.outputs.resume_path_n }}
           retention-days: 90

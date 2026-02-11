@@ -12,6 +12,8 @@
   bib_style: "ieee",
   variant: "long",
   show_interests_summary: false,
+  show_publication_numbers: true,
+  publication_number_width: 2.2em,
   publications_title: "Selected Publications",
   section_order: (
     "work",

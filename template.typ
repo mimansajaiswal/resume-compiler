@@ -51,6 +51,7 @@
 #let iso_date_pattern = regex("^[0-9]{4}-[0-9]{2}(-[0-9]{2})?$")
 #let hex_color_pattern = regex("^#[0-9a-fA-F]{6}$")
 #let markdown_link_pattern = regex("\\[([^\\]]+)\\]\\(([^\\)]+)\\)")
+#let bib_entry_pattern = regex("(?s)@[A-Za-z]+\\s*\\{\\s*([^,\\s]+)\\s*,(.*?)\\n\\s*\\}")
 
 #let parse_dimension(value, default: none) = {
   if value == none { return default }
@@ -96,6 +97,100 @@
   default
 }
 
+#let clean_bib_value(raw) = {
+  if raw == none { return none }
+  let s = str(raw).replace("\n", " ").replace("\r", " ")
+  let s = s.replace(regex("\\s+"), " ").trim()
+  let s = s.trim("\"")
+  let s = if s.starts-with("{") and s.ends-with("}") and s.len() >= 2 {
+    s.slice(1, s.len() - 1)
+  } else {
+    s
+  }
+  let s = s.replace("{", "").replace("}", "").trim()
+  if s == "" { none } else { s }
+}
+
+#let bib_field(body, field) = {
+  let brace_matches = body.matches(regex("(?si)\\b" + field + "\\s*=\\s*\\{(.*?)\\}\\s*,?"))
+  if brace_matches.len() > 0 and brace_matches.at(0).captures.len() > 0 {
+    return clean_bib_value(brace_matches.at(0).captures.at(0))
+  }
+
+  let quote_matches = body.matches(regex("(?si)\\b" + field + "\\s*=\\s*\"(.*?)\"\\s*,?"))
+  if quote_matches.len() > 0 and quote_matches.at(0).captures.len() > 0 {
+    return clean_bib_value(quote_matches.at(0).captures.at(0))
+  }
+
+  none
+}
+
+#let format_bib_authors(raw) = {
+  let raw_str = clean_bib_value(raw)
+  if raw_str == none { return none }
+
+  let chunks = raw_str.split(" and ")
+  let formatted = ()
+
+  for chunk in chunks {
+    let person = chunk.trim()
+    if person != "" {
+      if person.contains(",") {
+        let parts = person.split(",")
+        let last = if parts.len() > 0 { parts.at(0).trim() } else { "" }
+        let first = if parts.len() > 1 { parts.at(1).trim() } else { "" }
+        if first != "" and last != "" {
+          formatted.push(first + " " + last)
+        } else {
+          formatted.push(person)
+        }
+      } else {
+        formatted.push(person)
+      }
+    }
+  }
+
+  if formatted.len() == 0 { none } else { formatted.join(", ") }
+}
+
+#let parse_bib_entries(bib_file) = {
+  if bib_file == none { return (:) }
+
+  let text = read(bib_file)
+  let entries = (:)
+
+  for entry in text.matches(bib_entry_pattern) {
+    let key = if entry.captures.len() > 0 { str(entry.captures.at(0)).trim() } else { "" }
+    let body = if entry.captures.len() > 1 { str(entry.captures.at(1)) } else { "" }
+    if key != "" {
+      let title = bib_field(body, "title")
+      let authors = format_bib_authors(bib_field(body, "author"))
+      let journal = bib_field(body, "journal")
+      let booktitle = bib_field(body, "booktitle")
+      let publisher = bib_field(body, "publisher")
+      let venue = if booktitle != none and str(booktitle).trim() != "" {
+        booktitle
+      } else if journal != none and str(journal).trim() != "" {
+        journal
+      } else {
+        publisher
+      }
+      let year = bib_field(body, "year")
+      let url = bib_field(body, "url")
+
+      let parsed = (:)
+      if title != none and str(title).trim() != "" { parsed.insert("title", title) }
+      if authors != none and str(authors).trim() != "" { parsed.insert("authors", authors) }
+      if venue != none and str(venue).trim() != "" { parsed.insert("venue", venue) }
+      if year != none and str(year).trim() != "" { parsed.insert("year", year) }
+      if url != none and str(url).trim() != "" { parsed.insert("url", url) }
+      entries.insert(key, parsed)
+    }
+  }
+
+  entries
+}
+
 #let maybe_link(url, body, config) = {
   let link_color = parse_color(config.at("link_color", default: none), default: rgb("#1C398D"))
   if url == none or str(url).trim() == "" {
@@ -134,6 +229,18 @@
   eval(s, mode: "markup")
 }
 
+#let render_link_label_when_disabled(label, url, config) = {
+  let mode = lower(str(config.at("links_disabled_behavior", default: "label")).trim())
+  if mode == "label_with_url" and url != none and str(url).trim() != "" {
+    let small_size = config.at("disabled_link_url_font_size", default: 0.68em)
+    let link_gap = config.at("disabled_link_url_gap", default: 0.14em)
+    let c = parse_color(config.at("secondary_color", default: none), default: rgb("#555555"))
+    [#render_markup(label)#h(link_gap)#text(size: small_size, fill: c)[#("[" + str(url) + "]")]]
+  } else {
+    render_markup(label)
+  }
+}
+
 #let render_rich(value, config) = {
   if value == none { return [] }
   if type(value) == content { return value }
@@ -150,16 +257,8 @@
 
   if type(value) == dictionary {
     let markdown_keys = (
-      "markdown",
       "content",
-      "text",
-      "label",
-      "title",
       "name",
-      "value",
-      "summary",
-      "description",
-      "notes",
     )
     for key in markdown_keys {
       if key in value {
@@ -178,11 +277,6 @@
     return render_markup(s)
   }
 
-  let strip_links = (
-    not config.at("enable_links", default: true)
-    and config.at("strip_link_labels_when_links_disabled", default: false)
-  )
-
   let parts = ()
   let cursor = 0
   for m in matches {
@@ -191,8 +285,10 @@
     }
     let label = m.captures.at(0)
     let url = m.captures.at(1)
-    if not strip_links {
+    if config.at("enable_links", default: true) {
       parts.push(maybe_link(url, render_markup(label), config))
+    } else {
+      parts.push(render_link_label_when_disabled(label, url, config))
     }
     cursor = m.end
   }
@@ -425,7 +521,7 @@
   v(config.at("section_spacing", default: 1.08em))
   block(width: 100%, above: 0pt, below: 0pt, breakable: false)[
     #set text(
-      font: config.at("heading_font", default: "New Computer Modern"),
+      font: config.at("font", default: "New Computer Modern"),
       size: config.at("section_font_size", default: 1em),
       weight: "bold",
       tracking: config.at("section_heading_tracking", default: 0.01em),
@@ -457,10 +553,11 @@
     },
   )
   set text(
-    font: config.at("body_font", default: "New Computer Modern"),
+    font: config.at("font", default: "New Computer Modern"),
     size: config.at("font_size", default: 10pt),
     hyphenate: false,
   )
+  show raw: set text(font: config.at("mono_font", default: "DejaVu Sans Mono"))
   set par(
     leading: config.at("line_spacing", default: 0.33em),
     justify: false,
@@ -477,7 +574,7 @@
 #let apply_heading_styles(config, doc) = {
   show heading.where(level: 1): it => block(width: 100%)[
     #set text(
-      font: config.at("heading_font", default: "New Computer Modern"),
+      font: config.at("font", default: "New Computer Modern"),
       size: config.at("name_font_size", default: 1.4em),
       weight: "bold",
     )
@@ -653,59 +750,76 @@
   section_heading(resolve_section_title(config, "work"), config)
   block(above: 0pt, below: 0pt)[
     #for (i, work) in work_items.enumerate() {
-      block(width: 100%, above: if i == 0 { 0pt } else { entry_spacing }, below: 0pt, breakable: true)[
-        #{
-          let positions = if "positions" in work and work.positions != none {
-            filter_by_variant(as_array(work.positions), variant)
-          } else {
-            (work,)
-          }
+      let positions = if "positions" in work and work.positions != none {
+        filter_by_variant(as_array(work.positions), variant)
+      } else {
+        (work,)
+      }
 
-          for (j, position) in positions.enumerate() {
-            block(width: 100%, above: if j == 0 { 0pt } else { position_spacing }, below: 0pt, breakable: true)[
-              #{
-                let work_name = work.at("name", default: "Organization")
-                let org_content = if "url" in work and work.url != none {
-                  strong(maybe_link(work.url, render_rich(work_name, config), config))
-                } else {
-                  strong(render_rich(work_name, config))
-                }
+      if positions.len() == 0 {
+        []
+      } else {
+        let work_name = work.at("name", default: "Organization")
+        let org_content = if "url" in work and work.url != none {
+          strong(maybe_link(work.url, render_rich(work_name, config), config))
+        } else {
+          strong(render_rich(work_name, config))
+        }
+        let location_for_company = if "location" in work and non_empty(work.location) {
+          work.location
+        } else if "location" in positions.at(0) and non_empty(positions.at(0).location) {
+          positions.at(0).location
+        } else {
+          none
+        }
+        let company_line = if location_for_company != none {
+          [#org_content, #render_rich(location_for_company, config)]
+        } else {
+          org_content
+        }
+        let multi_position = positions.len() > 1
 
-                let role = position.at("name", default: none)
-                let work_location = work.at("location", default: position.at("location", default: none))
-                let role_with_location = if role != none and str(role).trim() != "" and work_location != none and str(work_location).trim() != "" {
-                  [#render_rich(role, config) (#render_rich(work_location, config))]
-                } else if role != none and str(role).trim() != "" {
-                  render_rich(role, config)
-                } else {
-                  none
-                }
-                let left_line = if role != none and str(role).trim() != "" {
-                  [#org_content | #role_with_location]
-                } else {
-                  [#org_content]
-                }
+        block(width: 100%, above: if i == 0 { 0pt } else { entry_spacing }, below: 0pt, breakable: true)[
+          #if multi_position { company_line }
 
-                let end_date = position.at("endDate", default: none)
-                let end_formatted = if end_date != none and lower(str(end_date)) == "present" {
-                  [_present_]
-                } else {
-                  none
-                }
+          #for (j, position) in positions.enumerate() {
+            let role = position.at("name", default: none)
+            let left_line = if multi_position {
+              if non_empty(role) { render_rich(role, config) } else { [] }
+            } else if non_empty(role) {
+              [#company_line | #render_rich(role, config)]
+            } else {
+              [#company_line]
+            }
 
-                lr(
-                  left_line,
-                  if end_formatted != none {
-                    date_range(position.at("startDate", default: none), none)
-                    [ to ]
-                    end_formatted
-                  } else {
-                    date_range(position.at("startDate", default: none), position.at("endDate", default: none))
-                  },
-                )
-              }
+            let end_date = position.at("endDate", default: none)
+            let right_line = if end_date != none and lower(str(end_date)) == "present" {
+              [#date_range(position.at("startDate", default: none), none) to _present_]
+            } else {
+              date_range(position.at("startDate", default: none), position.at("endDate", default: none))
+            }
+            let position_content = as_array(position.at("content", default: ()))
 
-              #let position_content = as_array(position.at("content", default: ()))
+            block(
+              width: 100%,
+              above: if multi_position {
+                if j == 0 { entry_inner_spacing } else { position_spacing }
+              } else {
+                if j == 0 { 0pt } else { position_spacing }
+              },
+              below: 0pt,
+              breakable: true,
+            )[
+              #block(
+                width: 100%,
+                above: 0pt,
+                below: 0pt,
+                inset: if multi_position { (left: work_highlight_indent) } else { (left: 0pt) },
+                breakable: true,
+              )[
+                #if right_line == [] { left_line } else { lr(left_line, right_line) }
+              ]
+
               #if position_content.len() > 0 {
                 v(bullet_top_spacing)
                 block(width: 100%, above: 0pt, below: 0pt, inset: (left: work_highlight_indent), breakable: true)[
@@ -718,8 +832,8 @@
               }
             ]
           }
-        }
-      ]
+        ]
+      }
     }
   ]
 }
@@ -836,18 +950,9 @@
 #let publication_section_key(pub) = {
   if type(pub) != dictionary { return "uncategorized" }
 
-  let explicit = pub.at("section", default: pub.at("group", default: none))
+  let explicit = pub.at("section", default: none)
   if non_empty(explicit) {
     return normalize_key(explicit)
-  }
-
-  let status = pub.at("status", default: none)
-  if non_empty(status) {
-    let s = lower(str(status))
-    if s.contains("submit") { return "submitted" }
-    if s.contains("work") or s.contains("progress") or s.contains("research note") or s.contains("demo") {
-      return "works_in_progress"
-    }
   }
 
   if pub.at("publisher", default: none) == none {
@@ -860,11 +965,6 @@
 #let publication_links(pub, config) = {
   let link_parts = ()
   if type(pub) != dictionary { return link_parts }
-  let strip_links = (
-    not config.at("enable_links", default: true)
-    and config.at("strip_link_labels_when_links_disabled", default: false)
-  )
-  if strip_links { return link_parts }
 
   let explicit_links = as_array(pub.at("links", default: ()))
   for link_info in explicit_links {
@@ -872,23 +972,14 @@
       let label = link_info.at("label", default: none)
       let url = link_info.at("url", default: none)
       if non_empty(label) and non_empty(url) {
-        link_parts.push(maybe_link(url, render_rich(label, config), config))
+        if config.at("enable_links", default: true) {
+          link_parts.push(maybe_link(url, render_rich(label, config), config))
+        } else {
+          link_parts.push(render_link_label_when_disabled(label, url, config))
+        }
       }
     } else {
       link_parts.push(render_rich(link_info, config))
-    }
-  }
-
-  if explicit_links.len() == 0 {
-    let demo_url = pub.at("demo_url", default: pub.at("demo", default: none))
-    let repo_url = pub.at("repo_url", default: pub.at("repo", default: none))
-    let demo_label = pub.at("demo_label", default: "Demo")
-    let repo_label = pub.at("repo_label", default: "Repo")
-    if non_empty(demo_url) {
-      link_parts.push(maybe_link(demo_url, render_rich(demo_label, config), config))
-    }
-    if non_empty(repo_url) {
-      link_parts.push(maybe_link(repo_url, render_rich(repo_label, config), config))
     }
   }
 
@@ -907,27 +998,58 @@
   section_key: "accepted",
   publication_number: none,
 ) = {
-  let number_prefix = if publication_number != none {
-    [#publication_number #h(0.22em)]
-  } else {
-    []
-  }
+  let number_width = config.at("publication_number_width", default: 2.2em)
 
-  if type(pub) != dictionary {
-    block(width: 100%, above: if idx == 0 { 0pt } else { pub_spacing }, below: 0pt)[
-      #set text(size: pub_font_size)
-      #set par(leading: pub_line_spacing)
-      #number_prefix
-      #render_rich(pub, config)
-    ]
+  let body = if type(pub) != dictionary {
+    render_rich(pub, config)
   } else if "bib_key" in pub {
+    let bib_entries = config.at("bib_entries", default: (:))
+    let bib_entry = if type(bib_entries) == dictionary and pub.bib_key in bib_entries {
+      bib_entries.at(pub.bib_key)
+    } else {
+      (:)
+    }
+    let title_override = first_present(pub, ("name",))
+    let title_from_bib = if type(bib_entry) == dictionary { bib_entry.at("title", default: none) } else { none }
+    let title = if non_empty(title_override) { title_override } else if non_empty(title_from_bib) { title_from_bib } else { "Untitled" }
+    let authors_override = first_present(pub, ("authors",))
+    let authors_from_bib = if type(bib_entry) == dictionary { bib_entry.at("authors", default: none) } else { none }
+    let authors = if non_empty(authors_override) { authors_override } else { authors_from_bib }
+    let content_text = pub.at("content", default: none)
+    let venue_override = pub.at("publisher", default: none)
+    let venue_from_bib = if type(bib_entry) == dictionary { bib_entry.at("venue", default: none) } else { none }
+    let venue = if non_empty(venue_override) { venue_override } else { venue_from_bib }
+    let year_override = pub.at("year", default: none)
+    let year_from_bib = if type(bib_entry) == dictionary { bib_entry.at("year", default: none) } else { none }
+    let year = if non_empty(year_override) { year_override } else { year_from_bib }
+    let venue_has_year = non_empty(venue) and non_empty(year) and lower(str(venue)).contains(lower(str(year)))
+    let url_override = pub.at("url", default: none)
+    let url_from_bib = if type(bib_entry) == dictionary { bib_entry.at("url", default: none) } else { none }
+    let entry_url = if non_empty(url_override) { url_override } else { url_from_bib }
     let extra_links = publication_links(pub, config)
-    let notes = pub.at("notes", default: none)
-    block(width: 100%, above: if idx == 0 { 0pt } else { pub_spacing }, below: 0pt)[
-      #set text(size: pub_font_size)
-      #set par(leading: pub_line_spacing)
-      #number_prefix
-      #cite(label(pub.bib_key), form: "full")
+    [
+      #{
+        if non_empty(entry_url) {
+          maybe_link(entry_url, strong(render_rich(title, config) + [.]), config)
+        } else {
+          strong(render_rich(title, config) + [.])
+        }
+      }
+      #if non_empty(authors) {
+        [ #render_rich(highlight_author_name(authors, author_name), config).]
+      }
+      #if non_empty(venue) {
+        [
+          #emph(render_rich(venue, config))
+          #if non_empty(year) and not venue_has_year { [ #render_rich(year, config)] }
+          .
+        ]
+      } else if non_empty(year) {
+        [ #render_rich(year, config).]
+      }
+      #if non_empty(content_text) {
+        [ #render_rich(content_text, config)]
+      }
       #if extra_links.len() > 0 {
         if pub_link_style == "newline" {
           [\ ]
@@ -936,20 +1058,14 @@
           [ [#extra_links.join([ | ])]]
         }
       }
-      #if non_empty(notes) {
-        [\ #render_rich(notes, config)]
-      }
     ]
   } else {
-    block(width: 100%, above: if idx == 0 { 0pt } else { pub_spacing }, below: 0pt)[
-      #set text(size: pub_font_size)
-      #set par(leading: pub_line_spacing)
-      #number_prefix
+    [
       #{
-        let title = first_present(pub, ("content", "title", "name", "label", "text"))
+        let title = first_present(pub, ("name",))
         let title = if title == none { "Untitled" } else { title }
         let has_url = "url" in pub and pub.url != none
-        let notes = pub.at("notes", default: pub.at("status", default: none))
+        let content_text = pub.at("content", default: none)
 
         if section_key == "works_in_progress" {
           strong(render_rich(title, config))
@@ -961,10 +1077,10 @@
             [\ ]
             [#pub_links.join([ | ])]
           }
-          if non_empty(notes) {
-            [\ #render_rich(notes, config)]
+          if non_empty(content_text) {
+            [\ #render_rich(content_text, config)]
           }
-        } else if section_key == "submitted" {
+        } else if section_key == "submitted" or section_key == "accepted" {
           if has_url {
             maybe_link(pub.url, strong(render_rich(title, config) + [.]), config)
           } else {
@@ -973,8 +1089,11 @@
           if "authors" in pub and pub.authors != none {
             [ #render_rich(highlight_author_name(pub.authors, author_name), config).]
           }
-          if non_empty(notes) {
-            [ #render_rich(notes, config)]
+          if "publisher" in pub and non_empty(pub.publisher) {
+            [ #emph(render_rich(pub.publisher, config)).]
+          }
+          if non_empty(content_text) {
+            [ #render_rich(content_text, config)]
           }
         } else {
           if has_url {
@@ -988,13 +1107,28 @@
           if "authors" in pub and pub.authors != none {
             [ #render_rich(highlight_author_name(pub.authors, author_name), config).]
           }
-          if non_empty(notes) {
-            [ #render_rich(notes, config)]
+          if non_empty(content_text) {
+            [ #render_rich(content_text, config)]
           }
         }
       }
     ]
   }
+
+  block(width: 100%, above: if idx == 0 { 0pt } else { pub_spacing }, below: 0pt, breakable: true)[
+    #set text(size: pub_font_size)
+    #set par(leading: pub_line_spacing)
+    #if publication_number != none {
+      grid(
+        columns: (number_width, 1fr),
+        column-gutter: 0.15em,
+        align(left + top, [#publication_number]),
+        align(left + top, body),
+      )
+    } else {
+      body
+    }
+  ]
 }
 
 #let render_publications(data, config) = {
@@ -1044,7 +1178,7 @@
                   author_name,
                   config,
                   section_key: section_key,
-                  publication_number: if show_publication_numbers { ["[" + str(i + 1) + "]"] } else { none },
+                  publication_number: if show_publication_numbers { "[" + str(i + 1) + "]" } else { none },
                 )
               }
             ]
@@ -1082,7 +1216,7 @@
             pub_line_spacing,
             author_name,
             config,
-            publication_number: if show_publication_numbers { ["[" + str(i + 1) + "]"] } else { none },
+            publication_number: if show_publication_numbers { "[" + str(i + 1) + "]" } else { none },
           )
         }
       ]
@@ -1102,7 +1236,7 @@
           pub_line_spacing,
           author_name,
           config,
-          publication_number: if show_publication_numbers { ["[" + str(i + 1) + "]"] } else { none },
+          publication_number: if show_publication_numbers { "[" + str(i + 1) + "]" } else { none },
         )
       }
     ]
@@ -1137,7 +1271,7 @@
         #if type(project) != dictionary {
           render_rich(project, config)
         } else {
-          let project_title = first_present(project, ("content", "title", "name", "label", "text"))
+          let project_title = first_present(project, ("name", "content"))
           let project_title = if project_title == none { "Project" } else { project_title }
           [
             #lr(
@@ -1194,15 +1328,14 @@
           if type(award) != dictionary {
             render_rich(award, config)
           } else {
-            let title = first_present(award, ("content", "title", "name", "label", "text", "notes"))
+            let title = first_present(award, ("content", "name"))
             let title = if title == none { "" } else { title }
             let has_url = "url" in award and award.url != none
             let is_flat = award.at("flat", default: false)
-            let notes = award.at("notes", default: none)
 
             let extra_keys = award.keys().filter(
-              k => k != "title" and k != "content" and k != "notes" and k != "flat" and k != "include_short"
-                and k != "bold_label" and k != "links" and k != "url" and k != "name" and k != "label" and k != "text",
+              k => k != "content" and k != "flat" and k != "include_short"
+                and k != "bold_label" and k != "links" and k != "url" and k != "name",
             )
             if is_flat or extra_keys.len() == 0 {
               let bold_label = award.at("bold_label", default: none)
@@ -1223,20 +1356,15 @@
               [ ]
               for lnk in award_links {
                 if type(lnk) == dictionary {
-                  if "text" in lnk {
-                    render_rich(lnk.text, config)
-                  } else if "url" in lnk and "label" in lnk {
-                    maybe_link(lnk.url, render_rich(lnk.label, config), config)
-                  } else if "label" in lnk {
-                    render_rich(lnk.label, config)
+                  if "url" in lnk and "content" in lnk {
+                    maybe_link(lnk.url, render_rich(lnk.content, config), config)
+                  } else if "content" in lnk {
+                    render_rich(lnk.content, config)
                   }
                 }
               }
             }
 
-            if non_empty(notes) and str(notes) != str(title) {
-              [ #render_rich(notes, config)]
-            }
           }
         }
       ]
@@ -1269,10 +1397,10 @@
         #set par(leading: skills_line_spacing)
         #{
           if type(skill_group) == dictionary {
-            let category_value = first_present(skill_group, ("category", "title", "name", "label", "text"))
+            let category_value = first_present(skill_group, ("category",))
             let category = render_rich(if category_value == none { "Skills" } else { category_value }, config)
             let skill_parts = ()
-            let skills_value = first_present(skill_group, ("skills", "items", "values"))
+            let skills_value = first_present(skill_group, ("skills",))
             for s in as_array(if skills_value == none { () } else { skills_value }) {
               skill_parts.push(render_rich(s, config))
             }
@@ -1339,7 +1467,7 @@
     #let interest_list = ()
     #for interest in interest_items {
       if type(interest) == dictionary {
-        let interest_label = first_present(interest, ("content", "name", "label", "title", "text"))
+        let interest_label = first_present(interest, ("content",))
         if interest_label != none {
           interest_list.push(render_rich(interest_label, config))
         }
@@ -1371,15 +1499,15 @@
         #if type(ref) != dictionary {
           [- #render_rich(ref, config)]
         } else if "url" in ref and ref.url != none {
-          let ref_name = first_present(ref, ("name", "title", "label", "content", "text"))
+          let ref_name = first_present(ref, ("name", "content"))
           let ref_name = if ref_name == none { "Reference" } else { ref_name }
-          let ref_text = first_present(ref, ("reference", "content", "notes", "description", "summary", "text"))
+          let ref_text = first_present(ref, ("content",))
           let ref_text = if ref_text == none { "" } else { ref_text }
           [- #strong(maybe_link(ref.url, render_rich(ref_name, config), config)): #render_rich(ref_text, config)]
         } else {
-          let ref_name = first_present(ref, ("name", "title", "label", "content", "text"))
+          let ref_name = first_present(ref, ("name", "content"))
           let ref_name = if ref_name == none { "Reference" } else { ref_name }
-          let ref_text = first_present(ref, ("reference", "content", "notes", "description", "summary", "text"))
+          let ref_text = first_present(ref, ("content",))
           let ref_text = if ref_text == none { "" } else { ref_text }
           [- #strong(render_rich(ref_name, config)): #render_rich(ref_text, config)]
         }
@@ -1400,9 +1528,8 @@
 
   block(width: 100%, above: entry_spacing, below: 0pt, breakable: true)[
     #{
-      let title = first_present(item, ("name", "title", "label"))
+      let title = first_present(item, ("name",))
       let subtitle = first_present(item, ("subtitle",))
-      let description = first_present(item, ("notes", "description", "summary"))
       let content_lines = as_array(item.at("content", default: ()))
 
       let date_text = if ("startDate" in item or "endDate" in item) {
@@ -1435,12 +1562,6 @@
         } else {
           left_line
         }
-      }
-
-      if description != none {
-        block(width: 100%, above: entry_inner_spacing, below: 0pt, breakable: true)[
-          #render_rich(description, config)
-        ]
       }
 
       if content_lines.len() > 0 {
@@ -1504,22 +1625,6 @@
         )
       }
     ]
-  } else if type(section_data) == dictionary and "items" in section_data {
-    let entries = filter_by_variant(as_array(section_data.items), variant)
-    if entries.len() == 0 { return }
-    section_heading(section_title, config)
-    block(above: 0pt, below: 0pt)[
-      #for (i, item) in entries.enumerate() {
-        render_generic_item(
-          item,
-          config,
-          if i == 0 { 0pt } else { entry_spacing },
-          entry_inner_spacing,
-          highlights_spacing,
-          highlight_indent,
-        )
-      }
-    ]
   } else {
     section_heading(section_title, config)
     block(above: 0pt, below: 0pt)[
@@ -1540,8 +1645,8 @@
 
   if "fonts" in yaml_config {
     let fonts = yaml_config.fonts
-    if "heading_font" in fonts { flat.insert("heading_font", fonts.heading_font) }
-    if "body_font" in fonts { flat.insert("body_font", fonts.body_font) }
+    if "font" in fonts { flat.insert("font", fonts.font) }
+    if "mono_font" in fonts { flat.insert("mono_font", fonts.mono_font) }
     if "font_size" in fonts { flat.insert("font_size", parse_dimension(fonts.font_size, default: 10pt)) }
     if "name_font_size" in fonts {
       flat.insert("name_font_size", parse_dimension(fonts.name_font_size, default: 1.4em))
@@ -1581,6 +1686,9 @@
     }
     if "pub_spacing" in layout {
       flat.insert("pub_spacing", parse_dimension(layout.pub_spacing, default: 0.61em))
+    }
+    if "publication_number_width" in layout {
+      flat.insert("publication_number_width", parse_dimension(layout.publication_number_width, default: 2.2em))
     }
     if "skill_spacing" in layout {
       flat.insert("skill_spacing", parse_dimension(layout.skill_spacing, default: 0.61em))
@@ -1779,8 +1887,8 @@
     if "show_page_numbers" in visibility { flat.insert("show_page_numbers", visibility.show_page_numbers) }
     if "url_display_label" in visibility { flat.insert("url_display_label", visibility.url_display_label) }
     if "enable_links" in visibility { flat.insert("enable_links", visibility.enable_links) }
-    if "strip_link_labels_when_links_disabled" in visibility {
-      flat.insert("strip_link_labels_when_links_disabled", visibility.strip_link_labels_when_links_disabled)
+    if "links_disabled_behavior" in visibility {
+      flat.insert("links_disabled_behavior", lower(str(visibility.links_disabled_behavior)))
     }
     if "show_publication_numbers" in visibility { flat.insert("show_publication_numbers", visibility.show_publication_numbers) }
   }
@@ -1827,6 +1935,7 @@
 
   if bib_file != none {
     config.insert("bib_file", bib_file)
+    config.insert("bib_entries", parse_bib_entries(bib_file))
   }
 
   show: doc => apply_settings(config, doc)

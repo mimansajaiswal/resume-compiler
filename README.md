@@ -28,22 +28,21 @@ Install Typst:
 ### Basic Usage
 
 1. **Edit your data** - Modify the synthetic example in `resume.yml`
-2. **Customize settings** (optional) - Adjust configuration in `resume.typ` or `config.yml`
+2. **Customize settings** (optional) - Adjust configuration in `config.yml`
 3. **Compile**:
    ```bash
    ./build-resumes.sh
    ```
 
 This generates:
-- `{FirstName}{LastName}_Resume_L.pdf`
-- `{FirstName}{LastName}_Resume_S.pdf`
-- `{FirstName}{LastName}_Resume_C.pdf`
-- `{FirstName}{LastName}_Resume_B.pdf`
-- `{FirstName}{LastName}_Resume_N.pdf`
+- `artifacts/{FirstName}{LastName}_Resume.pdf` (default long, config-driven)
+- `artifacts/{FirstName}{LastName}_Resume_S.pdf`
+- `artifacts/{FirstName}{LastName}_Resume_B.pdf`
+- `artifacts/{FirstName}{LastName}_Resume_N.pdf`
 
 ### Markdown in YAML Fields
 
-All user-facing text fields are markdown-capable (except explicit URL fields such as `url`, `demo_url`, and `repo_url`).
+All user-facing text fields are markdown-capable (except explicit URL fields such as `url`).
 
 Examples:
 ```yaml
@@ -51,9 +50,9 @@ awards:
   - content: "[Awarded Fellowship](https://example.com/fellowship)"
 
 publications:
-  - content: "Designing Interfaces for Delivering and Obtaining Generation Explanation Annotations"
+  - name: "Designing Interfaces for Delivering and Obtaining Generation Explanation Annotations"
     section: works_in_progress
-    notes: "[Demo](https://example.com/demo) and [Repo](https://github.com/example/repo)"
+    content: "[Demo](https://example.com/demo) and [Repo](https://github.com/example/repo)"
 ```
 
 ### Supported Keys (Standardized)
@@ -72,8 +71,8 @@ This project now uses a standardized key style with no legacy aliases:
   - `url`, `location`, `studyType`, `area`, `startDate`, `endDate`
   - optional `honors[]`, `content[]`, `thesis`, `courses[]`
 - `publications[]`:
-  - BibTeX mode: `bib_key`
-  - YAML mode: `name` or `content`, plus optional `authors`, `publisher`, `releaseDate`, `url`, `notes`
+  - BibTeX mode: `bib_key`, optional `url` override (falls back to BibTeX `url`), optional `content`, `links`
+  - YAML mode: `name` (title) plus optional `content`, `authors`, `publisher`, `releaseDate`, `url`
 - Generic section support:
   - Any additional top-level array (for example `community_service`) is auto-rendered.
   - You can optionally place it in `section_order` and set `section_titles.<key>`.
@@ -91,9 +90,8 @@ resume_typst/
 ├── README.md                       # This file
 ├── template.typ                    # Core template library (18KB)
 │
-├── resume.typ                      # Main long resume
+├── resume.typ                      # Main config-driven resume entrypoint
 ├── resume-short.typ                # Short resume variant
-├── resume-with-config.typ          # Using external config
 ├── resume-with-bibtex.typ          # With BibTeX citations
 ├── resume-no-js.typ                # Links disabled (plain-text output)
 │
@@ -102,9 +100,11 @@ resume_typst/
 │
 ├── config.yml                      # External configuration (long)
 ├── config-short.yml                # External configuration (short)
-├── build-resumes.sh                # Local builder for *_Resume_[L/S/C/B/N].pdf
+├── build-resumes.sh                # Local builder (outputs in artifacts/)
 │
 ├── publications.bib                # BibTeX bibliography
+├── references/                     # Reference source material (LaTeX/original PDF)
+├── artifacts/                      # Generated PDFs
 │
 ├── .github/workflows/
 │   ├── build-resume.yml           # Auto-build PDFs
@@ -159,7 +159,7 @@ Compile both:
 
 ### Pattern 3: External Configuration
 
-**Files:** `resume.yml` + `config.yml` + `resume-with-config.typ`
+**Files:** `resume.yml` + `config.yml` + `resume.typ`
 
 Store all settings in `config.yml`:
 
@@ -167,7 +167,8 @@ Store all settings in `config.yml`:
 # config.yml
 variant: long
 fonts:
-  heading_font: "New Computer Modern"
+  font: "New Computer Modern"
+  mono_font: "DejaVu Sans Mono"
   font_size: 11pt
 layout:
   margin: 0.5in
@@ -182,7 +183,13 @@ section_order:
 
 Compile:
 ```bash
-typst compile resume-with-config.typ
+typst compile resume.typ
+```
+
+Short config example:
+```bash
+typst compile resume-short.typ
+# resume-short.typ uses config-short.yml
 ```
 
 **Best for:** Managing multiple resume styles, team templates
@@ -208,19 +215,21 @@ typst compile resume-with-config.typ
 ```yaml
 publications:
   - bib_key: smith2024
+    # url omitted on purpose: falls back to publications.bib url
+    content: "_Accepted_"
     links:
-      - label: "Paper"
+      - content: "Paper"
         url: "https://arxiv.org/..."
-      - label: "Code"
+      - content: "Code"
         url: "https://github.com/..."
-      - label: "Data"
+      - content: "Data"
         url: "https://dataset.com/..."
 ```
 
 3. Compile:
 ```bash
 ./build-resumes.sh
-# BibTeX file will be {FirstName}{LastName}_Resume_B.pdf
+# BibTeX file will be artifacts/{FirstName}{LastName}_Resume_B.pdf
 ```
 
 **Best for:** Academics with many publications, maintaining consistency with other documents
@@ -299,8 +308,8 @@ Separate your settings from your resume logic for easier management.
 variant: long
 
 fonts:
-  heading_font: "New Computer Modern"
-  body_font: "New Computer Modern"
+  font: "New Computer Modern"
+  mono_font: "DejaVu Sans Mono"
   font_size: 11pt
   name_font_size: 2.25em
 
@@ -336,19 +345,11 @@ section_order:
 #### Usage
 
 ```typst
-// resume-with-config.typ
+// resume.typ
 #import "template.typ": build_resume
 
 #let resume_data = yaml("resume.yml")
-
-// Optional inline overrides
-#let config_overrides = (
-  // Uncomment to override config.yml settings
-  // variant: "short",
-  // show_phone: false,
-)
-
-#build_resume(resume_data, config_overrides, config_file: "config.yml")
+#build_resume(resume_data, (:), config_file: "config.yml")
 ```
 
 #### Multiple Configs
@@ -396,11 +397,11 @@ publications:
   # BibTeX entry with custom links
   - bib_key: walker2024textemotion
     links:
-      - label: "Paper"
+      - content: "Paper"
         url: "https://example.com/papers/text-to-emotion.pdf"
-      - label: "Code"
+      - content: "Code"
         url: "https://github.com/example/code"
-      - label: "Demo"
+      - content: "Demo"
         url: "https://demo.example.com"
 
   # BibTeX entry without extra links
@@ -408,9 +409,10 @@ publications:
 
   # Mix YAML and BibTeX formats
   - content: "Work in Progress: CAPSTONE"
+    name: "Work in Progress: CAPSTONE"
     section: works_in_progress
     authors: "Ethan Walker"
-    notes: "[Research Notes](https://example.com)"
+    content: "[Research Notes](https://example.com)"
 ```
 
 3. **Configure and compile:**
@@ -439,10 +441,8 @@ Supported styles:
 You can mix both formats in the same `publications` section:
 - Entries with `bib_key` → formatted via BibTeX
 - Entries without `bib_key` → formatted manually (YAML)
-- For non-BibTeX entries, you can attach separate demo/repo links with either:
-  - `demo_url` and `repo_url`, or
-  - `links` (array of `{label, url}`)
-- You can also place links directly in markdown text fields like `content` or `notes`
+- For any publication entry, use `links` (array of `{content, url}`) for extra links
+- You can also place links directly in markdown text fields like `content`
 
 You can also split publications into multiple headings (for example `Works in Progress`, `Submitted Publications`, `Accepted Publications`) by:
 - Setting `publication_sections` in `config.yml`
@@ -470,11 +470,10 @@ Triggers on:
 - Manual workflow dispatch
 
 Builds:
-- `{FirstName}{LastName}_Resume_L.pdf` (long version)
-- `{FirstName}{LastName}_Resume_S.pdf` (short version)
-- `{FirstName}{LastName}_Resume_C.pdf` (config-driven version)
-- `{FirstName}{LastName}_Resume_B.pdf` (BibTeX version)
-- `{FirstName}{LastName}_Resume_N.pdf` (no-JS/plain-text links)
+- `artifacts/{FirstName}{LastName}_Resume.pdf` (default long, config-driven)
+- `artifacts/{FirstName}{LastName}_Resume_S.pdf` (short version)
+- `artifacts/{FirstName}{LastName}_Resume_B.pdf` (BibTeX version)
+- `artifacts/{FirstName}{LastName}_Resume_N.pdf` (no-JS/plain-text links)
 
 Outputs:
 - Uploaded as GitHub Actions artifacts (90 days retention)
@@ -490,7 +489,9 @@ Supports (uncomment sections you need):
 
 **3. `deploy-pages.yml` - Web App Deployment**
 
-Deploys `web/index.html` + default data/template files to GitHub Pages.
+Deploys the editor under `/web/` on GitHub Pages:
+- `https://mimansajaiswal.github.io/resume-compiler/web/`
+- Root (`/resume-compiler/`) redirects to `/resume-compiler/web/`.
 
 #### Setup Instructions
 
@@ -541,8 +542,8 @@ paper_size: letter            # Options: "letter" or "a4"
 
 # Fonts
 fonts:
-  heading_font: "New Computer Modern"
-  body_font: "New Computer Modern"
+  font: "New Computer Modern"
+  mono_font: "DejaVu Sans Mono"
   font_size: 11pt              # Base font size
   name_font_size: 2.25em       # Your name size
   section_font_size: 1em       # Section headings size
@@ -557,6 +558,7 @@ layout:
   entry_spacing: 0.62em        # Space between resume entries
   entry_inner_spacing: 0.48em  # Space between entry title/details/content
   header_rule_top_spacing: 0.52em # Gap between contact row and horizontal rule
+  publication_number_width: 2.2em # Hanging indent width for numbered publications
 
 # Styling
 styling:
@@ -576,6 +578,7 @@ visibility:
   show_interests: false        # Interests list
   show_references: false       # References section
   enable_links: true           # Set false to render links as plain text
+  links_disabled_behavior: "label" # "label" | "label_with_url"
   show_publication_numbers: false  # Prefix publication items as [1], [2], ...
 
 # Section titles (customize headings)
@@ -609,7 +612,8 @@ section_order:
 ```typst
 #let config = (
   variant: "long",
-  heading_font: "New Computer Modern",
+  font: "New Computer Modern",
+  mono_font: "DejaVu Sans Mono",
   font_size: 11pt,
   margin: 0.5in,
   show_phone: true,
@@ -692,7 +696,7 @@ typst compile resume-short.typ        # Industry resume
 **Setup:**
 1. Create `config.yml` with lab standards
 2. Each person maintains their own `resume.yml`
-3. Everyone uses `resume-with-config.typ`
+3. Everyone uses `resume.typ`
 4. Version control the template, config, and GitHub Actions
 
 **Benefits:**
@@ -820,7 +824,7 @@ section_titles:
 ```
 
 The template auto-renders arrays/dictionaries using a generic resume layout.
-Use standardized keys like `name`, `subtitle`, `startDate`, `endDate`, `url`, `content`, `notes`, and `skills`.
+Use standardized keys like `name`, `subtitle`, `startDate`, `endDate`, `url`, `content`, and `skills`.
 
 ---
 

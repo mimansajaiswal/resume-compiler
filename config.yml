@@ -14,8 +14,8 @@ paper_size: letter # Options: "letter" or "a4"
 # FONTS AND SIZES
 # ------------------------------------------------------------------------------
 fonts:
-  heading_font: "New Computer Modern"
-  body_font: "New Computer Modern"
+  font: "New Computer Modern"
+  mono_font: "DejaVu Sans Mono"
   font_size: 10pt        # LaTeX uses 10pt
   name_font_size: 1.4em  # LaTeX \Large
   section_font_size: 1em # LaTeX \normalsize
@@ -85,6 +85,7 @@ visibility:
   show_titles: false           # Don't show "Research Scientist" subtitle
   show_page_numbers: true      # Show X of Y footer
   enable_links: true
+  links_disabled_behavior: "label" # Options when links are disabled: "label" | "label_with_url"
   show_publication_numbers: false # Prefix publications as [1], [2], ...
   url_display_label: "Website" # Display URL as "Website"
 
@@ -123,7 +124,7 @@ section_order:
 # ------------------------------------------------------------------------------
 # Optional. If set, publications are split into multiple sections by each
 # publication item's `section` field. If `section` is omitted, the template
-# infers a section from status/publisher (works in progress, submitted, accepted).
+# infers a section from publisher presence (works in progress vs accepted).
 publication_sections:
   - key: works_in_progress
     title: "Works in Progress"
