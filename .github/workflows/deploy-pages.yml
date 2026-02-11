@@ -40,6 +40,11 @@ jobs:
           cp index.html dist/
           cp web/index.html dist/web/
           cp template.typ dist/web/
+          cp resume.yml dist/web/
+          cp resume-bibtex.yml dist/web/
+          cp config.yml dist/web/
+          cp config-short.yml dist/web/
+          cp publications.bib dist/web/
           cp resume.yml dist/web/default-resume.yml
           cp config.yml dist/web/default-config.yml
           cp publications.bib dist/web/default-publications.bib

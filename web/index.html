@@ -6903,9 +6903,28 @@ Return YAML only.`;
       return '';
     }
 
-    function resolveRepoPath(filename) {
-      const basePrefix = computeRepoBasePrefix().replace(/\/+$/, '');
-      return `${basePrefix}/${filename}`.replace(/\/{2,}/g, '/');
+    function resolveRepoPathCandidates(filename) {
+      const cleanFilename = String(filename || '').replace(/^\/+/, '');
+      const path = window.location.pathname || '';
+      const currentDir = path.endsWith('/') ? path.replace(/\/+$/, '') : path.slice(0, path.lastIndexOf('/'));
+      const repoBase = computeRepoBasePrefix().replace(/\/+$/, '');
+      const candidates = [];
+      if (currentDir) candidates.push(`${currentDir}/${cleanFilename}`);
+      if (repoBase) candidates.push(`${repoBase}/${cleanFilename}`);
+      candidates.push(`/${cleanFilename}`);
+      return Array.from(new Set(candidates.map((url) => url.replace(/\/{2,}/g, '/'))));
+    }
+
+    async function fetchTextWithFallback(urls) {
+      let lastError = null;
+      for (const url of urls) {
+        try {
+          return await fetchText(url);
+        } catch (err) {
+          lastError = err;
+        }
+      }
+      throw lastError || new Error('No URL candidates provided.');
     }
 
     async function loadDefaults() {
@@ -6914,24 +6933,24 @@ Return YAML only.`;
       let configYaml = DEFAULT_CONFIG_YAML;
       let configShortYaml = DEFAULT_SHORT_CONFIG_YAML;
       let bibContent = DEFAULT_BIB;
-      templateContent = await fetchText(resolveRepoPath('template.typ'));
+      templateContent = await fetchTextWithFallback(resolveRepoPathCandidates('template.typ'));
 
       try {
-        resumeYaml = await fetchText(resolveRepoPath('resume.yml'));
+        resumeYaml = await fetchTextWithFallback(resolveRepoPathCandidates('resume.yml'));
       } catch (e) { }
       try {
-        bibResumeYaml = await fetchText(resolveRepoPath('resume-bibtex.yml'));
+        bibResumeYaml = await fetchTextWithFallback(resolveRepoPathCandidates('resume-bibtex.yml'));
       } catch (e) {
         bibResumeYaml = resumeYaml;
       }
       try {
-        configYaml = await fetchText(resolveRepoPath('config.yml'));
+        configYaml = await fetchTextWithFallback(resolveRepoPathCandidates('config.yml'));
       } catch (e) { }
       try {
-        configShortYaml = await fetchText(resolveRepoPath('config-short.yml'));
+        configShortYaml = await fetchTextWithFallback(resolveRepoPathCandidates('config-short.yml'));
       } catch (e) { }
       try {
-        bibContent = await fetchText(resolveRepoPath('publications.bib'));
+        bibContent = await fetchTextWithFallback(resolveRepoPathCandidates('publications.bib'));
       } catch (e) { }
 
       return { resumeYaml, bibResumeYaml, configYaml, configShortYaml, bibContent };
