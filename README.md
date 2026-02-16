@@ -174,7 +174,6 @@ layout:
   margin: 0.5in
 visibility:
   show_phone: true
-  show_interests_summary: true
 section_order:
   - work
   - education
@@ -325,9 +324,6 @@ styling:
 visibility:
   show_location: false
   show_phone: true
-  show_interests_summary: true
-  show_languages: true
-  show_references: false
 
 section_order:
   - interests_summary
@@ -546,13 +542,13 @@ fonts:
   page_number_font_size: 0.85em
   header_title_font_size: 0.9em
   location_font_size: 0.8em
-  work_role_font_size: 0.98em
 
 # Layout
 layout:
   margin: 0.5in                # Page margins
   line_spacing: 0.38em         # Line spacing within wrapped lines
   list_spacing: 0.7em          # Space between adjacent items
+  content_indent: 0.95em       # Shared indent for nested details/content blocks
   section_spacing: 1.38em      # Space before section headings
   post_section_spacing: 0.9em  # Space after section headings
   entry_spacing: 0.71em        # Space between resume entries
@@ -565,6 +561,7 @@ styling:
   section_smallcaps: true      # Use small caps for section headings
   secondary_color: "#555555"   # Accent text color (hex)
   link_color: "#1C398D"        # Link color (hex)
+  rule_color: "#9F9FA8"        # Shared color for section/header rules
   section_heading_sticky: true # Keep section heading with following content
   publication_title_bold: false # Keep publication titles regular weight by default
   publication_autobold_authors: true # Auto-bold `personal.name` in publication author lists
@@ -576,10 +573,6 @@ styling:
 visibility:
   show_location: false         # City/state in header
   show_phone: true             # Phone number
-  show_interests_summary: true # Research interests paragraph
-  show_languages: true         # Languages section
-  show_interests: false        # Interests list
-  show_references: false       # References section
   enable_links: true           # Set false to render links as plain text
   links_disabled_behavior: "label" # "label" | "label_with_url"
   show_publication_numbers: false  # Prefix publication items as [1], [2], ...
@@ -750,7 +743,7 @@ typst compile --input mode=short resume.typ     # Industry resume
 **Sections not appearing:**
 - Verify section is in `section_order`
 - Check that data exists in `resume.yml`
-- Verify visibility toggles (e.g., `show_languages: true`)
+- Verify items are not filtered by `include_short: false` for short mode
 
 **Short resume showing everything:**
 - Ensure `variant: "short"` is set in config

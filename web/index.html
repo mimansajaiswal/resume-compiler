@@ -3680,12 +3680,9 @@ fonts:
   font_size: 10pt # LaTeX uses 10pt
   name_font_size: 1.4em # LaTeX \Large
   section_font_size: 1em # LaTeX \normalsize
-  publications_font_size: 10pt
-  awards_font_size: 10pt
   page_number_font_size: 0.85em
   header_title_font_size: 0.9em
   location_font_size: 0.8em
-  work_role_font_size: 0.98em
 
 # ------------------------------------------------------------------------------
 # SPACING AND LAYOUT
@@ -3698,20 +3695,11 @@ layout:
   post_section_spacing: 0.9em
   entry_spacing: 0.71em
   entry_inner_spacing: 0.55em
-  pub_spacing: 0.7em
-  publications_line_spacing: 0.38em
-  publications_heading_tighten: 0pt
-  skill_spacing: 0.7em
-  work_highlight_indent: 1.09em
-  education_highlight_indent: 1.15em
+  content_indent: 1.09em
   header_rule_top_spacing: 0.6em
   header_bottom_spacing: 0.35em
   contact_separator_spacing: 0.35em
   last_updated_bottom_spacing: 0.18em
-  generic_entry_spacing: 0.71em
-  generic_entry_inner_spacing: 0.55em
-  generic_highlights_spacing: 0.7em
-  generic_highlight_indent: 1.09em
 
 # ------------------------------------------------------------------------------
 # STYLING
@@ -3722,13 +3710,12 @@ styling:
   summary_font_size: 1.0em # same as body
   secondary_color: "#111111"
   link_color: "#1C398D" # richer blue for links
-  section_rule_color: "#9F9FA8"
+  rule_color: "#9F9FA8"
   section_rule_thickness: 0.6pt
   section_rule_enabled: true # No section rules in LaTeX
   section_rule_gap: 0.5em
   section_heading_tracking: 0.01em
   section_heading_sticky: true # Avoid heading-only lines at page bottoms
-  header_rule_color: "#9F9FA8" # slightly lighter divider
   header_rule_thickness: 1pt # LaTeX rule is 1pt
   publications_link_style: "compact"
   publication_title_bold: false # Keep publication titles regular-weight by default
@@ -3745,10 +3732,6 @@ styling:
 visibility:
   show_location: false
   show_phone: true
-  show_interests_summary: true
-  show_languages: false
-  show_interests: false
-  show_references: false
   show_last_updated: true
   show_titles: false # Don't show "Research Scientist" subtitle
   show_page_numbers: true # Show X of Y footer
@@ -3799,34 +3782,23 @@ fonts:
   font_size: 10.2pt
   name_font_size: 1.5em
   section_font_size: 1em
-  publications_font_size: 9.6pt
-  awards_font_size: 10pt
   page_number_font_size: 0.8em
   header_title_font_size: 0.84em
   location_font_size: 0.74em
-  work_role_font_size: 0.96em
 
 layout:
   margin: 0.5in
   line_spacing: 0.33em
-  skills_line_spacing: 0.33em
   list_spacing: 0.54em
   section_spacing: 1.0em
   post_section_spacing: 0.68em
   entry_spacing: 0.5em
   entry_inner_spacing: 0.42em
-  pub_spacing: 0.54em
-  publications_line_spacing: 0.33em
-  publications_heading_tighten: 0pt
-  skill_spacing: 0.54em
+  content_indent: 0.95em
   header_rule_top_spacing: 0.36em
   header_bottom_spacing: 0.22em
   contact_separator_spacing: 0.18em
   last_updated_bottom_spacing: 0.18em
-  generic_entry_spacing: 0.5em
-  generic_entry_inner_spacing: 0.42em
-  generic_highlights_spacing: 0.54em
-  generic_highlight_indent: 0.95em
 
 styling:
   section_smallcaps: false
@@ -3834,13 +3806,12 @@ styling:
   summary_font_size: 0.92em
   secondary_color: "#111111"
   link_color: "#1C398D"
-  section_rule_color: "#9F9FA8"
+  rule_color: "#9F9FA8"
   section_rule_thickness: 0.6pt
   section_rule_enabled: true
   section_rule_gap: 0.3em
   section_heading_tracking: 0.01em
   section_heading_sticky: true
-  header_rule_color: "#9F9FA8"
   header_rule_thickness: 0.7pt
   publications_link_style: "compact"
   publication_title_bold: false
@@ -3854,10 +3825,6 @@ styling:
 visibility:
   show_location: false
   show_phone: true
-  show_interests_summary: false
-  show_languages: false
-  show_interests: false
-  show_references: false
   show_last_updated: true
   enable_links: true
   links_disabled_behavior: "label"
@@ -4373,10 +4340,10 @@ Hard constraints:
       `,
       config: `
         <div><strong>Main groups:</strong> <code>variant</code>, <code>paper_size</code>, <code>fonts</code>, <code>layout</code>, <code>styling</code>, <code>visibility</code>, <code>section_order[]</code>.</div>
-        <div><strong><code>fonts.*</code> keys:</strong> <code>font</code>, <code>mono_font</code>, <code>font_size</code>, <code>name_font_size</code>, <code>section_font_size</code>, plus section-specific size overrides.</div>
-        <div><strong><code>layout.*</code> keys:</strong> <code>margin</code>, <code>line_spacing</code>, <code>entry_spacing</code>, <code>entry_inner_spacing</code>, <code>section_spacing</code>, <code>pub_spacing</code>, header spacing controls.</div>
+        <div><strong><code>fonts.*</code> keys:</strong> <code>font</code>, <code>mono_font</code>, <code>font_size</code>, <code>name_font_size</code>, <code>section_font_size</code>, and shared header/contact font controls.</div>
+        <div><strong><code>layout.*</code> keys:</strong> <code>margin</code>, <code>line_spacing</code>, <code>list_spacing</code>, <code>entry_spacing</code>, <code>entry_inner_spacing</code>, <code>content_indent</code>, <code>section_spacing</code>, plus header spacing controls.</div>
         <div><strong><code>styling.*</code> keys:</strong> colors, heading behavior, publication emphasis, and <code>contact_display_mode</code> (<code>icon_label</code> or <code>label</code>).</div>
-        <div><strong><code>visibility.*</code> keys:</strong> section toggles, link toggles, <code>links_disabled_behavior</code> (<code>label</code> or <code>label_with_url</code>), and publication numbering.</div>
+        <div><strong><code>visibility.*</code> keys:</strong> header/link toggles, <code>links_disabled_behavior</code> (<code>label</code> or <code>label_with_url</code>), and publication numbering.</div>
         <div><strong><code>section_order[]</code>:</strong> ordered list of section ids (for example <code>work</code>, <code>publications</code>, <code>education</code>, <code>projects</code>, <code>skills</code>).</div>
       `,
       'config-short': `

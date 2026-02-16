@@ -19,12 +19,9 @@ fonts:
   font_size: 10pt # LaTeX uses 10pt
   name_font_size: 1.4em # LaTeX \Large
   section_font_size: 1em # LaTeX \normalsize
-  publications_font_size: 10pt
-  awards_font_size: 10pt
   page_number_font_size: 0.85em
   header_title_font_size: 0.9em
   location_font_size: 0.8em
-  work_role_font_size: 0.98em
 
 # ------------------------------------------------------------------------------
 # SPACING AND LAYOUT
@@ -37,20 +34,11 @@ layout:
   post_section_spacing: 0.9em
   entry_spacing: 0.71em
   entry_inner_spacing: 0.55em
-  pub_spacing: 0.7em
-  publications_line_spacing: 0.38em
-  publications_heading_tighten: 0pt
-  skill_spacing: 0.7em
-  work_highlight_indent: 1.09em
-  education_highlight_indent: 1.15em
+  content_indent: 1.09em
   header_rule_top_spacing: 0.6em
   header_bottom_spacing: 0.35em
   contact_separator_spacing: 0.35em
   last_updated_bottom_spacing: 0.18em
-  generic_entry_spacing: 0.71em
-  generic_entry_inner_spacing: 0.55em
-  generic_highlights_spacing: 0.7em
-  generic_highlight_indent: 1.09em
 
 # ------------------------------------------------------------------------------
 # STYLING
@@ -61,13 +49,12 @@ styling:
   summary_font_size: 1.0em # same as body
   secondary_color: "#111111"
   link_color: "#1C398D" # richer blue for links
-  section_rule_color: "#9F9FA8"
+  rule_color: "#9F9FA8"
   section_rule_thickness: 0.6pt
   section_rule_enabled: true # No section rules in LaTeX
   section_rule_gap: 0.5em
   section_heading_tracking: 0.01em
   section_heading_sticky: true # Avoid heading-only lines at page bottoms
-  header_rule_color: "#9F9FA8" # slightly lighter divider
   header_rule_thickness: 1pt # LaTeX rule is 1pt
   publications_link_style: "compact"
   publication_title_bold: false # Keep publication titles regular-weight by default
@@ -84,10 +71,6 @@ styling:
 visibility:
   show_location: false
   show_phone: true
-  show_interests_summary: true
-  show_languages: false
-  show_interests: false
-  show_references: false
   show_last_updated: true
   show_titles: false # Don't show "Research Scientist" subtitle
   show_page_numbers: true # Show X of Y footer
@@ -105,11 +88,11 @@ section_order:
   - publications
   - education
   - awards
-  # - skills  # Not in LaTeX version
-  # - languages
-  # - projects
-  # - interests
-  # - references
+  - skills
+  - languages
+  - projects
+  - interests
+  - references
 
 # ------------------------------------------------------------------------------
 # PUBLICATION GROUPING
