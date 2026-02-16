@@ -3541,7 +3541,7 @@ publications:
 
   - bib_key: collins2025proofrepair
     section: accepted
-    # No `url` here: template falls back to the `url` field from publications.bib.
+    # No url here: template falls back to the url field from publications.bib.
     include_short: false
 
   - bib_key: collins2025kernelbudget
@@ -3719,7 +3719,7 @@ styling:
   header_rule_thickness: 1pt # LaTeX rule is 1pt
   publications_link_style: "compact"
   publication_title_bold: false # Keep publication titles regular-weight by default
-  publication_autobold_authors: true # Auto-bold `personal.name` inside publication authors
+  publication_autobold_authors: true # Auto-bold personal.name inside publication authors
   publication_bold_author_names: [] # Optional extra names to bold in author lists
   last_updated_font_size: 0.8em
   last_updated_label: "Last Updated on"
@@ -3759,7 +3759,7 @@ section_order:
 # PUBLICATION GROUPING
 # ------------------------------------------------------------------------------
 # Optional. If set, publications are split into multiple sections by each
-# publication item's `section` field. If `section` is omitted, the template
+# publication item's section field. If section is omitted, the template
 # infers a section from publisher presence (works in progress vs accepted).
 publication_sections:
   - key: works_in_progress
@@ -3950,7 +3950,6 @@ publication_sections:
     const LS_CONFIG_SHORT = lsKey('config_short_yaml');
     const LS_BIB = lsKey('publications_bib');
     const LS_PAPER = lsKey('paper_size');
-    const LS_OVERRIDE_MODE_LEGACY = lsKey('override_mode');
     const LS_OVERRIDE_VARIANT = lsKey('override_variant');
     const LS_OVERRIDE_SOURCE = lsKey('override_source');
     const LS_OVERRIDE_LINK_MODE = lsKey('override_link_mode');
@@ -3980,8 +3979,6 @@ publication_sections:
     const LS_RESUME_VIEW = lsKey('resume_view');
     const LS_RESUME_COMPILE_SOURCE = lsKey('resume_compile_source');
     const LS_REMOTE_UPLOAD_SOURCES = lsKey('remote_upload_sources');
-    const LS_RESUME_AI_PANEL_HEIGHT_LEGACY = lsKey('resume_ai_panel_height');
-    const LS_PANEL_RESUME_AI_OPEN_LEGACY = lsKey('panel_resume_ai_open');
     const LS_PANEL_OVERRIDES_OPEN = lsKey('panel_overrides_open');
     const LS_PANEL_AI_SETTINGS_OPEN = lsKey('panel_ai_settings_open');
     const LS_PANEL_INTEGRATIONS_OPEN = lsKey('panel_integrations_open');
@@ -3994,7 +3991,6 @@ publication_sections:
       LS_CONFIG_SHORT,
       LS_BIB,
       LS_PAPER,
-      LS_OVERRIDE_MODE_LEGACY,
       LS_OVERRIDE_VARIANT,
       LS_OVERRIDE_SOURCE,
       LS_OVERRIDE_LINK_MODE,
@@ -4024,8 +4020,6 @@ publication_sections:
       LS_RESUME_VIEW,
       LS_RESUME_COMPILE_SOURCE,
       LS_REMOTE_UPLOAD_SOURCES,
-      LS_RESUME_AI_PANEL_HEIGHT_LEGACY,
-      LS_PANEL_RESUME_AI_OPEN_LEGACY,
       LS_PANEL_OVERRIDES_OPEN,
       LS_PANEL_AI_SETTINGS_OPEN,
       LS_PANEL_INTEGRATIONS_OPEN,
@@ -6768,7 +6762,6 @@ Hard constraints:
       localStorage.setItem(LS_OVERRIDE_LINK_MODE, getModeLinkMode());
       localStorage.setItem(LS_COMPILE_MODE, getCompileMode());
       localStorage.setItem(LS_RESUME_COMPILE_SOURCE, getResumeCompileSource());
-      localStorage.setItem(LS_OVERRIDE_MODE_LEGACY, getSelectedMode());
       localStorage.setItem(LS_OVERRIDE_LINKS_DISABLED_BEHAVIOR, overrideLinksDisabledBehavior.value);
       localStorage.setItem(LS_OVERRIDE_PUBNUMS, overridePubnums.value);
       localStorage.setItem(LS_OVERRIDE_CONTACT, overrideContact.value);
@@ -8425,15 +8418,6 @@ Output contract:
       return modeHas(mode, 'no-js');
     }
 
-    function modeToControlValues(mode) {
-      const normalized = normalizeMode(mode);
-      return {
-        variant: modeUsesShort(normalized) ? 'short' : 'default',
-        source: modeUsesBib(normalized) ? 'bibtex' : 'resume',
-        linkMode: modeDisablesLinks(normalized) ? 'no-js' : 'links',
-      };
-    }
-
     function setSelectValue(select, nextValue, fallbackValue) {
       const values = Array.from(select.options).map((option) => option.value);
       if (values.includes(nextValue)) {
@@ -9108,11 +9092,9 @@ Output contract:
         bibtex: defaults.bibResumeYaml || defaults.resumeYaml,
       };
 
-      const legacyMode = localStorage.getItem(LS_OVERRIDE_MODE_LEGACY) || 'default';
-      const legacyControls = modeToControlValues(legacyMode);
-      const initialModeVariant = localStorage.getItem(LS_OVERRIDE_VARIANT) || legacyControls.variant;
-      const initialModeSource = localStorage.getItem(LS_OVERRIDE_SOURCE) || legacyControls.source;
-      const initialModeLink = localStorage.getItem(LS_OVERRIDE_LINK_MODE) || legacyControls.linkMode;
+      const initialModeVariant = localStorage.getItem(LS_OVERRIDE_VARIANT) || 'default';
+      const initialModeSource = localStorage.getItem(LS_OVERRIDE_SOURCE) || 'resume';
+      const initialModeLink = localStorage.getItem(LS_OVERRIDE_LINK_MODE) || 'links';
       const initialResumeDefault = initialModeSource === 'bibtex'
         ? (defaults.bibResumeYaml || defaults.resumeYaml)
         : defaults.resumeYaml;
