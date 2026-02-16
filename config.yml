@@ -97,21 +97,6 @@ visibility:
   url_display_label: "Website" # Display URL as "Website"
 
 # ------------------------------------------------------------------------------
-# SECTION TITLES
-# ------------------------------------------------------------------------------
-section_titles:
-  work: "Experience"
-  education: "Education"
-  publications: "Publications"
-  projects: "Projects"
-  awards: "Honors and Activities"
-  skills: "Skills"
-  languages: "Languages"
-  interests: "Interests"
-  interests_summary: "Interests"
-  references: "References"
-
-# ------------------------------------------------------------------------------
 # SECTION ORDER
 # ------------------------------------------------------------------------------
 section_order:

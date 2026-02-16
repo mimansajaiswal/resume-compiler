@@ -351,13 +351,49 @@
   words.join(" ")
 }
 
-#let resolve_section_title(config, section_key) = {
-  let titles = config.at("section_titles_map", default: (:))
-  if type(titles) == dictionary and section_key in titles {
-    return titles.at(section_key)
-  }
-
+#let default_section_title(section_key) = {
+  let defaults = (
+    interests_summary: "Interests",
+    work: "Experience",
+    education: "Education",
+    publications: "Publications",
+    projects: "Projects",
+    awards: "Honors and Awards",
+    skills: "Skills",
+    languages: "Languages",
+    interests: "Interests",
+    references: "References",
+  )
+  if section_key in defaults { return defaults.at(section_key) }
   titleize_section_key(section_key)
+}
+
+#let is_section_wrapper(section_value) = {
+  if type(section_value) != dictionary { return false }
+  if "entries" in section_value or "items" in section_value { return true }
+  if "title" in section_value and "content" in section_value { return true }
+  if "title" in section_value and section_value.keys().len() == 1 { return true }
+  false
+}
+
+#let resolve_section_value(data, section_key) = {
+  if type(data) != dictionary or section_key not in data { return none }
+  let section_value = data.at(section_key, default: none)
+  if not is_section_wrapper(section_value) { return section_value }
+  if "entries" in section_value { return section_value.entries }
+  if "items" in section_value { return section_value.items }
+  if "content" in section_value { return section_value.content }
+  none
+}
+
+#let resolve_section_title(data, section_key) = {
+  if type(data) == dictionary and section_key in data {
+    let section_value = data.at(section_key, default: none)
+    if is_section_wrapper(section_value) and "title" in section_value and non_empty(section_value.title) {
+      return section_value.title
+    }
+  }
+  default_section_title(section_key)
 }
 
 #let parse_date(date_str) = {
@@ -932,13 +968,13 @@
 
 #let render_interests_summary(data, config) = {
   if not config.at("show_interests_summary", default: false) { return }
-  if "interests_summary" in data and data.interests_summary != none {
-    section_heading(resolve_section_title(config, "interests_summary"), config)
-    block(above: 0pt, below: 0pt)[
-      #set text(size: config.at("summary_font_size", default: 1.0em))
-      #render_rich(data.interests_summary, config)
-    ]
-  }
+  let interests_summary = resolve_section_value(data, "interests_summary")
+  if not non_empty(interests_summary) { return }
+  section_heading(resolve_section_title(data, "interests_summary"), config)
+  block(above: 0pt, below: 0pt)[
+    #set text(size: config.at("summary_font_size", default: 1.0em))
+    #render_rich(interests_summary, config)
+  ]
 }
 
 // ============================================================================
@@ -946,7 +982,7 @@
 // ============================================================================
 
 #let render_work(data, config) = {
-  let work_entries = as_array(data.at("work", default: ()))
+  let work_entries = as_array(resolve_section_value(data, "work"))
   if work_entries.len() == 0 { return }
 
   let variant = config.at("variant", default: "long")
@@ -963,7 +999,7 @@
   let work_list_spacing = config.at("work_list_spacing", default: config.at("list_spacing", default: 0.61em))
   let work_highlight_indent = config.at("work_highlight_indent", default: 1.2em)
 
-  section_heading(resolve_section_title(config, "work"), config)
+  section_heading(resolve_section_title(data, "work"), config)
   block(above: 0pt, below: 0pt)[
     #for (i, work) in work_items.enumerate() {
       let positions = if "positions" in work and work.positions != none {
@@ -1072,7 +1108,7 @@
 // ============================================================================
 
 #let render_education(data, config) = {
-  let education_entries = as_array(data.at("education", default: ()))
+  let education_entries = as_array(resolve_section_value(data, "education"))
   if education_entries.len() == 0 { return }
 
   let variant = config.at("variant", default: "long")
@@ -1090,7 +1126,7 @@
   )
   let education_highlight_indent = config.at("education_highlight_indent", default: 0.95em)
 
-  section_heading(resolve_section_title(config, "education"), config)
+  section_heading(resolve_section_title(data, "education"), config)
   block(above: 0pt, below: 0pt)[
     #for (i, edu) in edu_items.enumerate() {
       block(width: 100%, above: if i == 0 { 0pt } else { entry_spacing }, below: 0pt, breakable: true)[
@@ -1384,7 +1420,7 @@
 }
 
 #let render_publications(data, config) = {
-  let publication_entries = as_array(data.at("publications", default: ()))
+  let publication_entries = as_array(resolve_section_value(data, "publications"))
   if publication_entries.len() == 0 { return }
 
   let variant = config.at("variant", default: "long")
@@ -1415,7 +1451,7 @@
           }
 
           if section_items.len() > 0 {
-            let section_title = section.at("title", default: resolve_section_title(config, section_key))
+            let section_title = section.at("title", default: resolve_section_title(data, section_key))
             section_heading(section_title, config)
             v(pub_heading_tighten)
             block(above: 0pt, below: 0pt)[
@@ -1455,7 +1491,7 @@
     }
 
     if remaining_items.len() > 0 {
-      section_heading(resolve_section_title(config, "publications"), config)
+      section_heading(resolve_section_title(data, "publications"), config)
       v(pub_heading_tighten)
       block(above: 0pt, below: 0pt)[
         #set par(justify: false)
@@ -1475,7 +1511,7 @@
       ]
     }
   } else {
-    section_heading(resolve_section_title(config, "publications"), config)
+    section_heading(resolve_section_title(data, "publications"), config)
     v(pub_heading_tighten)
     block(above: 0pt, below: 0pt)[
       #set par(justify: false)
@@ -1501,7 +1537,7 @@
 // ============================================================================
 
 #let render_projects(data, config) = {
-  let project_entries = as_array(data.at("projects", default: ()))
+  let project_entries = as_array(resolve_section_value(data, "projects"))
   if project_entries.len() == 0 { return }
 
   let variant = config.at("variant", default: "long")
@@ -1517,7 +1553,7 @@
     default: config.at("entry_inner_spacing", default: 0.48em),
   )
 
-  section_heading(resolve_section_title(config, "projects"), config)
+  section_heading(resolve_section_title(data, "projects"), config)
   block(above: 0pt, below: 0pt)[
     #for (i, project) in project_items.enumerate() {
       block(width: 100%, above: if i == 0 { 0pt } else { entry_spacing }, below: 0pt, breakable: true)[
@@ -1565,7 +1601,7 @@
 // ============================================================================
 
 #let render_awards(data, config) = {
-  let award_entries = as_array(data.at("awards", default: ()))
+  let award_entries = as_array(resolve_section_value(data, "awards"))
   if award_entries.len() == 0 { return }
 
   let variant = config.at("variant", default: "long")
@@ -1575,7 +1611,7 @@
   let entry_spacing = config.at("awards_entry_spacing", default: config.at("entry_spacing", default: 0.5em))
   let awards_font_size = config.at("awards_font_size", default: config.at("font_size", default: 10pt))
 
-  section_heading(resolve_section_title(config, "awards"), config)
+  section_heading(resolve_section_title(data, "awards"), config)
   block(above: 0pt, below: 0pt)[
     #for (i, award) in award_items.enumerate() {
       block(width: 100%, above: if i == 0 { 0pt } else { entry_spacing }, below: 0pt, breakable: true)[
@@ -1641,7 +1677,7 @@
 // ============================================================================
 
 #let render_skills(data, config) = {
-  let skill_entries = as_array(data.at("skills", default: ()))
+  let skill_entries = as_array(resolve_section_value(data, "skills"))
   if skill_entries.len() == 0 { return }
 
   let variant = config.at("variant", default: "long")
@@ -1654,7 +1690,7 @@
     default: config.at("line_spacing", default: 0.33em),
   )
 
-  section_heading(resolve_section_title(config, "skills"), config)
+  section_heading(resolve_section_title(data, "skills"), config)
   block(above: 0pt, below: 0pt)[
     #for (i, skill_group) in skill_items.enumerate() {
       block(above: if i == 0 { 0pt } else { skill_spacing }, below: 0pt)[
@@ -1683,7 +1719,7 @@
 // ============================================================================
 
 #let render_languages(data, config) = {
-  let language_entries = as_array(data.at("languages", default: ()))
+  let language_entries = as_array(resolve_section_value(data, "languages"))
   if language_entries.len() == 0 { return }
   if not config.at("show_languages", default: true) { return }
 
@@ -1691,7 +1727,7 @@
   let lang_items = filter_by_variant(language_entries, variant)
   if lang_items.len() == 0 { return }
 
-  section_heading(resolve_section_title(config, "languages"), config)
+  section_heading(resolve_section_title(data, "languages"), config)
   block(above: 0pt, below: 0pt)[
     #let lang_list = ()
     #for lang in lang_items {
@@ -1718,7 +1754,7 @@
 // ============================================================================
 
 #let render_interests(data, config) = {
-  let interest_entries = as_array(data.at("interests", default: ()))
+  let interest_entries = as_array(resolve_section_value(data, "interests"))
   if interest_entries.len() == 0 { return }
   if not config.at("show_interests", default: true) { return }
 
@@ -1726,7 +1762,7 @@
   let interest_items = filter_by_variant(interest_entries, variant)
   if interest_items.len() == 0 { return }
 
-  section_heading(resolve_section_title(config, "interests"), config)
+  section_heading(resolve_section_title(data, "interests"), config)
   block(above: 0pt, below: 0pt)[
     #let interest_list = ()
     #for interest in interest_items {
@@ -1748,7 +1784,7 @@
 // ============================================================================
 
 #let render_references(data, config) = {
-  let reference_entries = as_array(data.at("references", default: ()))
+  let reference_entries = as_array(resolve_section_value(data, "references"))
   if reference_entries.len() == 0 { return }
   if not config.at("show_references", default: false) { return }
 
@@ -1756,7 +1792,7 @@
   let refs = filter_by_variant(reference_entries, variant)
   if refs.len() == 0 { return }
 
-  section_heading(resolve_section_title(config, "references"), config)
+  section_heading(resolve_section_title(data, "references"), config)
   block(above: 0pt, below: 0pt)[
     #for ref in refs {
       block(width: 100%, above: 0.3em, below: 0pt)[
@@ -1855,7 +1891,7 @@
 
 #let render_generic_section(data, config, section_key) = {
   if section_key not in data { return }
-  let section_data = data.at(section_key, default: none)
+  let section_data = resolve_section_value(data, section_key)
   if section_data == none { return }
 
   let variant = config.at("variant", default: "long")
@@ -1870,7 +1906,7 @@
   )
   let highlight_indent = config.at("generic_highlight_indent", default: 0.95em)
 
-  let section_title = resolve_section_title(config, section_key)
+  let section_title = resolve_section_title(data, section_key)
 
   if type(section_data) == array {
     let entries = filter_by_variant(section_data, variant)
@@ -2183,11 +2219,6 @@
 
   if "last_updated" in yaml_config and yaml_config.last_updated != none {
     flat.insert("last_updated", str(yaml_config.last_updated))
-  }
-
-  if "section_titles" in yaml_config {
-    let titles = yaml_config.section_titles
-    flat.insert("section_titles_map", titles)
   }
 
   if "section_order" in yaml_config {

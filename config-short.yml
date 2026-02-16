@@ -75,17 +75,6 @@ visibility:
   links_disabled_behavior: "label"
   show_publication_numbers: false
 
-section_titles:
-  work: "Experience"
-  education: "Education"
-  publications: "Publications"
-  projects: "Projects"
-  awards: "Honors and Activities"
-  skills: "Skills"
-  languages: "Languages"
-  interests: "Interests"
-  references: "References"
-
 section_order:
   - work
   - publications

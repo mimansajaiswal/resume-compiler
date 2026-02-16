@@ -32,8 +32,10 @@ personal:
       url: mailto:acollins@princeton.edu
       label: "acollins@princeton.edu"
 
-interests_summary: |
-  I focus on *automated theorem proving and formal verification* for trustworthy software systems, including proof engineering for distributed protocols, certified optimization and compilation flows, and robust automation strategies for maintaining large mechanized proof codebases over time.
+interests_summary:
+  title: "Interests"
+  content: |
+    I focus on *automated theorem proving and formal verification* for trustworthy software systems, including proof engineering for distributed protocols, certified optimization and compilation flows, and robust automation strategies for maintaining large mechanized proof codebases over time.
 
 work:
   - name: Harbor Logic Systems (Proof Infrastructure)

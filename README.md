@@ -77,7 +77,7 @@ This project now uses a standardized key style with no legacy aliases:
   - YAML mode: `name` (title) plus optional `content`, `authors`, `publisher`, `releaseDate`, `url`
 - Generic section support:
   - Any additional top-level array (for example `community_service`) is auto-rendered.
-  - You can optionally place it in `section_order` and set `section_titles.<key>`.
+  - You can optionally place it in `section_order`, and use section wrappers in `resume.yml` to set custom titles.
 
 ### Watch Mode (Auto-compile on changes)
 
@@ -328,11 +328,6 @@ visibility:
   show_interests_summary: true
   show_languages: true
   show_references: false
-
-section_titles:
-  work: "Experience"
-  education: "Education"
-  publications: "Publications"
 
 section_order:
   - interests_summary
@@ -589,17 +584,11 @@ visibility:
   links_disabled_behavior: "label" # "label" | "label_with_url"
   show_publication_numbers: false  # Prefix publication items as [1], [2], ...
 
-# Section titles (customize headings)
-section_titles:
-  work: "Experience"
-  education: "Education"
-  publications: "Publications"
-  projects: "Projects"
-  awards: "Honors and Awards"
-  skills: "Skills"
-  languages: "Languages"
-  interests: "Interests"
-  references: "References"
+# Section titles now live in resume.yml (optional wrappers)
+# work:
+#   title: "Experience"
+#   entries:
+#     - name: ...
 
 # Section order (what to show and in what order)
 section_order:
@@ -825,10 +814,12 @@ section_order:
   - patents
 ```
 
-3. Set a custom title in `section_titles` (optional):
+3. Set a custom title in `resume.yml` (optional):
 ```yaml
-section_titles:
-  patents: "Patents"
+patents:
+  title: "Patents"
+  entries:
+    - name: "System and Method for X"
 ```
 
 The template auto-renders arrays/dictionaries using a generic resume layout.

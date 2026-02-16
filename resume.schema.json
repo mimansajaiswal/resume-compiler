@@ -10,34 +10,41 @@
       "$ref": "#/$defs/entryObject"
     },
     "interests_summary": {
-      "$ref": "#/$defs/markdownValue"
+      "oneOf": [
+        {
+          "$ref": "#/$defs/markdownValue"
+        },
+        {
+          "$ref": "#/$defs/sectionContentObject"
+        }
+      ]
     },
     "work": {
-      "$ref": "#/$defs/entryArray"
+      "$ref": "#/$defs/sectionArray"
     },
     "education": {
-      "$ref": "#/$defs/entryArray"
+      "$ref": "#/$defs/sectionArray"
     },
     "publications": {
-      "$ref": "#/$defs/entryArray"
+      "$ref": "#/$defs/sectionArray"
     },
     "projects": {
-      "$ref": "#/$defs/entryArray"
+      "$ref": "#/$defs/sectionArray"
     },
     "awards": {
-      "$ref": "#/$defs/entryArray"
+      "$ref": "#/$defs/sectionArray"
     },
     "skills": {
-      "$ref": "#/$defs/entryArray"
+      "$ref": "#/$defs/sectionArray"
     },
     "languages": {
-      "$ref": "#/$defs/entryArray"
+      "$ref": "#/$defs/sectionArray"
     },
     "interests": {
-      "$ref": "#/$defs/entryArray"
+      "$ref": "#/$defs/sectionArray"
     },
     "references": {
-      "$ref": "#/$defs/entryArray"
+      "$ref": "#/$defs/sectionArray"
     },
     "meta": {
       "$ref": "#/$defs/entryObject"
@@ -51,6 +58,46 @@
       "type": "array",
       "items": {
         "$ref": "#/$defs/flexibleValue"
+      }
+    },
+    "sectionArray": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/entryArray"
+        },
+        {
+          "$ref": "#/$defs/sectionArrayObject"
+        }
+      ]
+    },
+    "sectionArrayObject": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "entries": {
+          "$ref": "#/$defs/entryArray"
+        },
+        "items": {
+          "$ref": "#/$defs/entryArray"
+        },
+        "content": {
+          "$ref": "#/$defs/flexibleValue"
+        }
+      }
+    },
+    "sectionContentObject": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "content": {
+          "$ref": "#/$defs/markdownValue"
+        }
       }
     },
     "entryObject": {
