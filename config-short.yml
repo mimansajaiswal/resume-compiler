@@ -48,8 +48,8 @@ styling:
   link_color: "#1C398D"
   section_rule_color: "#9F9FA8"
   section_rule_thickness: 0.6pt
-  section_rule_enabled: false
-  section_rule_gap: 0.1em
+  section_rule_enabled: true
+  section_rule_gap: 0.3em
   section_heading_tracking: 0.01em
   section_heading_sticky: true
   header_rule_color: "#9F9FA8"

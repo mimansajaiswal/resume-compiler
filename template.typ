@@ -728,6 +728,18 @@
       upper(title)
     }
   ]
+  if config.at("section_rule_enabled", default: true) {
+    let section_rule_color = parse_color(
+      config.at("section_rule_color", default: config.at("header_rule_color", default: none)),
+      default: rgb("#9F9FA8"),
+    )
+    let section_rule_thickness = config.at(
+      "section_rule_thickness",
+      default: config.at("header_rule_thickness", default: 1pt),
+    )
+    v(config.at("section_rule_gap", default: 0.5em))
+    line(length: 100%, stroke: section_rule_thickness + section_rule_color)
+  }
   v(config.at("post_section_spacing", default: 0.74em))
 }
 
@@ -2109,7 +2121,7 @@
     }
     if "section_rule_enabled" in styling { flat.insert("section_rule_enabled", styling.section_rule_enabled) }
     if "section_rule_gap" in styling {
-      flat.insert("section_rule_gap", parse_dimension(styling.section_rule_gap, default: 0.12em))
+      flat.insert("section_rule_gap", parse_dimension(styling.section_rule_gap, default: 0.5em))
     }
     if "section_heading_tracking" in styling {
       flat.insert("section_heading_tracking", parse_dimension(styling.section_heading_tracking, default: 0.01em))

@@ -63,8 +63,8 @@ styling:
   link_color: "#1C398D" # richer blue for links
   section_rule_color: "#9F9FA8"
   section_rule_thickness: 0.6pt
-  section_rule_enabled: false # No section rules in LaTeX
-  section_rule_gap: 0.12em
+  section_rule_enabled: true # No section rules in LaTeX
+  section_rule_gap: 0.5em
   section_heading_tracking: 0.01em
   section_heading_sticky: true # Avoid heading-only lines at page bottoms
   header_rule_color: "#9F9FA8" # slightly lighter divider
